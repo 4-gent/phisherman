@@ -38,8 +38,12 @@ export default function Quiz() {
     }, [])
 
     return(
+        <div className='quiz-container'>
+        <div className='quiz-scene'>
+            {/* small centered box inside the scene */}
+            <div className='white-box' />
         <div className='quiz-body'>
-            <div className='quiz-topbar' />
+            <div className='quiz-midbar' />
             {/* <div className='water-background' /> */}
             <div className='d-flex flex-row justify-content-between'>
                 <img 
