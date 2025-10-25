@@ -1,21 +1,15 @@
-import React from 'react'
+import React, {useState} from 'react'
 import { Navbar, Container, Nav} from "react-bootstrap"
 import 'bootstrap/dist/css/bootstrap.min.css'
 import {Link} from 'react-scroll'
 import '../styles/navbar.css'
 
 export default function Navigation() {
-    const [navbarActive, setNavbarActive] = useState(false);
-
-    const handleToggle = () => {
-        setNavbarActive(!navbarActive);
-    }
-
     return(
         <div className="navigation">
-            <Navbar collapseOnSelect expand='lg' variant='dark' className='bg'>
+            <Navbar collapseOnSelect expand='lg' className='nav-background'>
                 <Container fluid>
-                    <Navbar.Brand href='/' className='logo'>Phisherman Temp Placement</Navbar.Brand>
+                    <Navbar.Brand href='/' className='nav-logo'>Phisherman Temp Placement</Navbar.Brand>
                     <Navbar.Toggle className='toggler' aria-controls='responsive-navbar-nav'></Navbar.Toggle>
                     <Navbar.Collapse id='responsive-navbar-nav'>
                         <Nav className='ms-auto'>

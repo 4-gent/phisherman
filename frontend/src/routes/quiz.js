@@ -60,6 +60,8 @@ export default function Quiz() {
             {/* score box */}
             <CursorFollowImage anchor={anchor} />
         </div>
+        </div>
+        </div>
     )
 }
 

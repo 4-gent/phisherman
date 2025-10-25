@@ -7,6 +7,7 @@ import Trainer from './routes/trainer';
 import Quiz from './routes/quiz';
 import Admin from './routes/admin';
 import Dashboard from './routes/dashboard';
+import Campaign from './routes/campaign';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
 			<Route path="/quiz" element={<Quiz />} />
 			<Route path="/admin" element={<Admin />} />
 			<Route path="/dashboard" element={<Dashboard />} />
+			<Route path="/campaign" element={<Campaign />} />
 		</Routes>
 	</Router>
   );
