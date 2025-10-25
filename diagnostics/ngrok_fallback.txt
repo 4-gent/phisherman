@@ -1,0 +1,179 @@
+ngrok Fallback Instructions
+===========================
+
+REASON FOR NGROK FALLBACK:
+If Agentverse cannot reach your local agents (127.0.0.1), you need to expose them publicly using ngrok.
+
+NGROK SETUP STEPS:
+==================
+
+1. Install ngrok (if not already installed):
+   ```bash
+   # macOS
+   brew install ngrok
+   
+   # Or download from https://ngrok.com/download
+   ```
+
+2. Sign up for free ngrok account:
+   - Go to https://dashboard.ngrok.com/signup
+   - Create a free account
+   - Get your authtoken from https://dashboard.ngrok.com/get-started/your-authtoken
+
+3. Configure ngrok with your authtoken:
+   ```bash
+   ngrok config add-authtoken YOUR_AUTHTOKEN_HERE
+   ```
+
+4. Start ngrok tunnels for each agent:
+   ```bash
+   # Terminal 1: Phish Master
+   ngrok http 8001
+   
+   # Terminal 2: Finance Phisher
+   ngrok http 8002
+   
+   # Terminal 3: Health Phisher
+   ngrok http 8003
+   
+   # Terminal 4: Personal Phisher
+   ngrok http 8004
+   
+   # Terminal 5: Phish Refiner
+   ngrok http 8005
+   ```
+
+5. Get the public URLs:
+   - ngrok will display URLs like: https://abc123.ngrok.io
+   - Copy each URL for agent registration
+
+EXAMPLE NGROK OUTPUT:
+=====================
+```
+Session Status                online
+Account                       your-account
+Version                       3.x.x
+Region                       United States (us)
+Latency                      45ms
+Web Interface                http://127.0.0.1:4040
+Forwarding                   https://abc123.ngrok.io -> http://localhost:8001
+```
+
+UPDATE AGENT CONFIGS:
+=====================
+
+Replace local URLs in agentverse_configs/*.json files:
+
+FROM:
+```json
+"mailbox_endpoint": {
+  "url": "http://127.0.0.1:8001",
+  "chat_endpoint": "/chat",
+  "health_endpoint": "/health",
+  "info_endpoint": "/agent_info",
+  "generate_endpoint": "/generate"
+}
+```
+
+TO:
+```json
+"mailbox_endpoint": {
+  "url": "https://abc123.ngrok.io",
+  "chat_endpoint": "/chat",
+  "health_endpoint": "/health",
+  "info_endpoint": "/agent_info",
+  "generate_endpoint": "/generate"
+}
+```
+
+TEST NGROK ENDPOINTS:
+====================
+
+```bash
+# Test each ngrok URL
+curl https://abc123.ngrok.io/health
+curl https://def456.ngrok.io/health
+curl https://ghi789.ngrok.io/health
+curl https://jkl012.ngrok.io/health
+curl https://mno345.ngrok.io/health
+
+# Test chat endpoints
+curl -X POST https://abc123.ngrok.io/chat \
+  -H "Content-Type: application/json" \
+  -d '{"text": "Test message"}'
+```
+
+SECURITY NOTES:
+===============
+
+⚠️  IMPORTANT SECURITY CONSIDERATIONS:
+
+1. **Ephemeral URLs**: ngrok URLs change each time you restart (unless you have a paid plan)
+2. **Public Access**: Your agents will be publicly accessible while ngrok is running
+3. **Token Security**: Never commit your ngrok authtoken to version control
+4. **Temporary Use**: Only use ngrok for testing and registration, not production
+
+ENVIRONMENT VARIABLES:
+======================
+
+You can set ngrok URLs as environment variables:
+
+```bash
+export PHISH_MASTER_URL="https://abc123.ngrok.io"
+export FINANCE_PHISHER_URL="https://def456.ngrok.io"
+export HEALTH_PHISHER_URL="https://ghi789.ngrok.io"
+export PERSONAL_PHISHER_URL="https://jkl012.ngrok.io"
+export PHISH_REFINER_URL="https://mno345.ngrok.io"
+```
+
+TROUBLESHOOTING:
+===============
+
+1. **"authentication failed"**: 
+   - Ensure you've added your authtoken: `ngrok config add-authtoken YOUR_TOKEN`
+   - Check your ngrok account is verified
+
+2. **"tunnel not found"**:
+   - Restart ngrok: `pkill ngrok && ngrok http 8001`
+   - Check if port is already in use: `lsof -i :8001`
+
+3. **"connection refused"**:
+   - Ensure your agents are running: `./start_all.sh`
+   - Check agent health: `curl http://127.0.0.1:8001/health`
+
+4. **URL changes frequently**:
+   - Consider ngrok paid plan for static domains
+   - Or use alternative tunneling services (cloudflared, localtunnel)
+
+ALTERNATIVE TUNNELING SERVICES:
+===============================
+
+If ngrok doesn't work, try:
+
+1. **cloudflared** (Cloudflare Tunnel):
+   ```bash
+   brew install cloudflared
+   cloudflared tunnel --url http://localhost:8001
+   ```
+
+2. **localtunnel**:
+   ```bash
+   npm install -g localtunnel
+   lt --port 8001
+   ```
+
+3. **serveo**:
+   ```bash
+   ssh -R 80:localhost:8001 serveo.net
+   ```
+
+FINAL VERIFICATION:
+==================
+
+After setting up ngrok:
+
+1. All agents should be accessible via HTTPS URLs
+2. Health endpoints should return 200 OK
+3. Chat endpoints should respond to POST requests
+4. Agent info endpoints should return JSON metadata
+5. Agentverse registration should succeed with public URLs
