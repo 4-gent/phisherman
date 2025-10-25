@@ -8,3 +8,9 @@ flask_socketio
 pandas
 python-dotenv
 requests
+
+# uAgent dependencies for Fetch.ai ecosystem
+uagents>=0.4.0
+httpx>=0.24.0
+asyncio
+typing-extensions>=4.0.0
