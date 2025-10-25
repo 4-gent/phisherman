@@ -1,0 +1,23 @@
+Agent Port Status Report
+========================
+Date: 2025-01-25
+Status: All agents verified running
+
+| Agent | Port | PID | Listening? | Notes |
+|-------|------|-----|------------|-------|
+| phish_master | 8001 | 43807 | Y | Running successfully |
+| finance_phisher | 8002 | 44321 | Y | Running successfully |
+| health_phisher | 8003 | 44407 | Y | Running successfully |
+| personal_phisher | 8004 | 44408 | Y | Running successfully |
+| phish_refiner | 8005 | 44409 | Y | Running successfully |
+
+Verification Method: lsof -iTCP:8001-8005 -sTCP:LISTEN -P -n
+All agents confirmed listening on their assigned ports.
+
+Agent Addresses (from logs):
+============================
+phish_master: agent1qfpmv2htn2ghdynju29tdyt3razc0ankga79v9e07fg8m23ccmsqj33sjkr
+finance_phisher: agent1qvunf4lkpkdfmdd92ge3phey9xyezrfn283ffsntrnrfz6cx6zakyul3k3z
+health_phisher: agent1qggxrwyhksn8ffqd5s6u0ztwq495dtqnlk95v2sg26f4slnvsw5p6nkst6h
+personal_phisher: agent1qwvljjd5a4ersv9lfj2j6apfedc74fljcjtk0smgfcf44zareuc26act6vz
+phish_refiner: agent1q2ks99xch7w9jg69pwg7453kjlcw874g0ks59c67fzt6uq8dn7rqwh3nxrr
