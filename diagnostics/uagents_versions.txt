@@ -1,0 +1,25 @@
+uAgents Version Information
+============================
+Date: 2025-01-25
+Python Version: 3.11
+
+Current Installed Versions:
+- pydantic: 2.12.3
+- uagents: Available (no __version__ attribute)
+- uagents-core: Available (no __version__ attribute)
+
+Dependency Status:
+✅ uagents imports successfully
+✅ uagents_core imports successfully  
+✅ pydantic imports successfully (with deprecation warnings)
+
+Notes:
+- pydantic 2.12.3 is installed (not 1.10.17 as requested)
+- uagents-core requires pydantic>=2.8,<3.0
+- Current setup works despite version mismatch
+- Deprecation warnings present but non-blocking
+
+Test Results:
+- Basic imports: SUCCESS
+- No critical dependency conflicts
+- Ready to proceed with agent testing
