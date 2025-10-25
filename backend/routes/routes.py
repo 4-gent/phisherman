@@ -6,16 +6,16 @@ import os
 from bson import ObjectId
 
 from connect import db, users
-from config import config
+from mail.sender.sender import email_send
 
 app = Flask(__name__)
 
-# Use configuration from config.py
-app.secret_key = config.SECRET_KEY
-app.config['SESSION_COOKIE_SAMESITE'] = config.SESSION_COOKIE_SAMESITE
-app.config['SESSION_COOKIE_SECURE'] = config.SESSION_COOKIE_SECURE
+app.secret_key = 'im-phishing-it'
 
-CORS(app, origins=config.CORS_ORIGINS, supports_credentials=True)
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+app.config['SESSION_COOKIE_SECURE'] = False
+
+CORS(app, origins=['http://localhost:3000'], supports_credentials=True)
 
 bcrypt = Bcrypt(app)
 
@@ -28,10 +28,11 @@ def register():
     if request.method == "POST":
         try:
             data = request.get_json()
-            print(data)
             # Minimal register implementation: create a user with a hashed password
             username = data.get('username')
             password = data.get('password')
+            company = data.get('company').lower()
+            email = data.get('email')
 
             if not username or not password:
                 return jsonify({'success': False, 'message': 'username and password required'}), 400
@@ -44,10 +45,13 @@ def register():
             pw_hash = bcrypt.generate_password_hash(password).decode('utf-8')
             new_user = {
                 'username': username,
-                'password': pw_hash
+                'password': pw_hash,
+                'company': company,
+                'email': email,
+                'isAdmin': False
             }
             result = users.insert_one(new_user)
-            return jsonify({'success': True, 'id': str(result.inserted_id)}), 201
+            return jsonify({'success': True, 'id': str(result.inserted_id)}), 200
         except Exception as e:
             print("exception thrown at register: ", e)
             return jsonify({'success': False, 'message': 'server error'}), 500
@@ -60,9 +64,6 @@ def login():
             print(data)
             username = data.get('username')
             password = data.get('password')
-
-            if not username or not password:
-                return jsonify({'success': False, 'message': 'username and password required'}), 400
 
             user = users.find_one({'username': username})
             if not user:
@@ -82,8 +83,30 @@ def login():
                 return jsonify({'success': False, 'message': 'invalid credentials'}), 401
 
             # successful login: set session and return success
-            session['user_id'] = str(user.get('_id'))
-            return jsonify({'success': True, 'username': username}), 200
+            if user.get('isAdmin') == False:
+                session['user_id'] = str(user.get('_id'))
+                return jsonify({'success': True, 'username': username}), 200
+            elif user.get('isAdmin') == True:
+                session['user_id'] = str(user.get('_id'))
+                return jsonify({'success': True, 'username': username}), 201
+            else:
+                print("Error at login")
+                return jsonify({'success': False}), 400 
         except Exception as e:
             print("exception thrown at login: ", e)
             return jsonify({'success': False, 'message': 'server error'}), 500
+
+@app.route('/api/email', methods=['POST', 'OPTIONS'])
+def email_send_route():
+    if request.method == 'POST' or request.method == 'OPTIONS':
+        print("Sending test email")
+        email_send()
+        return jsonify({'message': "something"}), 200
+    
+@app.route('/api/campaign', methods=['POST', 'OPTIONS'])
+def email_template_route():
+    if request.method == 'POST' or request.method == 'OPTIONS':
+        data = request.get_json()
+        template = data.get('template')
+        print('Template: ', template)
+        return jsonify({'message': 'input received'}), 200

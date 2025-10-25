@@ -1,0 +1,23 @@
+{
+  "name": "personal_phisher",
+  "description": "Generates personal information phishing templates for cybersecurity training",
+  "capabilities": [
+    "personal_phishing_templates",
+    "account_verification",
+    "security_alerts",
+    "subscription_management"
+  ],
+  "endpoints": [
+    "http://127.0.0.1:8004/submit"
+  ],
+  "protocol": "chat_v0.3.0",
+  "tags": [
+    "personal",
+    "phishing",
+    "training",
+    "security"
+  ],
+  "version": "1.0.0",
+  "author": "Phisherman Team",
+  "license": "MIT"
+}
