@@ -1,0 +1,75 @@
+Mailbox Setup Configuration
+===========================
+
+IMPLEMENTATION:
+Created mailbox_agent.py that implements Chat Protocol v0.3.0 compatible agents for Agentverse registration.
+
+KEY FEATURES:
+1. FastAPI-based agents with Chat Protocol v0.3.0 support
+2. Health check endpoints for each agent
+3. Agent information endpoints for Agentverse registration
+4. Chat endpoints for message processing
+5. Generate endpoints for phishing template creation
+
+AGENT CONFIGURATIONS:
+- phish_master (port 8001): Orchestrator agent
+- finance_phisher (port 8002): Financial phishing templates
+- health_phisher (port 8003): Healthcare phishing templates  
+- personal_phisher (port 8004): Personal information phishing templates
+- phish_refiner (port 8005): Template refinement agent
+
+ENDPOINTS FOR EACH AGENT:
+- GET /health - Health check endpoint
+- GET /agent_info - Agent metadata for Agentverse
+- POST /chat - Chat Protocol v0.3.0 compatible messaging
+- POST /generate - Phishing template generation
+
+MAILBOX CONFIGURATION SNIPPETS:
+
+1. Health Check Endpoint:
+```python
+@app.get("/health")
+async def health_check():
+    return {"status": "ok", "agent": agent_name, "version": "1.0.0"}
+```
+
+2. Agent Info Endpoint:
+```python
+@app.get("/agent_info")
+async def agent_info():
+    return {
+        "name": config["name"],
+        "description": config["description"],
+        "capabilities": config["capabilities"],
+        "chat_protocol_version": "v0.3.0",
+        "endpoints": {
+            "chat": f"/chat",
+            "health": f"/health", 
+            "generate": f"/generate"
+        }
+    }
+```
+
+3. Chat Protocol Endpoint:
+```python
+@app.post("/chat")
+async def chat_endpoint(message: ChatMessage):
+    response_text = await process_chat_message(agent_name, message.text)
+    return {
+        "text": response_text,
+        "agent": agent_name,
+        "timestamp": time.time()
+    }
+```
+
+STARTUP SCRIPT:
+- start_all.sh: Starts all agents in mailbox mode
+- Cleans up existing processes
+- Tests all endpoints
+- Provides agent URLs and endpoint information
+
+RESULT:
+- All agents are now mailbox-compatible
+- No blockchain registration required
+- Ready for Agentverse registration
+- Chat Protocol v0.3.0 compliant
