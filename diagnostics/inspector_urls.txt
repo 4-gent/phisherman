@@ -1,33 +1,116 @@
-Agentverse Inspector URLs
-========================
+Agentverse Inspector URLs - Complete Agent Information
+======================================================
 Date: 2025-01-25
-All agents running and ready for mailbox connection
+All 5 agents ready for mailbox connection
 
-Official Inspector URLs:
+Agent Configuration:
+====================
+
+1. phish_master (Orchestrator Agent)
+   Port: 8001
+   Seed: phish_master
+   Directory: backend/phisher/agent/phish_master/
+   Address: Will be generated on first run
+   HTTPS Tunnel: https://pubmed-halo-tiger-appliances.trycloudflare.com (port 8001)
+   Inspector URL: https://agentverse.ai/inspect/?uri=https%3A%2F%2Fpubmed-halo-tiger-appliances.trycloudflare.com&address=agent_phish_master
+
+2. finance_phisher (Financial Domain Agent)
+   Port: 8002
+   Seed: finance_phisher
+   Directory: backend/phisher/agent/finance_phisher/
+   Address: Will be generated on first run
+   HTTPS Tunnel: Needs to be started
+   Inspector URL: Will be generated after tunnel starts
+
+3. health_phisher (Healthcare Domain Agent)
+   Port: 8003
+   Seed: health_phisher
+   Directory: backend/phisher/agent/health_phisher/
+   Address: Will be generated on first run
+   HTTPS Tunnel: Needs to be started
+   Inspector URL: Will be generated after tunnel starts
+
+4. personal_phisher (Personal Info Domain Agent)
+   Port: 8004
+   Seed: personal_phisher
+   Directory: backend/phisher/agent/personal_phisher/
+   Address: Will be generated on first run
+   HTTPS Tunnel: Needs to be started
+   Inspector URL: Will be generated after tunnel starts
+
+5. phish_refiner (Template Refinement Agent)
+   Port: 8005
+   Seed: phish_refiner
+   Directory: backend/phisher/agent/phish_refiner/
+   Address: Will be generated on first run
+   HTTPS Tunnel: Needs to be started
+   Inspector URL: Will be generated after tunnel starts
+
+Agent Features:
+===============
+- Chat Protocol v0.3.0 enabled
+- Mailbox mode enabled (mailbox=True)
+- StartSessionContent/EndSessionContent handlers
+- TextContent messaging support
+- Seed-based addressing
+
+Connection Instructions:
 ========================
+1. Start all agents: python3 scripts/start_all.py
+2. Start HTTPS tunnels: ./scripts/quick_tunnels.sh
+3. Regenerate Inspector URLs: python3 scripts/inspect_urls.py
+4. Open Inspector URLs in browser (Opera, Chrome, Firefox, or Safari)
+5. Click "Connect" → Select "Mailbox"
+6. Copy the mailbox endpoint URLs provided
+7. Update Agentverse endpoints
 
-1. phish_master (Port 8001):
-https://agentverse.ai/inspect/?uri=http%3A//127.0.0.1%3A8001&address=agent1qfpmv2htn2ghdynju29tdyt3razc0ankga79v9e07fg8m23ccmsqj33sjkr
+Current Tunnel Status:
+======================
+Port 8001: ✅ Tunnel active
+  URL: https://pubmed-halo-tiger-appliances.trycloudflare.com
+  Process: cloudflared tunnel --url http://localhost:8001
 
-2. finance_phisher (Port 8002):
-https://agentverse.ai/inspect/?uri=http%3A//127.0.0.1%3A8002&address=agent1qvunf4lkpkdfmdd92ge3phey9xyezrfn283ffsntrnrfz6cx6zakyul3k3z
+Ports 8002-8005: ⏳ Tunnels need to be started
+  Run: ./scripts/quick_tunnels.sh
 
-3. health_phisher (Port 8003):
-https://agentverse.ai/inspect/?uri=http%3A//127.0.0.1%3A8003&address=agent1qggxrwyhksn8ffqd5s6u0ztwq495dtqnlk95v2sg26f4slnvsw5p6nkst6h
+Agent File Locations:
+=====================
+All agents are located in: backend/phisher/agent/
 
-4. personal_phisher (Port 8004):
-https://agentverse.ai/inspect/?uri=http%3A//127.0.0.1%3A8004&address=agent1qwvljjd5a4ersv9lfj2j6apfedc74fljcjtk0smgfcf44zareuc26act6vz
+phish_master:    backend/phisher/agent/phish_master/main.py
+finance_phisher: backend/phisher/agent/finance_phisher/main.py
+health_phisher:  backend/phisher/agent/health_phisher/main.py
+personal_phisher: backend/phisher/agent/personal_phisher/main.py
+phish_refiner:   backend/phisher/agent/phish_refiner/main.py
 
-5. phish_refiner (Port 8005):
-https://agentverse.ai/inspect/?uri=http%3A//127.0.0.1%3A8005&address=agent1q2ks99xch7w9jg69pwg7453kjlcw874g0ks59c67fzt6uq8dn7rqwh3nxrr
+Agentverse Configs:
+==================
+Location: backend/phisher/agent/agentverse_configs/
 
-Instructions:
-=============
-1. Open each URL in your browser
-2. Click "Connect" button on each Inspector page
-3. Select "Mailbox" option when prompted
-4. Wait for connection confirmation
-5. Copy the resulting mailbox endpoint URLs
-6. Use those real endpoints in Agentverse registration
+- phish_master_agentverse_config.json
+- finance_phisher_agentverse_config.json
+- health_phisher_agentverse_config.json
+- personal_phisher_agentverse_config.json
+- phish_refiner_agentverse_config.json
 
-Note: These URLs are for manual connection only. No fake mailbox URLs.
+Management Scripts:
+===================
+- scripts/start_all.py - Start all agents
+- scripts/stop_all.sh - Stop all agents
+- scripts/ports_status.py - Check port status
+- scripts/inspect_urls.py - Generate Inspector URLs
+- scripts/quick_tunnels.sh - Start HTTPS tunnels
+- scripts/verify_chat.py - Verify chat functionality
+- scripts/update_agentverse_endpoints.py - Update Agentverse
+- scripts/execute_all.py - Automated execution
+
+Next Steps:
+==========
+1. Ensure agents are running (ports 8001-8005)
+2. Start HTTPS tunnels for all ports
+3. Run: python3 scripts/inspect_urls.py to get complete URLs
+4. Open URLs in browser and connect via Mailbox
+5. Provide mailbox endpoints to update Agentverse
+
+Note: All agent data files preserve template counts and agent state.
+Agent addresses are generated dynamically on first run with seed-based derivation.
