@@ -1,3 +1,69 @@
+/* Reset and base styles */
 * {
-	background-color: black;
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+		'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+		sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	background-color: #f5f5f5;
+	color: #333;
+}
+
+#root {
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+}
+
+/* Main component styles */
+.main-container {
+	padding: 2rem;
+	text-align: center;
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	color: white;
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.main-container h1 {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.main-container p {
+	font-size: 1.2rem;
+	margin-bottom: 2rem;
+	opacity: 0.9;
+}
+
+/* Navigation styles */
+.nav-container {
+	background: rgba(255, 255, 255, 0.1);
+	backdrop-filter: blur(10px);
+	padding: 1rem;
+	border-radius: 10px;
+	margin-top: 2rem;
+}
+
+.nav-container a {
+	color: white;
+	text-decoration: none;
+	margin: 0 1rem;
+	padding: 0.5rem 1rem;
+	border-radius: 5px;
+	transition: background-color 0.3s;
+}
+
+.nav-container a:hover {
+	background-color: rgba(255, 255, 255, 0.2);
 }
