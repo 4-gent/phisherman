@@ -1,0 +1,24 @@
+Mailbox URLs for Phisherman Agents
+====================================
+
+NOTE: Current implementation uses FastAPI/uvicorn agents, not Fetch.ai mailbox system.
+These are local HTTP endpoints that can be used for Agentverse registration.
+
+phish_master: http://127.0.0.1:8001
+finance_phisher: http://127.0.0.1:8002
+health_phisher: http://127.0.0.1:8003
+personal_phisher: http://127.0.0.1:8004
+phish_refiner: http://127.0.0.1:8005
+
+Agent Status:
+- All agents are running and responding to health checks
+- Chat Protocol v0.3.0 compatible endpoints available
+- Ready for Agentverse registration
+
+Endpoints for each agent:
+- GET /health - Health check
+- GET /agent_info - Agent metadata
+- POST /chat - Chat Protocol v0.3.0 messaging
+- POST /generate - Phishing template generation
+
+Generated: $(date)
