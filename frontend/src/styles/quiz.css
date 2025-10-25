@@ -17,29 +17,71 @@
     position: relative;
 }
 
+/* corporate wave placed in quiz-container */
+.quiz-wave{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    z-index: 0;
+    opacity: 0.95;
+    animation: wave 3s ease-in-out infinite alternate;
+}
+
+@keyframes wave{
+    0% {transform: translateX(6px) rotate(-0.4deg);}
+    50% {transform: translateX(0) rotate(0.4deg);}
+    100% {transform: translateX(6px) rotate(-0.4deg);}
+}
+
 .white-box {
     position: absolute;
     top: 50px;
     transform: translate(-50%, -50%);
-    width: 6000px;
-    height: 436px;
-    background: #fbfbfd;
+    width: 500vh;
+    height: 437.9px;
+    background: #fffeff;
     /* display: flex;
     align-items: center;
     justify-content: center; */
 }
 
+.top-right-panel {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 250;
+}
+
+.tracker-box {
+    background: rgba(255,255,255,0.95);
+    padding: 8px 10px;
+    border-radius: 8px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+    min-width: 96px;
+    text-align: center;
+}
+.tracker-label { font-size: 15px; color: #666; }
+.tracker-value { font-weight: 700; font-size: 16px; color: #111; }
+
+.correct-box { border: 1px solid rgba(58, 150, 80, 0.12); }
+.score-box { border: 1px solid rgba(54, 123, 232, 0.12); }
+
 .quiz-body {
     background: linear-gradient(
     180deg,
-    rgba(120, 200, 240, 1) 0%,
-    rgba(110, 190, 238, 1) 25%,
-    rgba(95, 175, 232, 1) 60%,
-    rgba(80, 160, 225, 1) 100%
+    rgba(120, 200, 240, 1),
+    rgba(110, 190, 238, 1),
+    rgba(95, 175, 232, 1),
+    rgba(80, 160, 225, 1)
     );
-    min-height: 100vh;
+    min-height: 50px;
     width: 100%;
 }
+
 .cursor-follower { /*the fish hook image that follows the cursor */
     transform: translate(-60%, -8%);    
     width: 40px;
@@ -56,10 +98,10 @@
 }
 
 .quiz-midbar {
-    top: 268px;
+    top: 269px;
     left: 300px;
     width: 100%;
-    height: 2px;
+    height: 3px;
     background-color: black;
     position: sticky;
 }
