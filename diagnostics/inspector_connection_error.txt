@@ -1,0 +1,42 @@
+Inspector Connection Error Diagnosis
+====================================
+Date: 2025-01-25
+Issue: "Could not find this Agent on your local host"
+
+Problem Analysis:
+=================
+The Inspector URLs show agents are running but Inspector can't connect to them.
+
+Current Status:
+- All 5 agents running on ports 8001-8005 ✅
+- All agents listening on TCP ports ✅
+- Agents have correct addresses ✅
+- Inspector can't find agents ❌
+
+Possible Causes:
+1. Agents not exposing HTTP endpoints for Inspector
+2. Mailbox mode not properly configured (use_mailbox: False in logs)
+3. Missing health/status endpoints
+4. Network binding issue (127.0.0.1 vs 0.0.0.0)
+
+Key Finding from Logs:
+======================
+Mailbox config shows: 'use_mailbox': False
+
+This indicates mailbox mode is NOT actually enabled despite mailbox=True parameter.
+
+Agent Log Snippet:
+==================
+INFO:     [phish_master]: Starting server on http://0.0.0.0:8001 (Press CTRL+C to quit)
+Mailbox: {'agent_mailbox_key': None, 'base_url': 'agentverse.ai', 'protocol': 'https', 'http_prefix': 'https', 'use_mailbox': False}
+
+Root Cause:
+===========
+The mailbox=True parameter is not actually enabling mailbox mode. The agent.mailbox dict shows use_mailbox: False.
+
+Solution Needed:
+================
+Need to properly enable mailbox mode or use a different approach for local agent registration.
+The Inspector URLs are correct but agents need to be accessible via HTTP endpoints.
+
+Alternative: Use the FastAPI-based agents (mailbox_agent.py) which have proper HTTP endpoints.
