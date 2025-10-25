@@ -8,7 +8,7 @@ import json
 import asyncio
 from typing import Dict, List, Any
 from uagents import Agent, Context, Model
-from uagents.setup import fund_agent_if_low
+# from uagents.setup import fund_agent_if_low  # Disabled for mailbox mode
 
 # Initialize the agent
 phish_refiner = Agent(
@@ -18,7 +18,7 @@ phish_refiner = Agent(
     endpoint=["http://127.0.0.1:8005/submit"],
 )
 
-# Fund the agent if needed (disabled for demo)
+# Fund the agent if needed (disabled for mailbox mode)
 # fund_agent_if_low(phish_refiner.wallet.address())
 
 class RefinementRequest(Model):
