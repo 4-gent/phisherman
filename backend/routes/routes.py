@@ -6,15 +6,16 @@ import os
 from bson import ObjectId
 
 from connect import db, users
+from config import config
 
 app = Flask(__name__)
 
-app.secret_key = 'im-phishing-it'
+# Use configuration from config.py
+app.secret_key = config.SECRET_KEY
+app.config['SESSION_COOKIE_SAMESITE'] = config.SESSION_COOKIE_SAMESITE
+app.config['SESSION_COOKIE_SECURE'] = config.SESSION_COOKIE_SECURE
 
-app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
-app.config['SESSION_COOKIE_SECURE'] = False
-
-CORS(app, origins=['http://localhost:3000'], supports_credentials=True)
+CORS(app, origins=config.CORS_ORIGINS, supports_credentials=True)
 
 bcrypt = Bcrypt(app)
 
