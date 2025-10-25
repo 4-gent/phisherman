@@ -19,7 +19,7 @@ AGENTS = [
 
 def get_agent_address(agent_name):
     """Try to extract agent address from data files"""
-    data_file = Path(__file__).parent.parent / "backend" / "mail" / "sender" / agent_name / f"{agent_name}_data.json"
+    data_file = Path(__file__).parent.parent / "backend" / "phisher" / "agent" / agent_name / f"{agent_name}_data.json"
     
     # Alternative data file pattern
     alt_patterns = [
@@ -37,7 +37,7 @@ def get_agent_address(agent_name):
             pass
     
     # Try alternative patterns
-    agent_dir = Path(__file__).parent.parent / "backend" / "mail" / "sender" / agent_name
+    agent_dir = Path(__file__).parent.parent / "backend" / "phisher" / "agent" / agent_name
     for pattern in alt_patterns:
         for file in agent_dir.glob(pattern):
             try:
