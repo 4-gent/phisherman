@@ -1,0 +1,23 @@
+{
+  "name": "health_phisher",
+  "description": "Generates healthcare phishing templates for cybersecurity training",
+  "capabilities": [
+    "healthcare_phishing_templates",
+    "medical_appointments",
+    "insurance_verification",
+    "test_results_notifications"
+  ],
+  "endpoints": [
+    "http://127.0.0.1:8003/submit"
+  ],
+  "protocol": "chat_v0.3.0",
+  "tags": [
+    "healthcare",
+    "phishing",
+    "training",
+    "medical"
+  ],
+  "version": "1.0.0",
+  "author": "Phisherman Team",
+  "license": "MIT"
+}
