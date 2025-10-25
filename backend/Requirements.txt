@@ -1,0 +1,10 @@
+flask
+flask_cors
+flask_bcrypt
+matplotlib
+Flask-PyMongo
+pymongo[srv]
+flask_socketio
+pandas
+python-dotenv
+requests
