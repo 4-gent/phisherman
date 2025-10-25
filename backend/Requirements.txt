@@ -8,6 +8,7 @@ flask_socketio
 pandas
 python-dotenv
 requests
+mailjet_rest
 
 # uAgent dependencies for Fetch.ai ecosystem
 uagents>=0.4.0

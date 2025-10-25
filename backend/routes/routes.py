@@ -6,6 +6,7 @@ import os
 from bson import ObjectId
 
 from connect import db, users
+from mail.sender.sender import email_send
 
 app = Flask(__name__)
 
@@ -27,10 +28,11 @@ def register():
     if request.method == "POST":
         try:
             data = request.get_json()
-            print(data)
             # Minimal register implementation: create a user with a hashed password
             username = data.get('username')
             password = data.get('password')
+            company = data.get('company')
+            email = data.get('email')
 
             if not username or not password:
                 return jsonify({'success': False, 'message': 'username and password required'}), 400
@@ -43,10 +45,13 @@ def register():
             pw_hash = bcrypt.generate_password_hash(password).decode('utf-8')
             new_user = {
                 'username': username,
-                'password': pw_hash
+                'password': pw_hash,
+                'company': company,
+                'email': email,
+                'isAdmin': False
             }
             result = users.insert_one(new_user)
-            return jsonify({'success': True, 'id': str(result.inserted_id)}), 201
+            return jsonify({'success': True, 'id': str(result.inserted_id)}), 200
         except Exception as e:
             print("exception thrown at register: ", e)
             return jsonify({'success': False, 'message': 'server error'}), 500
@@ -59,9 +64,6 @@ def login():
             print(data)
             username = data.get('username')
             password = data.get('password')
-
-            if not username or not password:
-                return jsonify({'success': False, 'message': 'username and password required'}), 400
 
             user = users.find_one({'username': username})
             if not user:
@@ -86,3 +88,10 @@ def login():
         except Exception as e:
             print("exception thrown at login: ", e)
             return jsonify({'success': False, 'message': 'server error'}), 500
+
+@app.route('/api/email', methods=['POST', 'OPTIONS'])
+def email_send_route():
+    if request.method == 'POST' or request.method == 'OPTIONS':
+        print("Sending test email")
+        email_send()
+        return jsonify({'message': "something"}), 200

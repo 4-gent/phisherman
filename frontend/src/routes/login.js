@@ -28,6 +28,9 @@ export default function Login(){
 			if(err.data === false || err.status === 401 || err.data === null){
                 toast.error('Check username and password and try again', {autoClose: 1500})
             }
+			else if(err.status === 401){
+				toast.error('Wrong username or password please try again', {autoClose: 1500})
+			}
             else
                 toast.error('Something happened server side', {autoClose: 1500})
             console.log(err)
