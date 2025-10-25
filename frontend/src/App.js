@@ -5,6 +5,8 @@ import Login from './routes/login';
 import Register from './routes/register';
 import Trainer from './routes/trainer';
 import Quiz from './routes/quiz';
+import Admin from './routes/admin';
+import Dashboard from './routes/dashboard';
 
 function App() {
   return (
@@ -15,6 +17,8 @@ function App() {
 			<Route path="/register" element={<Register />} />
 			<Route path="/trainer" element={<Trainer />} />
 			<Route path="/quiz" element={<Quiz />} />
+			<Route path="/admin" element={<Admin />} />
+			<Route path="/dashboard" element={<Dashboard />} />
 		</Routes>
 	</Router>
   );
