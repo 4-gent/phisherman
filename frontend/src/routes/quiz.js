@@ -6,17 +6,23 @@ import FishHook from '../styles/images/fishHook.png'
 
 export default function Quiz() {
     return(
-        <div className='quiz-body'>
-            <div className='quiz-topbar' />
-            {/* <div className='water-background' /> */}
-            <div className='d-flex flex-row justify-content-between'>
-                <img src={fisherman} alt="fisherman" className='fisherman-image'/>
+        <div className='quiz-container'>
+        <div className='quiz-scene'>
+            {/* small centered box inside the scene */}
+            <div className='white-box' />
+            <div className='quiz-body'>
+                    <div className='quiz-midbar' />
+
+                    <div className='d-flex flex-row justify-content-between'>
+                        <img src={fisherman} alt="fisherman" className='fisherman-image'/>
+                    </div>
+                    <img src={fish} alt="fish" className='fisherman-image'/>
+                    {/* backgrund image */}
+                    {/* fish images */}
+                    {/* score box */}
+                    <CursorFollowImage/>
+                </div>
             </div>
-            <img src={fish} alt="fish" className='fisherman-image'/>
-            {/* backgrund image */}
-            {/* fish images */}
-            {/* score box */}
-            <CursorFollowImage/>
         </div>
     )
 }
