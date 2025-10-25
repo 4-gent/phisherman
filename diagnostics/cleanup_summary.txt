@@ -1,0 +1,70 @@
+Cleanup Summary
+================
+Date: 2025-01-25
+
+Files Deleted:
+==============
+
+Agent Files (Failed Attempts):
+- phish_master_mailbox.py
+- finance_phisher_mailbox.py
+- health_phisher_mailbox.py
+- personal_phisher_mailbox.py
+- phish_refiner_mailbox.py
+
+Working Versions:
+- final_mailbox_agent.py
+- simple_fetch_agent.py
+- simple_mailbox_agent.py
+- working_agent_server.py
+- working_fetch_agent.py
+- working_mailbox_agent.py
+- run_fetch_agents.py
+
+Registration Scripts:
+- register_phish_master.py
+- register_finance_phisher.py
+- register_health_phisher.py
+- register_personal_phisher.py
+- register_phish_refiner.py
+- register_all_agents.py
+- register_agents.py
+- register_agents_simple.py
+- register_with_agentverse_code.py
+- register_mailbox_agents.py
+- register_working_agents.py
+
+Launch Scripts:
+- launch_phish_master.py
+- launch_finance_phisher.py
+- launch_health_phisher.py
+- launch_personal_phisher.py
+- launch_phish_refiner.py
+- launch_all_agents.py
+- start_mailbox_agents.sh
+
+Helper Scripts:
+- run_mailbox_agents.py
+- communication_example.py
+
+Documentation:
+- AGENTVERSE_SETUP.md
+- README_AGENTVERSE.md
+
+Log Files:
+- uagents_core.log (root and backend/mail/sender)
+
+Files Kept:
+===========
+✅ mailbox_agent.py - The ONLY working agent file
+✅ start_all.sh - Main startup script
+✅ agentverse.env - Environment variables
+✅ backend/mail/sender/ - Core agent implementation
+✅ agentverse_configs/ - Configuration files
+✅ diagnostics/ - Troubleshooting logs
+✅ All frontend and backend core files
+
+Current State:
+==============
+Clean codebase with only working files remaining.
+All 5 agents run via single mailbox_agent.py file.

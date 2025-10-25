@@ -1,0 +1,37 @@
+CORS Fix Applied
+================
+Date: 2025-01-25
+
+Issue Identified:
+================
+The Inspector was sending OPTIONS requests (CORS preflight) and receiving:
+"OPTIONS /agent_info HTTP/1.1" 405 Method Not Allowed
+
+This prevented the Inspector from connecting to the agents.
+
+Solution Applied:
+================
+Added CORS middleware to mailbox_agent.py:
+- allow_origins=["*"]
+- allow_credentials=True
+- allow_methods=["*"]
+- allow_headers=["*"]
+
+Agents Restarted:
+================
+✅ All agents restarted with CORS enabled
+✅ Agent on port 8001 verified responding: {"status":"ok","agent":"phish_master","version":"1.0.0"}
+
+Next Steps:
+==========
+1. REFRESH the Inspector browser tabs
+2. The agents should now be detected
+3. You should be able to click "Connect" → "Mailbox"
+
+Inspector URLs (refresh these):
+==============================
+1. https://agentverse.ai/inspect/?uri=http%3A//127.0.0.1%3A8001
+2. https://agentverse.ai/inspect/?uri=http%3A//127.0.0.1%3A8002
+3. https://agentverse.ai/inspect/?uri=http%3A//127.0.0.1%3A8003
+4. https://agentverse.ai/inspect/?uri=http%3A//127.0.0.1%3A8004
+5. https://agentverse.ai/inspect/?uri=http%3A//127.0.0.1%3A8005

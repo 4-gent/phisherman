@@ -1,0 +1,10 @@
+Port Status Report
+======================================================================
+
+Agent                Port     PID        Listening 
+----------------------------------------------------------------------
+phish_master         8001     48446      Y         
+finance_phisher      8002     48446      Y         
+health_phisher       8003     48446      Y         
+personal_phisher     8004     48446      Y         
+phish_refiner        8005     48446      Y         
