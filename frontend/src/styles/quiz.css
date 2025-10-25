@@ -1,16 +1,7 @@
-.quiz-container {
-    width: 100%;
-    height: 100%;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: rgb(163, 203, 218);
-}
 
 .quiz-scene {
-    width: 90%;
-    height: 90vh;
+    width: 100%;
+    height: 100vh;
     background-color: #ffffff;
     border-radius: 10px;
     overflow: hidden;
@@ -53,6 +44,98 @@
     transform-origin: center;
     position: sticky;
     overflow: clip;
+}
+
+.fishiesA {
+    /* Controls (change these on each fish instance as inline styles or via a class):
+       --swim-duration: how long one crossing takes (lower = faster)
+       --swim-delay: delay before starting
+       --swim-start-y: vertical start position (use % for viewport-relative or px for absolute)
+       --swim-bob: vertical bob amplitude (px)
+    */
+    --swim-duration: 20s;
+    --swim-delay: 0s;
+    --swim-start-y: 50%;
+    --swim-bob: 25px;
+
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    transform-origin: center;
+
+    /* positioned off-screen to the left and animated across the viewport */
+    position: absolute;
+    left: -15vw;    
+    top: var(--swim-start-y, 50%);
+
+    will-change: transform;
+    animation: swim var(--swim-duration) linear var(--swim-delay) infinite;
+}
+
+
+
+/* Add this class to make a fish swim right-to-left and face the other way */
+.fishiesB {
+    --swim-duration: 20s;
+    --swim-delay: 0s;
+    --swim-start-y: 80%;
+    --swim-bob: 25px;
+
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    transform-origin: center;
+
+    /* positioned off-screen to the left and animated across the viewport */
+    position: absolute;
+    right: -15vw;
+    top: var(--swim-start-y);
+
+    will-change: transform;
+    animation: swim-rtl var(--swim-duration) linear var(--swim-delay) infinite;
+}
+
+.fishiesC {
+    /* Controls (change these on each fish instance as inline styles or via a class):
+       --swim-duration: how long one crossing takes (lower = faster)
+       --swim-delay: delay before starting
+       --swim-start-y: vertical start position (use % for viewport-relative or px for absolute)
+       --swim-bob: vertical bob amplitude (px)
+    */
+    --swim-duration: 20s;
+    --swim-delay: 0s;
+    --swim-start-y: 65%;
+    --swim-bob: 25px;
+
+    width: 400px;
+    height: 400px;
+    object-fit: contain;
+    transform-origin: center;
+
+    /* positioned off-screen to the left and animated across the viewport */
+    position: absolute;
+    left: -15vw;    
+    top: var(--swim-start-y, 50%);
+
+    will-change: transform;
+    animation: swim var(--swim-duration) linear var(--swim-delay) infinite;
+}
+/* LTR swim: translate from left off-screen to right off-screen, with subtle bobbing */
+@keyframes swim {
+    0%   { transform: translateX(0) translateY(0) scaleX(1); }
+    25%  { transform: translateX(calc(25vw + 10vw)) translateY(calc(var(--swim-bob) * -0.6)) scaleX(1); }
+    50%  { transform: translateX(calc(50vw + 15vw)) translateY(calc(var(--swim-bob))) scaleX(1); }
+    75%  { transform: translateX(calc(75vw + 20vw)) translateY(calc(var(--swim-bob) * -0.4)) scaleX(1); }
+    100% { transform: translateX(calc(110vw + 30vw)) translateY(0) scaleX(1); }
+}
+
+/* RTL swim: same motion but flipped horizontally */
+@keyframes swim-rtl {
+    0%   { transform: translateX(0) translateY(0) scaleX(-1); }
+    25%  { transform: translateX(calc(-25vw - 10vw)) translateY(calc(var(--swim-bob) * -0.6)) scaleX(-1); }
+    50%  { transform: translateX(calc(-50vw - 15vw)) translateY(calc(var(--swim-bob))) scaleX(-1); }
+    75%  { transform: translateX(calc(-75vw - 20vw)) translateY(calc(var(--swim-bob) * -0.4)) scaleX(-1); }
+    100% { transform: translateX(calc(-110vw - 30vw)) translateY(0) scaleX(-1); }
 }
 
 .quiz-midbar {
