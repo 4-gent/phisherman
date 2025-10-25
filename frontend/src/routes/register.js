@@ -4,6 +4,9 @@ import '../styles/register.css'
 import { ToastContainer, toast } from "react-toastify"
 import 'react-toastify/dist/ReactToastify.css'
 
+import wave from '../styles/images/support_images/wave.svg'
+import Navigation from '../components/navbar'
+
 export default function Register(){
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
@@ -43,6 +46,10 @@ export default function Register(){
 
     return(
         <div className='register-body'>
+            <img src={wave} className='login-wave'/>
+            <nav>
+                <Navigation />
+            </nav>
             <form onSubmit={handleRegister} className='register-form'>
                 <h1>Create an Account</h1>
                 <input className='register-input' placeholder='Username' required onChange={(e) => setUsername(e.target.value)} />

@@ -31,7 +31,7 @@ def register():
             # Minimal register implementation: create a user with a hashed password
             username = data.get('username')
             password = data.get('password')
-            company = data.get('company')
+            company = data.get('company').lower()
             email = data.get('email')
 
             if not username or not password:
@@ -83,8 +83,15 @@ def login():
                 return jsonify({'success': False, 'message': 'invalid credentials'}), 401
 
             # successful login: set session and return success
-            session['user_id'] = str(user.get('_id'))
-            return jsonify({'success': True, 'username': username}), 200
+            if user.get('isAdmin') == False:
+                session['user_id'] = str(user.get('_id'))
+                return jsonify({'success': True, 'username': username}), 200
+            elif user.get('isAdmin') == True:
+                session['user_id'] = str(user.get('_id'))
+                return jsonify({'success': True, 'username': username}), 201
+            else:
+                print("Error at login")
+                return jsonify({'success': False}), 400 
         except Exception as e:
             print("exception thrown at login: ", e)
             return jsonify({'success': False, 'message': 'server error'}), 500

@@ -1,5 +1,7 @@
 import React, {useState} from 'react'
 import axios from 'axios'
+import DashNav from '../components/dashnavbar'
+import '../styles/admin.css'
 
 export default function Admin(){
     const handleEmail = async(e) => {
@@ -12,10 +14,13 @@ export default function Admin(){
     }
     
     return(
-        <div className='admin'>
-        <form onSubmit={handleEmail}>
-            <button type='submit'>Send Email Test</button>
-        </form>
+        <div className='admin-body'>
+            <nav>
+                <DashNav />
+            </nav>
+            <form onSubmit={handleEmail}>
+                <button type='submit'>Send Email Test</button>
+            </form>
         </div>
     )
 }
