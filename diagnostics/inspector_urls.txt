@@ -1,0 +1,33 @@
+Agentverse Inspector URLs
+========================
+Date: 2025-01-25
+All agents running and ready for mailbox connection
+
+Official Inspector URLs:
+========================
+
+1. phish_master (Port 8001):
+https://agentverse.ai/inspect/?uri=http%3A//127.0.0.1%3A8001&address=agent1qfpmv2htn2ghdynju29tdyt3razc0ankga79v9e07fg8m23ccmsqj33sjkr
+
+2. finance_phisher (Port 8002):
+https://agentverse.ai/inspect/?uri=http%3A//127.0.0.1%3A8002&address=agent1qvunf4lkpkdfmdd92ge3phey9xyezrfn283ffsntrnrfz6cx6zakyul3k3z
+
+3. health_phisher (Port 8003):
+https://agentverse.ai/inspect/?uri=http%3A//127.0.0.1%3A8003&address=agent1qggxrwyhksn8ffqd5s6u0ztwq495dtqnlk95v2sg26f4slnvsw5p6nkst6h
+
+4. personal_phisher (Port 8004):
+https://agentverse.ai/inspect/?uri=http%3A//127.0.0.1%3A8004&address=agent1qwvljjd5a4ersv9lfj2j6apfedc74fljcjtk0smgfcf44zareuc26act6vz
+
+5. phish_refiner (Port 8005):
+https://agentverse.ai/inspect/?uri=http%3A//127.0.0.1%3A8005&address=agent1q2ks99xch7w9jg69pwg7453kjlcw874g0ks59c67fzt6uq8dn7rqwh3nxrr
+
+Instructions:
+=============
+1. Open each URL in your browser
+2. Click "Connect" button on each Inspector page
+3. Select "Mailbox" option when prompted
+4. Wait for connection confirmation
+5. Copy the resulting mailbox endpoint URLs
+6. Use those real endpoints in Agentverse registration
+
+Note: These URLs are for manual connection only. No fake mailbox URLs.
