@@ -1,0 +1,30 @@
+{
+    "template_id": "PERijkl9012",
+    "scenario_title": "Personal Account Security Exercise",
+    "sanitized_description": "This template demonstrates personal information phishing: social media account alerts, identity verification requests, and security warnings. Typical patterns include detected suspicious activity and requests for identity confirmation.",
+    "placeholders": {
+        "subject": "[SERVICE_NAME] Security Alert",
+        "preheader": "Unusual activity detected on your account",
+        "body_notes": "Alarming tone about security. Mentions suspicious activity or login attempt. Contains urgent verification request for account safety."
+    },
+    "red_flags": [
+        "Reports suspicious account activity",
+        "Requests identity verification",
+        "Creates sense of urgency",
+        "May request personal information",
+        "Service branding may be spoofed"
+    ],
+    "training_objectives": [
+        "Identify social engineering in personal contexts",
+        "Recognize security alert scams",
+        "Understand identity theft tactics",
+        "Practice detecting personal phishing red flags"
+    ],
+    "urgency_score": 9,
+    "safety_notes": [
+        "This is an educational template only",
+        "Contains NO real links or actionable content",
+        "Intended for cybersecurity awareness training",
+        "Should NEVER be used for actual phishing"
+    ]
+}
