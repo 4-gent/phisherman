@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import '../styles/quiz.css'
-import fisherman from '../styles/images/fishing.png'
+import fisherman from '../styles/images/fishing1.png'
 import FishHook from '../styles/images/fishHook.png'
 import FishA from '../styles/images/fishA.png'
 import FishB from '../styles/images/fishB.png'
@@ -359,7 +359,6 @@ export default function Quiz() {
                     <div className='tracker-value'>{score}</div>
                 </div>
             </div>
-
             {/* Quiz body with fish */}
             <div className='quiz-body'>
                 <div className='quiz-midbar' />
