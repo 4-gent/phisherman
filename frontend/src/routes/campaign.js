@@ -3,6 +3,7 @@ import axios from "axios";
 import DashNav from "../components/dashnavbar";
 import '../styles/campaign.css'
 import wave from '../styles/images/support_images/wave.svg'
+import { ToastContainer, toast } from "react-toastify";
 
 export default function Campaign(){
     const handleTemplate = async(template) => {
@@ -13,7 +14,16 @@ export default function Campaign(){
                 {template},
                 {withCredentials: true}
             )
-            console.log(response)
+            if(response && response.status === 200){
+                try {
+                    sessionStorage.setItem('prompt_template', JSON.stringify(response.data.template))
+                } catch(e) {
+                    console.warn('could not store: ', e)
+                }
+                toast.success('Sending to prompt engine', {autoClose: 1500})
+                window.location.href='/prompt'
+            }
+            console.log(response.data.template)
         } catch (err) {
             console.log("Campaign reponse: ", err)
         }
@@ -53,6 +63,7 @@ export default function Campaign(){
                     </button>
                 </div>
             </div>
+            <ToastContainer />
         </div>
     )
 }

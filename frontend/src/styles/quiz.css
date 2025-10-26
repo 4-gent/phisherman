@@ -1,3 +1,13 @@
+/* Crab image utility class for flexible size and position */
+.crab-image {
+    position: absolute;
+    width: var(--crab-width, 100px);
+    height: var(--crab-height, 60px);
+    top: var(--crab-top, 0);
+    left: var(--crab-left, 0);
+    pointer-events: none;
+    user-select: none;
+}
 .quiz-scene {
     width: 100%;
     height: 100vh;
@@ -12,17 +22,19 @@
     left: 0px;
     top: 0;
     /* transform: translateX(-50%); */
-    width: 3000px;  /* Added width */
+    width: 3000px;
+    /* Added width */
     /* height: 437.9px; */
     height: 163px;
     background: #fffeff;
-    z-index: 1;  /* Lowered z-index to be behind fisherman */
+    z-index: 1;
+    /* Lowered z-index to be behind fisherman */
 }
 
 .inner-white-box {
     /* content is exposed as CSS variables so it can be changed without JS */
     --quiz-question: "Which of these fish is a Phishing attempt?";
-    --quiz-instruction: "Select one or more fish and click \"Send\" to submit your answer.";
+    --quiz-instruction: "Click on a fish to select your answer.";
     --quiz-question-font-size: 20px;
     --quiz-instruction-font-size: 14px;
 
@@ -34,7 +46,7 @@
     background: #f5f5f5;
     border: 3px solid #6b8eb5;
     border-radius: 30px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 
     /* center content */
     display: flex;
@@ -45,36 +57,17 @@
     padding: 8px 16px;
 }
 
-/* hide native elements (we render via CSS variables instead) */
-.inner-white-box .quiz-question,
-.inner-white-box .quiz-instructions {
-    display: none;
-}
-
-/* render the question and instruction from CSS variables */
-.inner-white-box::before {
-    content: var(--quiz-question);
-    display: block;
-    font-size: var(--quiz-question-font-size);
-    font-weight: 700;
-    color: #123;
-    margin-bottom: 6px;
-    white-space: pre-wrap;
-}
-
+/* Use direct rendering instead of CSS variables to avoid duplication */
+.inner-white-box::before,
 .inner-white-box::after {
-    content: var(--quiz-instruction);
-    display: block;
-    font-size: var(--quiz-instruction-font-size);
-    color: #333;
-    margin-top: 6px;
-    white-space: pre-wrap;
+    display: none !important;
 }
 
 .quiz-body {
     /* fill the entire scene so the blue gradient extends from top to bottom */
     /* position: absolute; */
-    background: linear-gradient(180deg, #6ac2e3 0%, #3681db 100%);
+    background: #3485eb;
+    /* background: white; */
     height: 100vh;
     width: 100%;
     left: 0;
@@ -91,28 +84,53 @@
 }
 
 .tracker-box {
-    background: rgba(255,255,255,0.95);
+    background: rgba(255, 255, 255, 0.95);
     padding: 8px 10px;
     border-radius: 8px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
     min-width: 96px;
     text-align: center;
 }
 
-.tracker-label { font-size: 15px; color: #666; }
-.tracker-value { font-weight: 700; font-size: 16px; color: #111; }
+.tracker-label {
+    font-size: 15px;
+    color: #666;
+}
 
-.correct-box { border: 1px solid rgba(58, 150, 80, 0.12); }
-.score-box { border: 1px solid rgba(54, 123, 232, 0.12); }
+.tracker-value {
+    font-weight: 700;
+    font-size: 16px;
+    color: #111;
+}
+
+.correct-box {
+    border: 1px solid rgba(58, 150, 80, 0.12);
+}
+
+.score-box {
+    border: 1px solid rgba(54, 123, 232, 0.12);
+}
 
 .fisherman-image {
     width: 300px;  /* You can adjust this value */
     height: 300px; /* You can adjust this value */
+    /* pixels to cut off from the bottom of the image; change this variable to crop more/less */
+    --fisherman-crop-bottom: 99px;
     object-fit: contain;
     transform-origin: center;
     position: sticky;
     overflow: clip;
+    /* use clip-path to crop the bottom by the variable amount */
+    clip-path: inset(0 0 var(--fisherman-crop-bottom) 0);
     z-index: 1;  /* Added z-index to be above white box */
+    
+    /* prevent selection/dragging of the image */
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none; /* iOS Safari */
 }
 
 .fishiesA, .fishiesC {
@@ -146,7 +164,6 @@
 
     will-change: transform;
 }
-
 .fishiesB {
     /* remove the original background so the ::before can provide the flipped artwork */
     --swim-delay: 0s;
@@ -185,6 +202,105 @@
     pointer-events: none;
     z-index: -1;                /* ensure the pseudo-image sits behind children (so text shows) */
     border-radius: inherit;
+
+/* Feedback states for fish buttons */
+.fishiesA.correct,
+.fishiesB.correct,
+.fishiesC.correct {
+    filter: drop-shadow(0 0 15px rgba(58, 150, 80, 1)) brightness(1.3);
+    animation: none !important;
+    border: 3px solid #3a9650 !important;
+    box-shadow: 0 0 20px rgba(58, 150, 80, 0.8) !important;
+}
+
+.fishiesA.wrong,
+.fishiesB.wrong,
+.fishiesC.wrong {
+    filter: drop-shadow(0 0 15px rgba(211, 47, 47, 1)) brightness(0.9);
+    animation: none !important;
+    border: 3px solid #d32f2f !important;
+    box-shadow: 0 0 20px rgba(211, 47, 47, 0.8) !important;
+}
+
+.fishiesA.correct-answer,
+.fishiesB.correct-answer,
+.fishiesC.correct-answer {
+    filter: drop-shadow(0 0 10px rgba(58, 150, 80, 0.6));
+    animation: none !important;
+    border: 2px dashed #3a9650 !important;
+}
+
+.feedback-indicator {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 32px;
+    font-weight: 900;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    z-index: 10;
+    pointer-events: none;
+}
+
+.fishiesA.correct .feedback-indicator,
+.fishiesB.correct .feedback-indicator,
+.fishiesC.correct .feedback-indicator {
+    color: #3a9650;
+}
+
+.fishiesA.wrong .feedback-indicator,
+.fishiesB.wrong .feedback-indicator,
+.fishiesC.wrong .feedback-indicator {
+    color: #d32f2f;
+}
+
+.fishiesA.locked,
+.fishiesB.locked,
+.fishiesC.locked {
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+
+.fishiesA.selected,
+.fishiesB.selected,
+.fishiesC.selected {
+    filter: brightness(1.2);
+}
+
+/* Show text content on fish buttons over background images */
+.fishiesA,
+.fishiesB,
+.fishiesC {
+    color: #fff !important;
+    font-size: 16px !important;
+    font-weight: 700 !important;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8), -1px -1px 2px rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 10px;
+    overflow: visible;
+    line-height: 1.2;
+}
+
+/* Show question text normally */
+.inner-white-box .quiz-question {
+    display: block !important;
+    font-size: 20px;
+    font-weight: 700;
+    color: #123;
+    margin-bottom: 6px;
+    white-space: pre-wrap;
+    margin-top: 0;
+}
+
+.inner-white-box .quiz-instructions {
+    display: block !important;
+    font-size: 14px;
+    color: #333;
+    margin-top: 6px;
+    white-space: pre-wrap;
+    margin-bottom: 0;
 }
 
 /* Ensure hover/focus don't introduce a background */
@@ -229,6 +345,7 @@
     transition: transform 300ms ease;
     transform: translateX(var(--stop-x, 25vw)) translateY(var(--stop-y, 0)) scaleX(1);
 }
+
 /* Make fishiesB and fishiesC behave like fishiesA */
 
 .fishiesB.playing1 {
@@ -252,6 +369,7 @@
     transition: transform 300ms ease;
     transform: translateX(var(--stop-x, -25vw)) translateY(var(--stop-y, 0)) scaleX(1);
 }
+
 .fishiesC.playing1 {
     /* move to 1/4 of the viewport width in 5s and remain there */
     will-change: transform;
@@ -277,25 +395,50 @@
 
 /* LTR swim: translate from left off-screen to right off-screen, with subtle bobbing */
 @keyframes swim-to-quarter {
-    0%   { transform: translateX(0) translateY(0) scaleX(1); }
-    100% { transform: translateX(25vw) translateY(0) scaleX(1); }
+    0% {
+        transform: translateX(0) translateY(0) scaleX(1);
+    }
+
+    100% {
+        transform: translateX(25vw) translateY(0) scaleX(1);
+    }
 }
 
 @keyframes swim {
-    0%   { transform: translateX(25vw) translateY(0) scaleX(1); }
-    25%  { transform: translateX(60vw) translateY(calc(var(--swim-bob) * -0.6)) scaleX(1); }
-    50%  { transform: translateX(90vw) translateY(calc(var(--swim-bob))) scaleX(1); }
-    75%  { transform: translateX(120vw) translateY(calc(var(--swim-bob) * -0.4)) scaleX(1); }
-    100% { transform: translateX(165vw) translateY(0) scaleX(1); }
+    0% {
+        transform: translateX(25vw) translateY(0) scaleX(1);
+    }
+
+    25% {
+        transform: translateX(60vw) translateY(calc(var(--swim-bob) * -0.6)) scaleX(1);
+    }
+
+    50% {
+        transform: translateX(90vw) translateY(calc(var(--swim-bob))) scaleX(1);
+    }
+
+    75% {
+        transform: translateX(120vw) translateY(calc(var(--swim-bob) * -0.4)) scaleX(1);
+    }
+
+    100% {
+        transform: translateX(165vw) translateY(0) scaleX(1);
+    }
 }
+
 /* Render the fish graphic via a flipped pseudo-element so the element's children (e.g. a button)
     are not affected by the horizontal flip. Also override the RTL animation to remove the
     scaleX flip on the container (we only flip the ::before image). */
 
 /* RTL swim: same motion but flipped horizontally */
 @keyframes swim-to-quarter-rtl {
-    0%   { transform: translateX(0) translateY(0); }
-    100% { transform: translateX(-25vw) translateY(0); }
+    0% {
+        transform: translateX(0) translateY(0);
+    }
+
+    100% {
+        transform: translateX(-25vw) translateY(0);
+    }
 }
 
 @keyframes swim-rtl {
@@ -313,4 +456,64 @@
     height: 3.5px;
     background-color: black;
     position: sticky;
+}
+
+.crab-image {
+  position: absolute;
+  width: var(--crab-width, 100px);
+  height: var(--crab-height, 60px);
+  top: var(--crab-top, 0);
+  left: var(--crab-left, 0);
+}
+
+.dolphi-image {
+  position: absolute;
+  width: var(--dolphi-width, 100px);
+  height: var(--dolphi-height, 60px);
+  top: var(--dolphi-top, 0);
+  left: var(--dolphi-left, 0);
+}
+
+.octo-image {
+  position: absolute;
+  width: var(--octo-width, 100px);
+  height: var(--octo-height, 60px);
+  top: var(--octo-top, 0);
+  left: var(--octo-left, 0);
+}
+
+.seahorse-image {
+  position: absolute;
+  width: var(--seahorse-width, 100px);
+  height: var(--seahorse-height, 60px);
+  top: var(--seahorse-top, 0);
+  left: var(--seahorse-left, 0);
+}
+.squid-image {
+  position: absolute;
+  width: var(--squid-width, 100px);
+  height: var(--squid-height, 60px);
+  top: var(--squid-top, 0);
+  left: var(--squid-left, 0);
+}
+.star-image {
+  position: absolute;
+  width: var(--star-width, 100px);
+  height: var(--star-height, 60px);
+  top: var(--star-top, 0);
+  left: var(--star-left, 0);
+}
+.turtle-image {
+  position: absolute;
+  width: var(--turtle-width, 100px);
+  height: var(--turtle-height, 60px);
+  top: var(--turtle-top, 0);
+  left: var(--turtle-left, 0);
+}
+.whale-image {
+  position: absolute;
+  width: var(--whale-width, 100px);
+  height: var(--whale-height, 60px);
+  top: var(--whale-top, 0);
+  left: var(--whale-left, 0);
 }
