@@ -18,7 +18,7 @@ export default function Quiz() {
         const rect = el.getBoundingClientRect();
 
         // pixel coordinates in the source image where you want the anchor (adjust as needed)
-        const pixelAnchor = { x: 787, y: 233 };
+        const pixelAnchor = { x: 786, y: 233 };
 
         // use natural image size if available to map pixels to rendered size
         const naturalW = el.naturalWidth || rect.width;
@@ -46,6 +46,7 @@ export default function Quiz() {
     const [score, setScore] = useState(0);
 
     return(
+
         <div className='quiz-scene'>
             {/* small centered box inside the scene */}
             <div className='white-box' />
@@ -110,6 +111,7 @@ function CursorFollowImage({ anchor }) {
         width: '100vw',
         height: '100vh',
         pointerEvents: 'none',
+        zIndex: 2
     }
 
     return (
