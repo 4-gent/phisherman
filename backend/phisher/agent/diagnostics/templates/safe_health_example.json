@@ -1,0 +1,30 @@
+{
+    "template_id": "HLTefgh5678",
+    "scenario_title": "Healthcare Information Update Exercise",
+    "sanitized_description": "This template illustrates healthcare phishing tactics: medical records updates, insurance verification, and health information requests. Common patterns include urgency about health coverage and requests for personal medical data.",
+    "placeholders": {
+        "subject": "[HEALTHCARE_PROVIDER] Medical Records Update",
+        "preheader": "Your health information needs attention",
+        "body_notes": "Professional healthcare tone. Mentions medical records or insurance update. Contains verification request with health information context."
+    },
+    "red_flags": [
+        "Requests health information verification",
+        "Mentions medical records",
+        "Uses urgency about health coverage",
+        "May request personal medical data",
+        "Healthcare institution branding may be spoofed"
+    ],
+    "training_objectives": [
+        "Identify healthcare-specific phishing tactics",
+        "Recognize medical data scam patterns",
+        "Understand social engineering in healthcare context",
+        "Practice detecting healthcare phishing red flags"
+    ],
+    "urgency_score": 7,
+    "safety_notes": [
+        "This is an educational template only",
+        "Contains NO real links or actionable content",
+        "Intended for cybersecurity awareness training",
+        "Should NEVER be used for actual phishing"
+    ]
+}
