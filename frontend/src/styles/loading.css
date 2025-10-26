@@ -1,0 +1,19 @@
+.loading-icon{
+    font-size: 3rem;
+    color: whitesmoke;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: spin 2s linear infinite;
+    background-color: rgb(32, 31, 31) !important;
+}
+
+.loading-container {
+    margin: 0;
+    min-height: 0;
+    height: 40vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(32, 31, 31) !important;
+}
