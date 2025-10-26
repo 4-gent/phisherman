@@ -17,7 +17,7 @@ PORT = 8005
 
 # Initialize agent with mailbox support
 agent = Agent(name=AGENT_NAME, seed=SEED, port=PORT, mailbox=True)
-protocol = Protocol(spec=chat_protocol_spec)
+protocol = Protocol()
 
 def txt(s: str) -> ChatMessage:
     """Helper to create text message"""
@@ -75,6 +75,7 @@ if __name__ == "__main__":
     print("Phish Refiner Agent - Phishing Template Refinement")
     print("=" * 60)
     print(f"Name: {AGENT_NAME}")
+    print(f"Address: {agent.address}")
     print(f"Port: {PORT}")
     print(f"Mailbox: Enabled")
     print(f"Protocol: Chat Protocol v0.3.0")
