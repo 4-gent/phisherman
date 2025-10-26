@@ -679,4 +679,113 @@
     animation: backgroundswim-rtl 25s linear infinite;
 }
 
+/* Result Scene Styling */
+.result-scene {
+  background: linear-gradient(180deg, #5fb5f0 0%, #0077b6 40%, #023e8a 100%);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  text-align: center;
+  font-family: 'Poppins', sans-serif;
+}
+
+.result-container {
+  z-index: 2;
+  padding: 3rem 2rem;
+  max-width: 700px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 25px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(8px);
+}
+
+.result-title {
+  font-size: 4em;
+  font-weight: 900;
+  margin-bottom: 0.3em;
+  text-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+}
+
+.result-subtitle {
+  font-size: 1.5em;
+  margin-bottom: 2rem;
+  opacity: 0.9;
+}
+
+/* Stats Card */
+.result-card {
+  display: flex;
+  justify-content: space-around;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  padding: 1.5rem;
+  margin-bottom: 2.5rem;
+  box-shadow: inset 0 0 8px rgba(255, 255, 255, 0.2);
+}
+
+.result-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.result-label {
+  font-size: 1.2em;
+  opacity: 0.9;
+  margin-bottom: 0.4rem;
+}
+
+.result-value {
+  font-size: 2.4em;
+  font-weight: 800;
+  color: #caf0f8;
+  text-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Button */
+.result-btn {
+  background: #00b4d8;
+  color: #fff;
+  font-size: 1.2em;
+  font-weight: 700;
+  padding: 0.8rem 2.2rem;
+  border-radius: 15px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+}
+
+.result-btn:hover {
+  background: #0096c7;
+  transform: scale(1.05);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+}
+
+/* Wave animation background */
+.result-waves {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 20%;
+  overflow: hidden;
+  line-height: 0;
+  z-index: 1;
+}
+
+.wave {
+  position: absolute;
+  width: 200%;
+  height: 100%;
+  background-repeat: repeat no-repeat;
+  background-size: 50% 100%;
+  opacity: 0.4;
+  bottom: 0;
+  animation: waveMove 12s linear infinite;
+}
 
