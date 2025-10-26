@@ -1,0 +1,24 @@
+Agent Endpoint Test Results
+============================================================
+
+Agent: finance_phisher
+Port: 8002
+Timestamp: 2025-10-25T18:59:57.238734
+Endpoint Tested: http://127.0.0.1:8002/submit
+Reachable: True
+HTTP Status: 400
+Error: None
+
+Request Details:
+------------------------------------------------------------
+Method: POST
+URL: http://127.0.0.1:8002/submit
+Payload: {
+  "message": "smoke test: hello"
+}
+
+Response:
+------------------------------------------------------------
+{
+  "error": "contents do not match envelope schema"
+}

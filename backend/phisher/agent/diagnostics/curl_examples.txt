@@ -1,0 +1,42 @@
+# Curl Examples for Testing Agent Proxy
+# Replace PROXY_KEY with actual key from .env
+
+PROXY_URL="http://localhost:3000"
+PROXY_KEY="your-secure-proxy-key-here"
+
+# Test phish_master
+curl -X POST $PROXY_URL/api/agent/phish_master \
+  -H "Content-Type: application/json" \
+  -H "x-proxy-key: $PROXY_KEY" \
+  -d '{"message": "finance"}'
+
+# Test finance_phisher
+curl -X POST $PROXY_URL/api/agent/finance_phisher \
+  -H "Content-Type: application/json" \
+  -H "x-proxy-key: $PROXY_KEY" \
+  -d '{"message": "bank"}'
+
+# Test health_phisher
+curl -X POST $PROXY_URL/api/agent/health_phisher \
+  -H "Content-Type: application/json" \
+  -H "x-proxy-key: $PROXY_KEY" \
+  -d '{"message": "appointment"}'
+
+# Test personal_phisher
+curl -X POST $PROXY_URL/api/agent/personal_phisher \
+  -H "Content-Type: application/json" \
+  -H "x-proxy-key: $PROXY_KEY" \
+  -d '{"message": "social media"}'
+
+# Test phish_refiner
+curl -X POST $PROXY_URL/api/agent/phish_refiner \
+  -H "Content-Type: application/json" \
+  -H "x-proxy-key: $PROXY_KEY" \
+  -d '{"message": "realism"}'
+
+# Health check
+curl $PROXY_URL/health
+
+# List agents
+curl $PROXY_URL/api/agents
+
