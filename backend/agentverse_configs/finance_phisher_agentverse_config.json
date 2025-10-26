@@ -1,0 +1,49 @@
+{
+    "agent_name": "finance_phisher",
+    "display_name": "Finance Phisher Agent",
+    "tagline": "Financial Phishing Template Generator for Cybersecurity Training",
+    "description": "The Finance Phisher specializes in generating realistic financial phishing training emails for cybersecurity education. It creates believable scenarios involving banking, payment processing, invoices, and account security to help organizations train their employees to recognize and avoid financial phishing attacks.",
+    "sample_query": "Create a payment verification phishing email for a bank account scenario",
+    "tags": [
+        "phishing",
+        "cybersecurity",
+        "training",
+        "finance",
+        "banking",
+        "payment-verification",
+        "invoices",
+        "account-security"
+    ],
+    "capabilities": [
+        "financial_phishing_templates",
+        "payment_verification_scenarios",
+        "banking_alerts",
+        "invoice_phishing",
+        "account_suspension_scenarios"
+    ],
+    "chat_protocol_version": "v0.3.0",
+    "mailbox_endpoint": {
+        "url": "https://mailbox.fetch.ai/agent1qdgzfw5uy5dudsnm9cx6el58kgdpercgcuxqgfnyct0jupgf7uwkvwzh4l2",
+        "chat_endpoint": "/chat",
+        "health_endpoint": "/health",
+        "info_endpoint": "/agent_info",
+        "generate_endpoint": "/generate"
+    },
+    "safety_statement": "This agent generates financial phishing templates exclusively for cybersecurity training and educational purposes. All generated content is designed to be safe, educational, and clearly marked as training material. No real financial phishing attacks are conducted.",
+    "readme_link": "https://github.com/raghavgautam/phisherman/blob/main/README.md",
+    "contact_info": {
+        "developer": "Phisherman Team",
+        "project": "CalHacks 2025 - Fetch.ai Track",
+        "repository": "https://github.com/raghavgautam/phisherman"
+    },
+    "technical_details": {
+        "framework": "FastAPI + uAgents",
+        "protocol": "Chat Protocol v0.3.0",
+        "deployment": "Mailbox Agent",
+        "dependencies": [
+            "uagents",
+            "fastapi",
+            "uvicorn"
+        ]
+    }
+}

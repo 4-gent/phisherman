@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+*.egg-info/
+dist/
+build/
+
+# Environment variables
+.env
+agentverse_endpoints.env
+*.env
+!*.env.example
+
+# Logs
+logs/
+*.log
+diagnostics/*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Agent data files
+backend/mail/sender/*/agent*_data.json
+backend/mail/sender/*/agent_address.txt
+
+# Diagnostic outputs (keep examples, gitignore runtime outputs)
+diagnostics/ngrok_*.log
+diagnostics/cloudflare_*.log
+
+# Tunnel configuration
+tunnels.json
+!diagnostics/tunnels.json.example
+

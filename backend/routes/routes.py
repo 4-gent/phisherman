@@ -102,3 +102,11 @@ def email_send_route():
         print("Sending test email")
         email_send()
         return jsonify({'message': "something"}), 200
+    
+@app.route('/api/campaign', methods=['POST', 'OPTIONS'])
+def email_template_route():
+    if request.method == 'POST' or request.method == 'OPTIONS':
+        data = request.get_json()
+        template = data.get('template')
+        print('Template: ', template)
+        return jsonify({'message': 'input received'}), 200

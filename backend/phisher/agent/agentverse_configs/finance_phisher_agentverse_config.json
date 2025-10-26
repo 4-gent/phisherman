@@ -1,0 +1,23 @@
+{
+  "name": "finance_phisher",
+  "description": "Generates financial phishing templates for cybersecurity training",
+  "capabilities": [
+    "financial_phishing_templates",
+    "payment_verification_scenarios",
+    "banking_alerts",
+    "invoice_generation"
+  ],
+  "endpoints": [
+    "http://127.0.0.1:8002/submit"
+  ],
+  "protocol": "chat_v0.3.0",
+  "tags": [
+    "finance",
+    "phishing",
+    "training",
+    "banking"
+  ],
+  "version": "1.0.0",
+  "author": "Phisherman Team",
+  "license": "MIT"
+}

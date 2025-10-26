@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import '../styles/quiz.css'
 import fisherman from '../styles/images/fishing.png'
+import wave from '../styles/images/support_images/wave.svg'
 import fish from '../styles/images/fish1.png'
 import FishHook from '../styles/images/fishHook.png'
 import FishA from '../styles/images/fishA.png'
@@ -39,13 +40,29 @@ export default function Quiz() {
         return () => window.removeEventListener('resize', updateAnchorFromImage)
 
     }, [])
-
-    // the main return
+    // quiz counters
+    const totalQuestions = 10;
+    const [correctCount, setCorrectCount] = useState(0);
+    const [score, setScore] = useState(0);
+  
     return(
         <div className='quiz-container'>
+            {/* corporate wave background */}
+            <img src={wave} className='quiz-wave' alt='wave background' />
         <div className='quiz-scene'>
             {/* small centered box inside the scene */}
             <div className='white-box' />
+            {/* top-right trackers: correct answers and score */}
+            <div className='top-right-panel'>
+                <div className='tracker-box correct-box'>
+                    <div className='tracker-label'>Correct</div>
+                    <div className='tracker-value'>{correctCount} / {totalQuestions}</div>
+                </div>
+                <div className='tracker-box score-box'>
+                    <div className='tracker-label'>Score</div>
+                    <div className='tracker-value'>{score}</div>
+                </div>
+            </div>
         <div className='quiz-body'>
             <div className='quiz-midbar' />
             {/* <div className='water-background' /> */}

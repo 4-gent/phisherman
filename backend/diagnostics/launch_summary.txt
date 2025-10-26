@@ -1,0 +1,23 @@
+Phisherman Agent Launch Summary
+========================================
+
+Launch Time: 2025-10-25 13:41:59
+Total Agents: 5
+Successful: 0
+Failed: 5
+
+Detailed Results:
+| Agent | Port | Registered? | Errors? | Notes |
+|-------|------|-------------|---------|-------|
+| phish_master | 8001 | ❌ No | ✅ No | None |
+| finance_phisher | 8002 | ❌ No | ✅ No | None |
+| health_phisher | 8003 | ❌ No | ✅ No | None |
+| personal_phisher | 8004 | ❌ No | ✅ No | None |
+| phish_refiner | 8005 | ❌ No | ✅ No | None |
+
+Next Steps:
+1. Check the Inspector URLs in the launch logs
+2. Go to each Inspector URL in your browser
+3. Click 'Connect' button on each page
+4. Select 'Mailbox' option for each agent
+5. Your agents will be registered in Agentverse

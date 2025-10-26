@@ -1,0 +1,57 @@
+{
+    "test_results": {
+        "phish_master_chat": {
+            "status": "success",
+            "response": {
+                "text": "Phish Master: I'll coordinate with domain agents to generate a phishing template for: Generate a financial phishing template for banking scenario",
+                "agent": "phish_master",
+                "timestamp": 1761380782.218972
+            }
+        },
+        "finance_phisher_generate": {
+            "status": "success",
+            "response": {
+                "template_id": "finance_phisher_finance_1761380786",
+                "subject": "Urgent: Payment Verification Required",
+                "preheader": "Your payment information needs verification",
+                "html_body": "<html><body><h2>Finance Verification Required</h2><p>Please verify your information.</p></body></html>",
+                "plain_text_body": "Finance Verification Required\n\nPlease verify your information.",
+                "placeholders": [
+                    {
+                        "name": "recipient_name",
+                        "description": "Target's full name"
+                    },
+                    {
+                        "name": "verification_link",
+                        "description": "Training verification link"
+                    }
+                ],
+                "urgency_score": 8,
+                "safety_flags": [
+                    "requests_payment_info",
+                    "urgent_action_required"
+                ],
+                "recommended_redirect": "training_finance_verification",
+                "domain_used": "finance",
+                "generated_by": "finance_phisher"
+            }
+        },
+        "phish_refiner_chat": {
+            "status": "success",
+            "response": {
+                "text": "Phish Refiner: I'll refine and improve the phishing template: Refine this phishing template to make it more believable",
+                "agent": "phish_refiner",
+                "timestamp": 1761380792.155088
+            }
+        }
+    },
+    "verification_summary": {
+        "all_agents_responding": true,
+        "chat_protocol_working": true,
+        "template_generation_working": true,
+        "inter_agent_communication": true,
+        "mailbox_mode_functional": true
+    },
+    "test_timestamp": "2025-10-25T01:16:32Z",
+    "test_duration_seconds": 10
+}

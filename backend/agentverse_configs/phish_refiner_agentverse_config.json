@@ -1,0 +1,50 @@
+{
+    "agent_name": "phish_refiner",
+    "display_name": "Phish Refiner Agent",
+    "tagline": "Phishing Template Refinement and Optimization for Cybersecurity Training",
+    "description": "The Phish Refiner specializes in refining and optimizing phishing training templates to improve their effectiveness for cybersecurity education. It analyzes existing templates, adjusts tone and content, enhances believability while maintaining safety, and optimizes templates for better training outcomes.",
+    "sample_query": "Refine this phishing template to make it more believable while keeping it safe for training",
+    "tags": [
+        "phishing",
+        "cybersecurity",
+        "training",
+        "template-refinement",
+        "optimization",
+        "tone-adjustment",
+        "content-improvement",
+        "training-effectiveness"
+    ],
+    "capabilities": [
+        "template_refinement",
+        "tone_adjustment",
+        "content_optimization",
+        "believability_enhancement",
+        "safety_verification",
+        "training_effectiveness_improvement"
+    ],
+    "chat_protocol_version": "v0.3.0",
+    "mailbox_endpoint": {
+        "url": "https://mailbox.fetch.ai/agent1qd3ke9susch0072nnscut8qyxurdawa6008x6gpepnju735d2s70zmpdqhh",
+        "chat_endpoint": "/chat",
+        "health_endpoint": "/health",
+        "info_endpoint": "/agent_info",
+        "generate_endpoint": "/generate"
+    },
+    "safety_statement": "This agent refines phishing templates exclusively for cybersecurity training and educational purposes. All refined content is designed to be safe, educational, and clearly marked as training material. No real phishing attacks are conducted.",
+    "readme_link": "https://github.com/raghavgautam/phisherman/blob/main/README.md",
+    "contact_info": {
+        "developer": "Phisherman Team",
+        "project": "CalHacks 2025 - Fetch.ai Track",
+        "repository": "https://github.com/raghavgautam/phisherman"
+    },
+    "technical_details": {
+        "framework": "FastAPI + uAgents",
+        "protocol": "Chat Protocol v0.3.0",
+        "deployment": "Mailbox Agent",
+        "dependencies": [
+            "uagents",
+            "fastapi",
+            "uvicorn"
+        ]
+    }
+}

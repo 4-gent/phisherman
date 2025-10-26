@@ -1,0 +1,22 @@
+{
+    "test_scenario": "phish_master_coordinates_with_finance_phisher",
+    "request": {
+        "domain": "finance",
+        "urgency_level": 8,
+        "target_audience": "banking",
+        "custom_requirements": "payment verification scenario for training"
+    },
+    "expected_flow": [
+        "1. phish_master receives request",
+        "2. phish_master coordinates with finance_phisher",
+        "3. finance_phisher generates financial phishing template",
+        "4. phish_master calls phish_refiner for refinement",
+        "5. phish_refiner improves the template",
+        "6. phish_master returns final aggregated template"
+    ],
+    "test_commands": [
+        "curl -X POST http://127.0.0.1:8001/chat -H 'Content-Type: application/json' -d '{\"text\": \"Generate a financial phishing template for banking scenario\"}'",
+        "curl -X POST http://127.0.0.1:8002/generate -H 'Content-Type: application/json' -d '{\"domain\": \"finance\", \"urgency_level\": 8, \"target_audience\": \"banking\", \"custom_requirements\": \"payment verification scenario\"}'",
+        "curl -X POST http://127.0.0.1:8005/chat -H 'Content-Type: application/json' -d '{\"text\": \"Refine this phishing template to make it more believable\"}'"
+    ]
+}

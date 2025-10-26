@@ -1,0 +1,93 @@
+Phisherman Agent Launch Logs - 2025-10-25 13:41:48
+================================================================================
+
+
+[2025-10-25 13:41:49] PHISH_MASTER LAUNCH
+==================================================
+Return Code: 1
+STDOUT:
+============================================================
+🎯 Launching PHISH_MASTER Agent to Agentverse
+============================================================
+🚀 Launching phish_master to Agentverse...
+   Endpoint: http://127.0.0.1:8001
+   Port: 8001
+❌ Error: AGENTVERSE_KEY not set in agentverse.env
+   Please set your actual Agentverse Key in agentverse.env
+❌ Agent launch failed
+
+STDERR:
+
+==================================================
+
+[2025-10-25 13:41:51] FINANCE_PHISHER LAUNCH
+==================================================
+Return Code: 1
+STDOUT:
+============================================================
+🎯 Launching FINANCE_PHISHER Agent to Agentverse
+============================================================
+🚀 Launching finance_phisher to Agentverse...
+   Endpoint: http://127.0.0.1:8002
+   Port: 8002
+❌ Error: AGENTVERSE_KEY not set in agentverse.env
+   Please set your actual Agentverse Key in agentverse.env
+❌ Agent launch failed
+
+STDERR:
+
+==================================================
+
+[2025-10-25 13:41:53] HEALTH_PHISHER LAUNCH
+==================================================
+Return Code: 1
+STDOUT:
+============================================================
+🎯 Launching HEALTH_PHISHER Agent to Agentverse
+============================================================
+🚀 Launching health_phisher to Agentverse...
+   Endpoint: http://127.0.0.1:8003
+   Port: 8003
+❌ Error: AGENTVERSE_KEY not set in agentverse.env
+   Please set your actual Agentverse Key in agentverse.env
+❌ Agent launch failed
+
+STDERR:
+
+==================================================
+
+[2025-10-25 13:41:55] PERSONAL_PHISHER LAUNCH
+==================================================
+Return Code: 1
+STDOUT:
+============================================================
+🎯 Launching PERSONAL_PHISHER Agent to Agentverse
+============================================================
+🚀 Launching personal_phisher to Agentverse...
+   Endpoint: http://127.0.0.1:8004
+   Port: 8004
+❌ Error: AGENTVERSE_KEY not set in agentverse.env
+   Please set your actual Agentverse Key in agentverse.env
+❌ Agent launch failed
+
+STDERR:
+
+==================================================
+
+[2025-10-25 13:41:57] PHISH_REFINER LAUNCH
+==================================================
+Return Code: 1
+STDOUT:
+============================================================
+🎯 Launching PHISH_REFINER Agent to Agentverse
+============================================================
+🚀 Launching phish_refiner to Agentverse...
+   Endpoint: http://127.0.0.1:8005
+   Port: 8005
+❌ Error: AGENTVERSE_KEY not set in agentverse.env
+   Please set your actual Agentverse Key in agentverse.env
+❌ Agent launch failed
+
+STDERR:
+
+==================================================

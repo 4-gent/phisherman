@@ -1,0 +1,47 @@
+Corrected Inspector URLs (without addresses)
+============================================
+Date: 2025-01-25
+Status: FastAPI agents running with HTTP endpoints
+
+Issue Identified:
+================
+The previous uAgent-based agents (phish_master_mailbox.py, etc.) were NOT exposing HTTP endpoints
+for the Inspector to connect to. They were just Python processes listening on ports but not responding
+to HTTP requests from Agentverse Inspector.
+
+Solution Applied:
+================
+Switched to FastAPI-based mailbox_agent.py which properly exposes HTTP endpoints at:
+- /health - Health check endpoint  
+- /agent_info - Agent information endpoint
+- /chat - Chat Protocol v0.3.0 endpoint
+- /generate - Template generation endpoint
+
+New Inspector URLs (Simplified - without addresses):
+====================================================
+
+1. phish_master (Port 8001):
+https://agentverse.ai/inspect/?uri=http%3A//127.0.0.1%3A8001
+
+2. finance_phisher (Port 8002):
+https://agentverse.ai/inspect/?uri=http%3A//127.0.0.1%3A8002
+
+3. health_phisher (Port 8003):
+https://agentverse.ai/inspect/?uri=http%3A//127.0.0.1%3A8003
+
+4. personal_phisher (Port 8004):
+https://agentverse.ai/inspect/?uri=http%3A//127.0.0.1%3A8004
+
+5. phish_refiner (Port 8005):
+https://agentverse.ai/inspect/?uri=http%3A//127.0.0.1%3A8005
+
+Verification:
+=============
+All agents verified responding to HTTP:
+- Port 8001: ✅ {"status":"ok","agent":"phish_master","version":"1.0.0"}
+- Port 8002: ✅ Running
+- Port 8003: ✅ Running  
+- Port 8004: ✅ Running
+- Port 8005: ✅ Running
+
+Note: Inspector URLs opened in browser automatically

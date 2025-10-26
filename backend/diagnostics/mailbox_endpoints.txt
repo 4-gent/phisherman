@@ -1,0 +1,58 @@
+Fetch.ai Mailbox Agent Endpoints
+================================
+Date: 2025-01-25
+Status: Agents running with mailbox=True
+
+Agent Information:
+==================
+
+1. phish_master:
+   - Address: agent1qfpmv2htn2ghdynju29tdyt3razc0ankga79v9e07fg8m23ccmsqj33sjkr
+   - Port: 8001
+   - Inspector URL: https://agentverse.ai/inspect/?uri=http%3A//127.0.0.1%3A8001&address=agent1qfpmv2htn2ghdynju29tdyt3razc0ankga79v9e07fg8m23ccmsqj33sjkr
+   - Status: Running
+   - Mailbox Connected: Pending manual connection
+
+2. finance_phisher:
+   - Address: agent1qvunf4lkpkdfmdd92ge3phey9xyezrfn283ffsntrnrfz6cx6zakyul3k3z
+   - Port: 8002
+   - Inspector URL: https://agentverse.ai/inspect/?uri=http%3A//127.0.0.1%3A8002&address=agent1qvunf4lkpkdfmdd92ge3phey9xyezrfn283ffsntrnrfz6cx6zakyul3k3z
+   - Status: Running
+   - Mailbox Connected: Pending manual connection
+
+3. health_phisher:
+   - Address: agent1qggxrwyhksn8ffqd5s6u0ztwq495dtqnlk95v2sg26f4slnvsw5p6nkst6h
+   - Port: 8003
+   - Inspector URL: https://agentverse.ai/inspect/?uri=http%3A//127.0.0.1%3A8003&address=agent1qggxrwyhksn8ffqd5s6u0ztwq495dtqnlk95v2sg26f4slnvsw5p6nkst6h
+   - Status: Running
+   - Mailbox Connected: Pending manual connection
+
+4. personal_phisher:
+   - Address: agent1qwvljjd5a4ersv9lfj2j6apfedc74fljcjtk0smgfcf44zareuc26act6vz
+   - Port: 8004
+   - Inspector URL: https://agentverse.ai/inspect/?uri=http%3A//127.0.0.1%3A8004&address=agent1qwvljjd5a4ersv9lfj2j6apfedc74fljcjtk0smgfcf44zareuc26act6vz
+   - Status: Running
+   - Mailbox Connected: Pending manual connection
+
+5. phish_refiner:
+   - Address: agent1q2ks99xch7w9jg69pwg7453kjlcw874g0ks59c67fzt6uq8dn7rqwh3nxrr
+   - Port: 8005
+   - Inspector URL: https://agentverse.ai/inspect/?uri=http%3A//127.0.0.1%3A8005&address=agent1q2ks99xch7w9jg69pwg7453kjlcw874g0ks59c67fzt6uq8dn7rqwh3nxrr
+   - Status: Running
+   - Mailbox Connected: Pending manual connection
+
+Next Steps:
+===========
+1. Start remaining agents (finance_phisher, health_phisher, personal_phisher, phish_refiner)
+2. Open each Inspector URL in browser
+3. Click "Connect" → "Mailbox" for each agent
+4. Wait for mailbox connection confirmation
+5. Record the actual mailbox endpoint URLs provided by Fetch.ai
+6. Use those endpoints in Agentverse registration
+
+Notes:
+======
+- Agents are using mailbox=True configuration
+- Inspector URLs follow the format: https://agentverse.ai/inspect/?uri=http%3A//127.0.0.1%3A{port}&address={address}
+- Manual connection through Inspector UI is required
+- No fake mailbox URLs - only use endpoints from Inspector connection

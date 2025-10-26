@@ -11,7 +11,10 @@ requests
 mailjet_rest
 
 # uAgent dependencies for Fetch.ai ecosystem
-uagents>=0.4.0
+uagents>=0.10.0
+uagents-core>=0.1.0
 httpx>=0.24.0
-asyncio
 typing-extensions>=4.0.0
+fastapi>=0.100.0
+uvicorn>=0.20.0
+pydantic==1.10.17

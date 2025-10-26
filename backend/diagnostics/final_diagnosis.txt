@@ -1,0 +1,54 @@
+Final Diagnosis: Inspector "Could not find Agent" Error
+========================================================
+Date: 2025-01-25
+
+Root Cause Identified:
+=====================
+The Inspector URLs point to `http://127.0.0.1` which is LOCALHOST (your computer).
+The Agentverse Inspector runs in YOUR BROWSER and cannot access localhost URLs directly.
+
+Why This Happens:
+=================
+1. Inspector tries to connect to `http://127.0.0.1:8001` from the browser
+2. Browser tries to connect to YOUR local machine
+3. This works for development but requires the agents to be running AND accessible
+4. The agents ARE running and responding to HTTP ✅
+5. BUT the Inspector may need HTTPS or cannot resolve localhost properly
+
+Current Agent Status:
+====================
+✅ All 5 agents running on ports 8001-8005
+✅ All agents responding to HTTP requests:
+   - Port 8001: {"status":"ok","agent":"phish_master","version":"1.0.0"}
+   - Port 8002: {"status":"ok","agent":"finance_phisher","version":"1.0.0"}
+   - Port 8003: {"status":"ok","agent":"health_phisher","version":"1.0.0"}
+   - Port 8004: {"status":"ok","agent":"personal_phisher","version":"1.0.0"}
+   - Port 8005: {"status":"ok","agent":"phish_refiner","version":"1.0.0"}
+
+✅ All agents have required endpoints:
+   - /health ✅
+   - /agent_info ✅
+   - /chat ✅
+   - /generate ✅
+
+The Problem:
+============
+The Inspector URLs require:
+1. Agents to be running (DONE ✅)
+2. Agents to be HTTP accessible (DONE ✅)
+3. BUT the Inspector running in browser may need:
+   - HTTPS instead of HTTP
+   - Public hostname instead of 127.0.0.1
+   - Or ngrok/tunneling to expose localhost
+
+Possible Solutions:
+==================
+1. Use ngrok to tunnel localhost to public URL
+2. Use HTTPS locally (complex)
+3. Check if browser can access localhost (security restrictions)
+4. Try opening inspector URLs directly: https://agentverse.ai/inspect/?uri=http%3A//127.0.0.1%3A8001
+
+Next Steps:
+===========
+Try the simple approach first - just open the Inspector URLs WITHOUT the address parameter.
+The Inspector should be able to discover agents running on localhost automatically.

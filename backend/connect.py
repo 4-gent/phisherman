@@ -1,12 +1,12 @@
 from flask_pymongo import pymongo
 from pymongo.mongo_client import MongoClient
-from dotenv import load_dotenv
-import os
+from config import config
 
-load_dotenv()
+# Use configuration from config.py
+MONGO_URI = config.get_mongo_uri()
+DATABASE_NAME = config.get_database_name()
 
-MONGO_URI = os.environ['MONGO_URI']
-
+# Create MongoDB connection
 client = MongoClient(MONGO_URI)
-db = client.get_database('phish')
+db = client.get_database(DATABASE_NAME)
 users = pymongo.collection.Collection(db, 'users')

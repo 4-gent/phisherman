@@ -1,8 +1,205 @@
-# Phisherman - AI Powered Phishing Training Tool
+# 🎣 Phisherman - AI-Powered Phishing Training Platform
 
-Please read this thoroughly to understand how to get things started. No matter what part you're working on, read the entire document. If you have any questions, reach out to Mj.
+**Built for CalHacks 2025 - Fetch.ai Track**
 
-**Note:** Starting code has been made and commented for your reference to help you understand how communication between frontend and backend works and how the project works.
+Phisherman is an AI-powered cybersecurity training platform that generates safe, educational phishing emails using 5 specialized AI agents. The platform helps organizations train their employees to recognize and avoid phishing attacks through realistic, controlled training scenarios.
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Python 3.11+
+- Node.js 16+
+- Yarn package manager
+
+### 1. Start All Agents (Mailbox Mode)
+```bash
+# Clone the repository
+git clone https://github.com/raghavgautam/phisherman.git
+cd phisherman
+
+# Start all 5 AI agents
+./start_all.sh
+```
+
+### 2. Start Frontend
+```bash
+cd frontend
+yarn install
+yarn start
+```
+
+### 3. Start Backend
+```bash
+cd backend
+pip install -r Requirements.txt
+python main.py
+```
+
+## 🤖 AI Agents Overview
+
+Phisherman uses 5 specialized AI agents working together:
+
+1. **Phish Master** (Orchestrator) - Coordinates all other agents
+2. **Finance Phisher** - Generates financial phishing templates
+3. **Health Phisher** - Creates healthcare phishing scenarios
+4. **Personal Phisher** - Develops personal information phishing templates
+5. **Phish Refiner** - Optimizes and improves phishing templates
+
+## 🔧 Agentverse Registration
+
+### Mailbox Configuration
+All agents run in **mailbox mode** for Agentverse registration:
+
+- **Chat Protocol v0.3.0** compatible
+- **No blockchain registration** required
+- **FastAPI-based** endpoints
+- **Health check** endpoints for monitoring
+
+### Registration Steps
+1. **Start agents**: `./start_all.sh`
+2. **Copy JSON configs** from `agentverse_configs/` folder
+3. **Register on Agentverse** using the provided JSON files
+4. **Test ASI:One discovery** through the platform
+
+### Agent URLs
+- Phish Master: `http://127.0.0.1:8001`
+- Finance Phisher: `http://127.0.0.1:8002`
+- Health Phisher: `http://127.0.0.1:8003`
+- Personal Phisher: `http://127.0.0.1:8004`
+- Phish Refiner: `http://127.0.0.1:8005`
+
+### Endpoints for Each Agent
+- `/health` - Health check
+- `/agent_info` - Agent metadata for Agentverse
+- `/chat` - Chat Protocol v0.3.0 messaging
+- `/generate` - Phishing template generation
+
+## 📁 Project Structure
+
+```
+phisherman/
+├── backend/
+│   ├── mail/sender/
+│   │   ├── phish_master/          # Orchestrator agent
+│   │   ├── finance_phisher/       # Financial phishing agent
+│   │   ├── health_phisher/       # Healthcare phishing agent
+│   │   ├── personal_phisher/     # Personal info phishing agent
+│   │   ├── phish_refiner/        # Template refinement agent
+│   │   └── mailbox_agent.py      # Mailbox mode implementation
+│   ├── config.py                 # Backend configuration
+│   ├── main.py                   # Flask backend server
+│   └── Requirements.txt         # Python dependencies
+├── frontend/
+│   ├── src/
+│   │   ├── components/          # React components
+│   │   ├── routes/              # Page routes
+│   │   └── styles/              # CSS styles
+│   └── package.json             # Frontend dependencies
+├── agentverse_configs/          # Agentverse registration JSON files
+├── diagnostics/                 # Troubleshooting logs
+├── tests/                       # Test results and samples
+├── start_all.sh                # Start all agents script
+└── README_AGENTVERSE.md        # Detailed registration guide
+```
+
+## 🛡️ Safety & Compliance
+
+- **Educational Purpose Only**: All generated content is for cybersecurity training
+- **Safe Templates**: No real phishing attacks are conducted
+- **Clear Marking**: All content is clearly marked as training material
+- **Controlled Environment**: Agents operate in secure, controlled conditions
+- **Ethical AI**: Responsible AI practices for cybersecurity education
+
+## 🧪 Testing & Verification
+
+### Local Testing
+```bash
+# Test all agents
+curl http://127.0.0.1:8001/health
+curl http://127.0.0.1:8002/health
+curl http://127.0.0.1:8003/health
+curl http://127.0.0.1:8004/health
+curl http://127.0.0.1:8005/health
+
+# Test chat protocol
+curl -X POST http://127.0.0.1:8001/chat \
+  -H "Content-Type: application/json" \
+  -d '{"text": "Generate a financial phishing template"}'
+
+# Test template generation
+curl -X POST http://127.0.0.1:8002/generate \
+  -H "Content-Type: application/json" \
+  -d '{"domain": "finance", "urgency_level": 8}'
+```
+
+### Verification Results
+- ✅ All agents responding
+- ✅ Chat Protocol v0.3.0 working
+- ✅ Template generation functional
+- ✅ Inter-agent communication working
+- ✅ Mailbox mode operational
+
+## 🔗 Agentverse Integration
+
+### Registration Files
+- `agentverse_configs/phish_master_agentverse_config.json`
+- `agentverse_configs/finance_phisher_agentverse_config.json`
+- `agentverse_configs/health_phisher_agentverse_config.json`
+- `agentverse_configs/personal_phisher_agentverse_config.json`
+- `agentverse_configs/phish_refiner_agentverse_config.json`
+
+### ASI:One Discovery
+After registration, agents are discoverable through ASI:One with tags:
+- `phishing`, `cybersecurity`, `training`
+- `finance`, `healthcare`, `personal-info`
+- `template-generation`, `agent-coordination`
+
+## 🚨 Troubleshooting
+
+### Common Issues
+1. **Port conflicts**: Run `lsof -ti:8001,8002,8003,8004,8005 | xargs kill -9`
+2. **Dependency issues**: Run `pip install -r backend/Requirements.txt`
+3. **Agent registration fails**: Check `diagnostics/` folder for logs
+4. **Public access needed**: Use ngrok (see `diagnostics/ngrok_fallback.txt`)
+
+### Diagnostic Files
+- `diagnostics/port_report.txt` - Port conflict resolution
+- `diagnostics/dependency_fix.txt` - Dependency troubleshooting
+- `diagnostics/mailbox_setup.txt` - Mailbox configuration
+- `diagnostics/ngrok_fallback.txt` - Public access setup
+
+## 📚 Documentation
+
+- **Main README**: This file
+- **Agentverse Guide**: `README_AGENTVERSE.md`
+- **Configuration**: `config/disable_auto_funding.md`
+- **Test Results**: `tests/run_log.txt`
+
+## 🎯 Demo Script (60-90 seconds)
+
+### For Judges/Demo:
+1. **Show agent startup**: `./start_all.sh`
+2. **Demonstrate health checks**: All 5 agents responding
+3. **Show chat protocol**: Agent communication working
+4. **Generate template**: Finance phishing template creation
+5. **Show Agentverse configs**: Ready for registration
+6. **Test ASI:One discovery**: Agents discoverable on platform
+
+### Key Points to Highlight:
+- **5 AI agents** working together
+- **Mailbox mode** for Agentverse compatibility
+- **Chat Protocol v0.3.0** compliance
+- **Safe, educational** phishing training
+- **ASI:One discovery** ready
+- **Fetch.ai ecosystem** integration
+
+## 🤝 Contributing
+
+This project was built for CalHacks 2025 - Fetch.ai Track. For questions or contributions, please refer to the project repository.
+
+## 📄 License
+
+This project is for educational and demonstration purposes as part of CalHacks 2025.
 
 ## Getting Started with Yarn Package Management
 
