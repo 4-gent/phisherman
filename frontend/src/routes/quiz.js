@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import '../styles/quiz.css'
 import fisherman from '../styles/images/fishing.png'
-import wave from '../styles/images/support_images/wave.svg'
 import fish from '../styles/images/fish1.png'
 import FishHook from '../styles/images/fishHook.png'
 import FishA from '../styles/images/fishA.png'
@@ -19,7 +18,7 @@ export default function Quiz() {
         const rect = el.getBoundingClientRect();
 
         // pixel coordinates in the source image where you want the anchor (adjust as needed)
-        const pixelAnchor = { x: 787, y: 233 };
+        const pixelAnchor = { x: 786, y: 233 };
 
         // use natural image size if available to map pixels to rendered size
         const naturalW = el.naturalWidth || rect.width;
@@ -40,15 +39,14 @@ export default function Quiz() {
         return () => window.removeEventListener('resize', updateAnchorFromImage)
 
     }, [])
+
     // quiz counters
     const totalQuestions = 10;
     const [correctCount, setCorrectCount] = useState(0);
     const [score, setScore] = useState(0);
-  
+
     return(
-        <div className='quiz-container'>
-            {/* corporate wave background */}
-            <img src={wave} className='quiz-wave' alt='wave background' />
+
         <div className='quiz-scene'>
             {/* small centered box inside the scene */}
             <div className='white-box' />
@@ -63,6 +61,7 @@ export default function Quiz() {
                     <div className='tracker-value'>{score}</div>
                 </div>
             </div>
+
         <div className='quiz-body'>
             <div className='quiz-midbar' />
             {/* <div className='water-background' /> */}
@@ -75,14 +74,11 @@ export default function Quiz() {
                     onLoad={updateAnchorFromImage}
                 />
             </div>
-            <img src={FishA} alt="fish" className='fishiesA'/>
-            <img src={FishB} alt="fish" className='fishiesB'/>
-            <img src={FishC} alt="fish" className='fishiesC'/>
+                <img src={FishA} alt="fish" className='fishiesA'/>
+                <img src={FishB} alt="fish" className='fishiesB'/>
+                <img src={FishC} alt="fish" className='fishiesC'/>
             </div>
-
-            {/* score box */}
             <CursorFollowImage anchor={anchor} />
-        </div>
         </div>
     )
 }
@@ -115,6 +111,7 @@ function CursorFollowImage({ anchor }) {
         width: '100vw',
         height: '100vh',
         pointerEvents: 'none',
+        zIndex: 2
     }
 
     return (
