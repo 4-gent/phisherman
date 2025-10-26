@@ -126,7 +126,17 @@ export default function Quiz() {
 
         <div className='quiz-scene'>
             {/* small centered box inside the scene */}
-            <div className='white-box' />
+            <div className='white-box'>
+                <div className='inner-white-box'>
+                    <h2 className='quiz-question'>Which of these fish is a Phishing attempt?</h2>
+                    <p className='quiz-instructions'>Select one or more fish and click "Send" to submit your answer.</p>
+                    <button className='send-button' onClick={handleSendClick}>Send</button>
+
+                    {/* BONERRR ALERT!!!!!!! */}
+
+                </div>
+
+            </div>
             {/* top-right trackers: correct answers and score */}
             <div className='top-right-panel'>
                 <div className='tracker-box correct-box'>

@@ -8,7 +8,7 @@ import os
 
 from routes.routes import app
 from config import config
-from socket.socket import socketio
+from sockets.socket import socketio
 
 if __name__ == '__main__':
     socketio.run(

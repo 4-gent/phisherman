@@ -9,10 +9,16 @@ NO real phishing emails, links, or sendable content are produced.
 
 import json
 import os
+import sys
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, Any, Optional
 import uuid
+
+# Add backend directory to path for trainer import
+backend_path = os.path.join(os.path.dirname(__file__), '..', '..')
+if backend_path not in sys.path:
+    sys.path.insert(0, backend_path)
 
 # Create necessary directories
 os.makedirs("diagnostics/templates", exist_ok=True)
@@ -48,6 +54,11 @@ AGENTS = {
         "name": "phish_refiner",
         "display": "✨ Phish Refiner",
         "description": "Refines and improves phishing templates"
+    },
+    "6": {
+        "name": "teacher",
+        "display": "🎓 Teacher (Phishing Awareness)",
+        "description": "Educational lessons on phishing detection and prevention"
     }
 }
 
@@ -427,6 +438,13 @@ def refine_template(template: Dict[str, Any], instruction: str) -> Dict[str, Any
 
 def main():
     """Main application loop"""
+
+    global current_template
+
+    if choice in AGENTS:
+        agent = AGENTS[choice]
+        chat_with_agent(agent)
+
     global current_template
     
     print_header()
@@ -434,7 +452,7 @@ def main():
     while True:
         print_agents()
         
-        choice = input("\nSelect an agent (1-5), 'help', or 'quit': ").strip().lower()
+        choice = input("\nSelect an agent (1-6), 'help', or 'quit': ").strip().lower()
         
         if choice in ['q', 'quit', 'exit']:
             print("\n👋 Thanks for using Phisherman Terminal CLI!")
@@ -455,56 +473,82 @@ def chat_with_agent(agent: Dict[str, Any]):
     """Chat with selected agent"""
     global current_template
     
-    print(f"\n{'='*70}")
-    print(f"💬 Chatting with {agent['display']}")
-    print(f"{'='*70}")
+    # print(f"\n{'='*70}")
+    # print(f"💬 Chatting with {agent['display']}")
+    # print(f"{'='*70}")
     
     # Handle different agent types
-    if agent['name'] == 'phish_master':
-        orchestrate_flow()
-    elif agent['name'] == 'phish_refiner':
-        refiner_chat()
-    else:
-        print(f"\n{agent['display']}: Please use Phish Master to generate templates.")
-        print("   Type 'back' to return to main menu.")
+    # if agent['name'] == 'phish_master':
+    #     orchestrate_flow()
+    # elif agent['name'] == 'phish_refiner':
+    #     refiner_chat()
+    # else:
+    #     print(f"\n{agent['display']}: Please use Phish Master to generate templates.")
+    #     print("   Type 'back' to return to main menu.")
 
-def orchestrate_flow():
+    try:
+        if(agent['name'] == 'phish_master'):
+            orchestrate_flow()
+        elif agent['name'] == 'phish_refiner':
+            refiner_chat()
+    except Exception as e:
+        print("Error in chat_with_agent", e)
+
+def orchestrate_flow(choice):
     """Handle Phish Master orchestration flow"""
     global current_template
     
-    print("\n🎯 Phish Master: I coordinate template generation.")
-    print("\n📋 Choose a domain:")
-    print("   1. Finance")
-    print("   2. Health")
-    print("   3. Personal")
-    print("\nOr type 'back' to return.")
-    print("-"*70)
+    # print("\n🎯 Phish Master: I coordinate template generation.")
+    # print("\n📋 Choose a domain:")
+    # print("   1. Finance")
+    # print("   2. Health")
+    # print("   3. Personal")
+    # print("\nOr type 'back' to return.")
+    # print("-"*70)
     
-    while True:
-        choice = input("\nYour choice: ").strip().lower()
+    if choice in ['1', 'financial']:
+        current_template = generate_safe_template("finance")
+        return current_template
+        # display_template(current_template)
+    elif choice in ['2', 'health']:
+        current_template = generate_safe_template("health")
+        return current_template
+        # display_template(current_template)
+    elif choice in ['3', 'personal']:
+        current_template = generate_safe_template("personal")
+        return current_template
+        # display_template(current_template)
+    else:
+        print("❌ Invalid choice. Enter 1, 2, or 3.")
+
+    # while True:
+    #     choice = input("\nYour choice: ").strip().lower()
         
-        if choice == 'back':
-            break
+    #     if choice == 'back':
+    #         break
         
-        if choice in ['1', 'finance']:
-            current_template = generate_safe_template("finance")
-            display_template(current_template)
-        elif choice in ['2', 'health']:
-            current_template = generate_safe_template("health")
-            display_template(current_template)
-        elif choice in ['3', 'personal']:
-            current_template = generate_safe_template("personal")
-            display_template(current_template)
-        else:
-            print("❌ Invalid choice. Enter 1, 2, or 3.")
-            continue
+    #     if choice in ['1', 'finance']:
+    #         current_template = generate_safe_template("finance")
+    #         print(current_template)
+    #         # display_template(current_template)
+    #     elif choice in ['2', 'health']:
+    #         current_template = generate_safe_template("health")
+    #         print(current_template)
+    #         # display_template(current_template)
+    #     elif choice in ['3', 'personal']:
+    #         current_template = generate_safe_template("personal")
+    #         print(current_template)
+    #         # display_template(current_template)
+    #     else:
+    #         print("❌ Invalid choice. Enter 1, 2, or 3.")
+    #         continue
         
-        # Offer refinement
-        refine_choice = input("\n💡 Type 'refine' to improve this template, or 'back': ").strip().lower()
-        if refine_choice == 'refine':
-            refiner_chat()
-        else:
-            break
+    #     # Offer refinement
+    #     refine_choice = input("\n💡 Type 'refine' to improve this template, or 'back': ").strip().lower()
+    #     if refine_choice == 'refine':
+    #         refiner_chat()
+    #     else:
+    #         break
 
 def refiner_chat():
     """Interactive refinement chat"""
@@ -561,6 +605,19 @@ def refiner_chat():
         else:
             print("\n⚠️  Command not recognized. Type 'done' for help.")
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()
+
+def teacher_session():
+    """Launch teacher session"""
+    try:
+        from backend.trainer.cli import run_teacher_session
+        run_teacher_session()
+    except ImportError as e:
+        print(f"\n❌ Error importing teacher module: {e}")
+        print("   Teacher functionality may not be available.")
+        print("   Type 'back' to return to main menu.")
+    except Exception as e:
+        print(f"\n❌ Error starting teacher session: {e}")
+        print("   Type 'back' to return to main menu.")
 

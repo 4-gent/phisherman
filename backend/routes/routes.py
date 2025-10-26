@@ -4,9 +4,11 @@ from flask_bcrypt import Bcrypt
 import uuid
 import os
 from bson import ObjectId
+import json
 
 from connect import db, users
 from mail.sender.sender import email_send
+from phisher.agent.phisherman_cli import orchestrate_flow
 
 app = Flask(__name__)
 
@@ -96,6 +98,20 @@ def login():
             print("exception thrown at login: ", e)
             return jsonify({'success': False, 'message': 'server error'}), 500
 
+@app.route('/api/user', methods=['GET'])
+def user_data():
+    if request.method == 'GET':
+        if 'user_id' not in session:
+            print('user_id is not in the session')
+            return jsonify({'message': 'unauthorized'}), 401
+        if request.method == 'GET':
+            data = users.find_one({'_id': ObjectId(session['user_id'])})
+            if(data):
+                data['_id'] = str(data['_id'])
+                return jsonify(data)
+            else:
+                return jsonify({'message': 'User not found'}), 404
+
 @app.route('/api/email', methods=['POST', 'OPTIONS'])
 def email_send_route():
     if request.method == 'POST' or request.method == 'OPTIONS':
@@ -119,8 +135,35 @@ def email_template_route():
         if not template:
             return jsonify({'success': False, 'message': 'template required'}), 400
 
+        if template:
+            email_template = orchestrate_flow(template)
+            email_result = json.dumps(email_template)
+            print("plain result: ", email_result)
+            print("data type: ", type(data))
+            print("parsed for html body: ", email_template['html_body'])
+            email_send()
+            
+
         return jsonify({'success': True, 'message': 'input received', 'template': template}), 200
 
     except Exception as e:
         print("exception thrown at campaign: ", e)
+        return jsonify({'success': False, 'message': 'server error'}), 500
+    
+@app.route('/api/completion', methods=['POST', 'OPTIONS'])
+def training_completion():
+    if request.method == 'OPTIONS':
+        return jsonify({'message': 'ok'}), 200
+    
+    try:
+        data = request.get_json(silent=True) or {}
+        training = data.get('training')
+        if training is False:
+            return jsonify({'success': False, 'message': 'training incomplete'}), 400    
+        if training is True:
+            print("training complete")
+            return jsonify({'success': True, 'message': 'training completed'}), 200
+        return jsonify({'success': False, 'message': 'invalid payload at training'}), 400
+    except Exception as e:
+        print("exception thrown at training: ", e)
         return jsonify({'success': False, 'message': 'server error'}), 500
