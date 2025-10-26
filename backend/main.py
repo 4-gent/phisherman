@@ -15,5 +15,6 @@ if __name__ == '__main__':
         app,
         debug=config.FLASK_DEBUG,
         host=config.HOST,
-        port=config.PORT
+        port=config.PORT,
+        allow_unsafe_werkzeug=True
     )

@@ -7,8 +7,14 @@ from bson import ObjectId
 import json
 
 from connect import db, users
-from mail.sender.sender import email_send
 from phisher.agent.phisherman_cli import orchestrate_flow
+
+# Optional email import (for quiz to work without mailjet)
+try:
+    from mail.sender.sender import email_send
+except ImportError:
+    def email_send():
+        print("Email sending not available (mailjet_rest not installed)")
 
 app = Flask(__name__)
 
