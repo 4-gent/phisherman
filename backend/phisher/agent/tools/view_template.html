@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phisherman Template Viewer - Trainer View</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #0066cc;
+            padding-bottom: 10px;
+        }
+
+        .section {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f9f9f9;
+            border-left: 4px solid #0066cc;
+        }
+
+        .label {
+            font-weight: bold;
+            color: #0066cc;
+            margin-bottom: 5px;
+        }
+
+        .value {
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .placeholder {
+            background: #fff3cd;
+            padding: 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin: 5px 0;
+        }
+
+        .red-flag {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 5px 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+            border-left: 3px solid #dc3545;
+        }
+
+        .objective {
+            background: #d1ecf1;
+            color: #0c5460;
+            padding: 5px 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+            border-left: 3px solid #17a2b8;
+        }
+
+        .safety-note {
+            background: #d4edda;
+            color: #155724;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #28a745;
+        }
+
+        .urgency {
+            display: inline-block;
+            padding: 5px 15px;
+            background: #ff6600;
+            color: white;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        button {
+            background: #0066cc;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+
+        button:hover {
+            background: #0052a3;
+        }
+
+        #jsonView {
+            display: none;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🎓 Phisherman Template Viewer - Trainer View</h1>
+        <p><strong>⚠️ Educational Content Only - No Actionable Phishing Content</strong></p>
+
+        <div class="section">
+            <div class="label">Template ID:</div>
+            <div class="value" id="templateId">Loading...</div>
+        </div>
+
+        <div class="section">
+            <div class="label">Scenario Title:</div>
+            <div class="value" id="scenarioTitle">Loading...</div>
+        </div>
+
+        <div class="section">
+            <div class="label">Description:</div>
+            <div class="value" id="description">Loading...</div>
+        </div>
+
+        <div class="section">
+            <div class="label">Placeholders:</div>
+            <div id="placeholders">Loading...</div>
+        </div>
+
+        <div class="section">
+            <div class="label">🚩 Red Flags:</div>
+            <div id="redFlags">Loading...</div>
+        </div>
+
+        <div class="section">
+            <div class="label">🎯 Training Objectives:</div>
+            <div id="objectives">Loading...</div>
+        </div>
+
+        <div class="section">
+            <div class="label">Urgency Score:</div>
+            <div class="urgency" id="urgencyScore">Loading...</div>
+        </div>
+
+        <div class="safety-note">
+            <strong>✅ Safety Notes:</strong>
+            <div id="safetyNotes">Loading...</div>
+        </div>
+
+        <div style="margin-top: 30px;">
+            <button onclick="toggleJSON()">Toggle JSON View</button>
+            <button onclick="loadExample('finance')">Load Finance Example</button>
+            <button onclick="loadExample('health')">Load Health Example</button>
+            <button onclick="loadExample('personal')">Load Personal Example</button>
+        </div>
+
+        <div id="jsonView"></div>
+    </div>
+
+    <script>
+        let currentData = null;
+
+        function loadTemplate(jsonData) {
+            currentData = jsonData;
+
+            document.getElementById('templateId').textContent = jsonData.template_id;
+            document.getElementById('scenarioTitle').textContent = jsonData.scenario_title;
+            document.getElementById('description').textContent = jsonData.sanitized_description;
+            document.getElementById('urgencyScore').textContent = `${jsonData.urgency_score}/10`;
+
+            // Placeholders
+            const placeholdersDiv = document.getElementById('placeholders');
+            placeholdersDiv.innerHTML = '';
+            for (const [key, value] of Object.entries(jsonData.placeholders)) {
+                const div = document.createElement('div');
+                div.className = 'placeholder';
+                div.innerHTML = `<strong>${key}:</strong> ${value}`;
+                placeholdersDiv.appendChild(div);
+            }
+
+            // Red Flags
+            const redFlagsDiv = document.getElementById('redFlags');
+            redFlagsDiv.innerHTML = '';
+            jsonData.red_flags.forEach(flag => {
+                const div = document.createElement('div');
+                div.className = 'red-flag';
+                div.textContent = flag;
+                redFlagsDiv.appendChild(div);
+            });
+
+            // Objectives
+            const objectivesDiv = document.getElementById('objectives');
+            objectivesDiv.innerHTML = '';
+            jsonData.training_objectives.forEach(obj => {
+                const div = document.createElement('div');
+                div.className = 'objective';
+                div.textContent = obj;
+                objectivesDiv.appendChild(div);
+            });
+
+            // Safety Notes
+            const safetyDiv = document.getElementById('safetyNotes');
+            safetyDiv.innerHTML = '';
+            jsonData.safety_notes.forEach(note => {
+                const div = document.createElement('div');
+                div.textContent = `• ${note}`;
+                safetyDiv.appendChild(div);
+            });
+
+            // JSON View
+            document.getElementById('jsonView').textContent = JSON.stringify(jsonData, null, 2);
+        }
+
+        function toggleJSON() {
+            const jsonView = document.getElementById('jsonView');
+            jsonView.style.display = jsonView.style.display === 'none' ? 'block' : 'none';
+        }
+
+        async function loadExample(type) {
+            try {
+                const response = await fetch(`../diagnostics/templates/safe_${type}_example.json`);
+                const data = await response.json();
+                loadTemplate(data);
+            } catch (error) {
+                alert('Could not load example. Make sure you are running from the correct directory.');
+            }
+        }
+
+        // Try to load from URL parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const templatePath = urlParams.get('template');
+
+        if (templatePath) {
+            fetch(templatePath)
+                .then(response => response.json())
+                .then(data => loadTemplate(data))
+                .catch(error => {
+                    console.error('Error loading template:', error);
+                    loadExample('finance'); // Fallback
+                });
+        } else {
+            // Load default example
+            loadExample('finance');
+        }
+    </script>
+</body>
+
+</html>
