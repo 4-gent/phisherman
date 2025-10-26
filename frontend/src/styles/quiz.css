@@ -115,9 +115,8 @@
     z-index: 1;  /* Added z-index to be above white box */
 }
 
-.fishiesA, .fishiesB, .fishiesC {
+.fishiesA, .fishiesC {
     /* Controls (change these on each fish instance as inline styles or via a class):
-       --swim-duration: how long one crossing takes (lower = faster)
        --swim-delay: delay before starting
        --swim-start-y: vertical start position (use % for viewport-relative or px for absolute)
        --swim-bob: vertical bob amplitude (px)
@@ -127,28 +126,65 @@
 
     /* use FishX as a background image and makes sure the button is invisible*/
     background-color: transparent !important;
-    border: none !important;
+    border: transparent !important;
     padding: 0;
     margin: 0;
     color: inherit;
     box-shadow: none !important;
     outline: none !important;
-    cursor: pointer;
-    background-size: contain;
+    background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
     transform-origin: center;
 
     /* change the size of the fish here */
-    width: 300px;
-    height: 300px;
-
-    /* positioned off-screen to the left; animation is toggled via the .playing class */
+    width: 335px;
+    height: 183px;
+    border-radius: 90px;
     position: absolute;
-    left: -15vw;
     top: var(--swim-start-y, 50%);
 
     will-change: transform;
+}
+
+.fishiesB {
+    /* remove the original background so the ::before can provide the flipped artwork */
+    --swim-delay: 0s;
+    --swim-bob: 25px;
+    background-color: transparent !important;
+    border: transparent !important;
+    padding: 0;
+    margin: 0;
+    color: inherit;
+    box-shadow: none !important;
+    outline: none !important;
+    background-image: none;
+    overflow: hidden;            /* clip the flipped image to the rounded shape */
+    z-index: 1;                  /* keep interactive content above the pseudo-image */
+    border-radius: 90px;
+    width: 335px;
+    height: 183px;
+    right: -15vw; /* start offscreen to the right */
+    position: absolute; /* ensure positioning so `right` takes effect */
+    top: var(--swim-start-y, 50%);
+    display: block;
+}
+
+/* Render fishB image flipped without flipping element children.
+   Put the artwork behind the element's content so button text remains visible. */
+.fishiesB::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url('images/fishB.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    transform: scaleX(-1);      /* flip the artwork horizontally */
+    transform-origin: center;
+    pointer-events: none;
+    z-index: -1;                /* ensure the pseudo-image sits behind children (so text shows) */
+    border-radius: inherit;
 }
 
 /* Ensure hover/focus don't introduce a background */
@@ -165,10 +201,13 @@
 /* Use each fish's own artwork but keep the same base behavior as fishiesA */
 .fishiesA { background-image: url('images/fishA.png'); }
 .fishiesA { --swim-start-y: 30%; }
+.fishiesA { left: -15vw;}
 .fishiesB { background-image: url('images/fishB.png'); }
-.fishiesB { --swim-start-y: 50%; }
+.fishiesB { --swim-start-y: 54%; }
 .fishiesC { background-image: url('images/fishC.png'); }
-.fishiesC { --swim-start-y: 70%; }
+.fishiesC { --swim-start-y: 78%; }
+.fishiesC { left: -15vw;}
+
 /* first natural swim animation state */
 
 .fishiesA.playing1 {
@@ -184,9 +223,7 @@
     animation: swim 5s linear var(--swim-delay) infinite;
 }
 
-/* stopped state — animation removed and transform pinned to custom stop coordinates
-   Set --stop-x and --stop-y on the element (either in CSS or via JS) to choose stop location,
-   accepts units (px, vw, %, etc). Transition makes stopping appear smooth. */
+/* stopped state — animation removed and transform pinned to custom stop coordinates */
 .fishiesA.stopped {
     animation: none !important;
     transition: transform 300ms ease;
@@ -197,14 +234,14 @@
 .fishiesB.playing1 {
     /* move to 1/4 of the viewport width in 5s and remain there */
     will-change: transform;
-    animation: swim-to-quarter 5s ease forwards;
+    animation: swim-to-quarter-rtl 5s ease forwards;
 }
 
 /* second natural swim animation state starts where the first ended,
    set to run over 5s (instead of using --swim-duration) */
 .fishiesB.playing2 {
     will-change: transform;
-    animation: swim 5s linear var(--swim-delay) infinite;
+    animation: swim-rtl 5s linear var(--swim-delay) infinite;
 }
 
 /* stopped state — animation removed and transform pinned to custom stop coordinates
@@ -213,7 +250,7 @@
 .fishiesB.stopped {
     animation: none !important;
     transition: transform 300ms ease;
-    transform: translateX(var(--stop-x, 25vw)) translateY(var(--stop-y, 0)) scaleX(1);
+    transform: translateX(var(--stop-x, -25vw)) translateY(var(--stop-y, 0)) scaleX(1);
 }
 .fishiesC.playing1 {
     /* move to 1/4 of the viewport width in 5s and remain there */
@@ -262,11 +299,11 @@
 }
 
 @keyframes swim-rtl {
-    0%   { transform: translateX(-25) translateY(0); }
-    25%  { transform: translateX(calc(-60vw - 10vw)) translateY(calc(var(--swim-bob) * -0.6)); }
-    50%  { transform: translateX(calc(-90vw - 15vw)) translateY(calc(var(--swim-bob))); }
-    75%  { transform: translateX(calc(-120vw - 20vw)) translateY(calc(var(--swim-bob) * -0.4)); }
-    100% { transform: translateX(calc(-165vw - 30vw)) translateY(0); }
+    0%   { transform: translateX(-25vw) translateY(0) scaleX(1); }
+    25%  { transform: translateX(-60vw) translateY(calc(var(--swim-bob) * -0.6)) scaleX(1); }
+    50%  { transform: translateX(-90vw) translateY(calc(var(--swim-bob))) scaleX(1); }
+    75%  { transform: translateX(-120vw) translateY(calc(var(--swim-bob) * -0.4)) scaleX(1); }
+    100% { transform: translateX(-165vw) translateY(0) scaleX(1); }
 }
 
 .quiz-midbar {
