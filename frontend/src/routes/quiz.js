@@ -306,6 +306,96 @@ export default function Quiz() {
 
         return '';
     };
+    // ensure stopped state does not auto-resume; only resume when a selection is made
+    useEffect(() => {
+        if (fishAState === 'stopped' && resumeTimer.current) {
+            clearTimeout(resumeTimer.current);
+            resumeTimer.current = null;
+        }
+    }, [fishAState]);
+    useEffect(() => {
+        if (correctCount === 0) return; // don't clear on initial load
+        if (fishAState === 'finished') {
+            setSelected({});
+        }
+    }, [correctCount, fishAState]);
+    // enforce single-selection and trigger resume when a button is selected while stopped
+    useEffect(() => {
+        const trueKeys = Object.keys(selected).filter(k => selected[k]);
+
+        // enforce only one selection at a time
+        if (trueKeys.length > 1) {
+            const keep = trueKeys[trueKeys.length - 1];
+            setSelected({ [keep]: true });
+            return;
+        }
+
+        // if exactly one selected and fish is stopped, start playing2 and start finish timer
+        if (trueKeys.length === 1 && fishAState === 'stopped') {
+            // cancel any auto-resume timers just in case
+            if (resumeTimer.current) {
+                clearTimeout(resumeTimer.current);
+                resumeTimer.current = null;
+            }
+            // start playing2 immediately
+            setFishAState('playing2');
+
+            // reset any existing finish timer and start a new one for the playing2 period
+            if (finishTimerRef.current) {
+                clearTimeout(finishTimerRef.current);
+                finishTimerRef.current = null;
+            }
+            finishTimerRef.current = setTimeout(() => {
+                setFishAState('finished');
+                finishTimerRef.current = null;
+            }, 5000);
+        }
+    }, [selected, fishAState]);
+    // helper to (re)start the fish cycle
+    const startFishCycle = () => {
+        if (initialStopTimer.current) {
+            clearTimeout(initialStopTimer.current);
+            initialStopTimer.current = null;
+        }
+        if (resumeTimer.current) {
+            clearTimeout(resumeTimer.current);
+            resumeTimer.current = null;
+        }
+        if (finishTimerRef.current) {
+            clearTimeout(finishTimerRef.current);
+            finishTimerRef.current = null;
+        }
+
+        setFishAState('playing1');
+
+        initialStopTimer.current = setTimeout(() => {
+            setFishAState('stopped');
+            initialStopTimer.current = null;
+
+            resumeTimer.current = setTimeout(() => {
+                resumeTimer.current = null;
+                setFishAState('playing2');
+
+                finishTimerRef.current = setTimeout(() => {
+                    setFishAState('finished');
+                    finishTimerRef.current = null;
+                }, 5000);
+            }, 25000);
+        }, 5000);
+    };
+
+    useEffect(() => {
+        if (fishAState !== 'finished') return;
+
+        setCorrectCount(prev => {
+            const next = Math.min(totalQuestions, prev + 1);
+            if (next < totalQuestions) {
+                // restart the cycle for the next question
+                setTimeout(() => startFishCycle(), 100);
+            }
+            return next;
+        });
+    }, [fishAState]);
 
     // Show loading if not connected or no question
     if (!isConnected || !currentQuestion) {
