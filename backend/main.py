@@ -8,9 +8,11 @@ import os
 
 from routes.routes import app
 from config import config
+from socket.socket import socketio
 
 if __name__ == '__main__':
-    app.run(
+    socketio.run(
+        app,
         debug=config.FLASK_DEBUG,
         host=config.HOST,
         port=config.PORT

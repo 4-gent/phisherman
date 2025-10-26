@@ -105,8 +105,22 @@ def email_send_route():
     
 @app.route('/api/campaign', methods=['POST', 'OPTIONS'])
 def email_template_route():
-    if request.method == 'POST' or request.method == 'OPTIONS':
-        data = request.get_json()
-        template = data.get('template')
+# handle CORS preflight quickly and with a valid response
+    if request.method == 'OPTIONS':
+        return jsonify({'message': 'ok'}), 200
+
+    try:
+        # get_json may return None for invalid/missing JSON; default to empty dict
+        data = request.get_json(silent=True) or {}
+        template = data.get('template') if isinstance(data, dict) else None
+
         print('Template: ', template)
-        return jsonify({'message': 'input received'}), 200
+
+        if not template:
+            return jsonify({'success': False, 'message': 'template required'}), 400
+
+        return jsonify({'success': True, 'message': 'input received', 'template': template}), 200
+
+    except Exception as e:
+        print("exception thrown at campaign: ", e)
+        return jsonify({'success': False, 'message': 'server error'}), 500

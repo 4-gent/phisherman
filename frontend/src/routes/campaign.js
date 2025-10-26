@@ -1,43 +1,58 @@
 import React from "react";
+import axios from "axios";
 import DashNav from "../components/dashnavbar";
 import '../styles/campaign.css'
 import wave from '../styles/images/support_images/wave.svg'
 
 export default function Campaign(){
+    const handleTemplate = async(template) => {
+        try{
+            console.log("template", template)
+            const response = await axios.post(
+                'http://localhost:8080/api/campaign',
+                {template},
+                {withCredentials: true}
+            )
+            console.log(response)
+        } catch (err) {
+            console.log("Campaign reponse: ", err)
+        }
+    }
+    
     return(
         <div className="campaign-body">
             <nav>
                 <DashNav />
             </nav>
             <div className="campaign-container">
+                <img src={wave} className='admin-wave' />
                 <div className="campaign-header">
-                    <h1>Let's start a campaign!</h1>
+                    <h1 className="campaign-header-text">Let's start a campaign!</h1>
                 </div>
                 <div className="campaign-content d-flex flex-row justify-content-around">
-                    <button className="campaign-button-container">
+                    <button type='button' className="campaign-button-container" onClick={() => handleTemplate('financial')}>
                         <div className="campaign-button">
-                            <p>Financial</p>
+                            <p style={{fontSize: '2em', fontWeight: 'bold'}}>Financial</p>
                             <p>- </p>
-                            <p>Fiscally inspired phishing template</p>
+                            <p style={{fontSize: '1.2em'}}>Fiscally inspired phishing template</p>
                         </div>
                     </button>
-                    <button className="campaign-button-container">
+                    <button type='button' className="campaign-button-container" onClick={() => handleTemplate('health')}>
                         <div className="campaign-button">
-                            <p>Health </p>
+                            <p style={{fontSize: '2em', fontWeight: 'bold'}}>Health </p>
                             <p>- </p>
-                            <p>Medically charged phishing template</p>
+                            <p style={{fontSize: '1.2em'}}>Medically charged phishing template</p>
                         </div>
                     </button>
-                    <button className="campaign-button-container">
+                    <button type='button' className="campaign-button-container" onClick={() => handleTemplate('personal')}>
                         <div className="campaign-button">
-                            <p>Personal</p>
+                            <p style={{fontSize: '2em', fontWeight: 'bold'}}>Personal</p>
                             <p>- </p>
-                            <p>Social security based phishing template</p>
+                            <p style={{fontSize: '1.2em'}}>Social security based phishing template</p>
                         </div>
                     </button>
                 </div>
             </div>
-            <img src={wave} className='admin-wave' />
         </div>
     )
 }
