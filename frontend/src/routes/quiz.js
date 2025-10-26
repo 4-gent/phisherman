@@ -226,7 +226,7 @@ export default function Quiz() {
         const el = fishermanRef.current;
         if (!el) return;
         const rect = el.getBoundingClientRect();
-        const pixelAnchor = { x: 786, y: 233 };
+        const pixelAnchor = { x: 790, y: -2466 }; // Anchor point in pixels relative to image
         const naturalW = el.naturalWidth || rect.width;
         const naturalH = el.naturalHeight || rect.height;
         const anchorX = rect.left + (pixelAnchor.x / naturalW) * rect.width;
@@ -531,7 +531,7 @@ export default function Quiz() {
                     style={{
                         '--crab-width': '120px',
                         '--crab-height': '80px',
-                        '--crab-top': '350px',
+                        '--crab-top': '750px',
                         '--crab-left': '600px'
                     }}
                 />
@@ -540,10 +540,12 @@ export default function Quiz() {
                     alt="dolphi"
                     className="dolphi-image"
                     style={{
+                        // zIndex: 2,
+                        background: '3485eb',
                         '--dolphi-width': '120px',
                         '--dolphi-height': '80px',
-                        '--dolphi-top': '360px',
-                        '--dolphi-left': '300px'
+                        '--dolphi-top': '140px',
+                        '--dolphi-left': '300px',
                     }}
                 />
                 <img
@@ -562,7 +564,7 @@ export default function Quiz() {
                     alt="seahorse"
                     className="seahorse-image"
                     style={{
-                        '--seahorse-width': '120px',
+                        '--seahorse-width': '80px',
                         '--seahorse-height': '80px',
                         '--seahorse-top': '200px',
                         '--seahorse-left': '500px'
@@ -584,10 +586,10 @@ export default function Quiz() {
                     alt="star"
                     className="star-image"
                     style={{
-                        '--star-width': '120px',
+                        '--star-width': '110px',
                         '--star-height': '80px',
-                        '--star-top': '300px',
-                        '--star-left': '500px'
+                        '--star-top': '740px',
+                        '--star-left': '800px'
                     }}
                 />
                 <img
@@ -597,8 +599,8 @@ export default function Quiz() {
                     style={{
                         '--turtle-width': '120px',
                         '--turtle-height': '80px',
-                        '--turtle-top': '300px',
-                        '--turtle-left': '500px'
+                        '--turtle-top': '200px',
+                        '--turtle-left': '1300px'
                     }}
                 />
                 <img
@@ -609,7 +611,7 @@ export default function Quiz() {
                         '--whale-width': '120px',
                         '--whale-height': '80px',
                         '--whale-top': '300px',
-                        '--whale-left': '500px'
+                        '--whale-left': '900px'
                     }}
                 />
             </div>
@@ -678,6 +680,13 @@ function CursorFollowImage({ anchor }) {
         };
     }, []);
 
+    const followerStyle = {
+        position: 'fixed',
+        top: mousePosition.y,
+        left: mousePosition.x,
+        zIndex: 3
+    }
+
     const svgStyle = {
         position: 'fixed',
         top: 0,
@@ -690,6 +699,12 @@ function CursorFollowImage({ anchor }) {
 
     return (
         <div className="quiz-container">
+
+            <img style={followerStyle}
+                src={FishHook}
+                alt="Fish Hook"
+                className="cursor-follower"
+            />
             <svg style={svgStyle}>
                 <line
                     x1={mousePosition.x}
