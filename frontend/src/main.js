@@ -17,7 +17,7 @@ export default function Main() {
 						<p style={{fontSize: '3em'}}>Your enterprise solution to security awareness</p>
 					</div>
 					<div className='d-flex flex-column'>
-						<img alt='logo-here' />
+						<img src={Logo} alt='logo-here' />
 					</div>
 				</div>
 			</div>
