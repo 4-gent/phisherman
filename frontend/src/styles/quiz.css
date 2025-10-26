@@ -383,9 +383,7 @@
     animation: swim 5s linear var(--swim-delay) infinite;
 }
 
-/* stopped state — animation removed and transform pinned to custom stop coordinates
-   Set --stop-x and --stop-y on the element (either in CSS or via JS) to choose stop location,
-   accepts units (px, vw, %, etc). Transition makes stopping appear smooth. */
+/* stopped state — animation removed and transform pinned to custom stop coordinates */
 .fishiesC.stopped {
     animation: none !important;
     transition: transform 300ms ease;
@@ -425,10 +423,6 @@
         transform: translateX(165vw) translateY(0) scaleX(1);
     }
 }
-
-/* Render the fish graphic via a flipped pseudo-element so the element's children (e.g. a button)
-    are not affected by the horizontal flip. Also override the RTL animation to remove the
-    scaleX flip on the container (we only flip the ::before image). */
 
 /* RTL swim: same motion but flipped horizontally */
 @keyframes swim-to-quarter-rtl {
