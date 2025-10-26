@@ -381,6 +381,7 @@ export default function Quiz() {
                         onLoad={updateAnchorFromImage}
                     />
                 </div>
+            </div>
         <div className='quiz-body'>
             <div className='quiz-midbar' />
             <div className='d-flex flex-row justify-content-between'>

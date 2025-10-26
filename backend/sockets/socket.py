@@ -87,9 +87,6 @@ def handle_chat_message(data):
     # use the same refiner worker but emit as 'chat_response'
     socketio.start_background_task(_refine_worker, template, message, sid, 'chat_response')
     
-
-socketio.emit('concept_update', test_payload, room=room)
-
 # Register quiz socket namespace handlers
 try:
     from trainer.quiz_socket import register_quiz_socketio_handlers
