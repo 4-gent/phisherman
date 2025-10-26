@@ -22,11 +22,13 @@
     left: 0px;
     top: 0;
     /* transform: translateX(-50%); */
-    width: 3000px;  /* Added width */
+    width: 3000px;
+    /* Added width */
     /* height: 437.9px; */
     height: 163px;
     background: #fffeff;
-    z-index: 1;  /* Lowered z-index to be behind fisherman */
+    z-index: 1;
+    /* Lowered z-index to be behind fisherman */
 }
 
 .inner-white-box {
@@ -44,7 +46,7 @@
     background: #f5f5f5;
     border: 3px solid #6b8eb5;
     border-radius: 30px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 
     /* center content */
     display: flex;
@@ -55,30 +57,10 @@
     padding: 8px 16px;
 }
 
-/* hide native elements (we render via CSS variables instead) */
-.inner-white-box .quiz-question,
-.inner-white-box .quiz-instructions {
-    display: none;
-}
-
-/* render the question and instruction from CSS variables */
-.inner-white-box::before {
-    content: var(--quiz-question);
-    display: block;
-    font-size: var(--quiz-question-font-size);
-    font-weight: 700;
-    color: #123;
-    margin-bottom: 6px;
-    white-space: pre-wrap;
-}
-
+/* Use direct rendering instead of CSS variables to avoid duplication */
+.inner-white-box::before,
 .inner-white-box::after {
-    content: var(--quiz-instruction);
-    display: block;
-    font-size: var(--quiz-instruction-font-size);
-    color: #333;
-    margin-top: 6px;
-    white-space: pre-wrap;
+    display: none !important;
 }
 
 .quiz-body {
@@ -102,19 +84,32 @@
 }
 
 .tracker-box {
-    background: rgba(255,255,255,0.95);
+    background: rgba(255, 255, 255, 0.95);
     padding: 8px 10px;
     border-radius: 8px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
     min-width: 96px;
     text-align: center;
 }
 
-.tracker-label { font-size: 15px; color: #666; }
-.tracker-value { font-weight: 700; font-size: 16px; color: #111; }
+.tracker-label {
+    font-size: 15px;
+    color: #666;
+}
 
-.correct-box { border: 1px solid rgba(58, 150, 80, 0.12); }
-.score-box { border: 1px solid rgba(54, 123, 232, 0.12); }
+.tracker-value {
+    font-weight: 700;
+    font-size: 16px;
+    color: #111;
+}
+
+.correct-box {
+    border: 1px solid rgba(58, 150, 80, 0.12);
+}
+
+.score-box {
+    border: 1px solid rgba(54, 123, 232, 0.12);
+}
 
 .fisherman-image {
     width: 300px;  /* You can adjust this value */
@@ -138,7 +133,9 @@
     -webkit-touch-callout: none; /* iOS Safari */
 }
 
-.fishiesA, .fishiesB, .fishiesC {
+.fishiesA,
+.fishiesB,
+.fishiesC {
     /* Controls (change these on each fish instance as inline styles or via a class):
        --swim-duration: how long one crossing takes (lower = faster)
        --swim-delay: delay before starting
@@ -174,6 +171,106 @@
     will-change: transform;
 }
 
+/* Feedback states for fish buttons */
+.fishiesA.correct,
+.fishiesB.correct,
+.fishiesC.correct {
+    filter: drop-shadow(0 0 15px rgba(58, 150, 80, 1)) brightness(1.3);
+    animation: none !important;
+    border: 3px solid #3a9650 !important;
+    box-shadow: 0 0 20px rgba(58, 150, 80, 0.8) !important;
+}
+
+.fishiesA.wrong,
+.fishiesB.wrong,
+.fishiesC.wrong {
+    filter: drop-shadow(0 0 15px rgba(211, 47, 47, 1)) brightness(0.9);
+    animation: none !important;
+    border: 3px solid #d32f2f !important;
+    box-shadow: 0 0 20px rgba(211, 47, 47, 0.8) !important;
+}
+
+.fishiesA.correct-answer,
+.fishiesB.correct-answer,
+.fishiesC.correct-answer {
+    filter: drop-shadow(0 0 10px rgba(58, 150, 80, 0.6));
+    animation: none !important;
+    border: 2px dashed #3a9650 !important;
+}
+
+.feedback-indicator {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 32px;
+    font-weight: 900;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    z-index: 10;
+    pointer-events: none;
+}
+
+.fishiesA.correct .feedback-indicator,
+.fishiesB.correct .feedback-indicator,
+.fishiesC.correct .feedback-indicator {
+    color: #3a9650;
+}
+
+.fishiesA.wrong .feedback-indicator,
+.fishiesB.wrong .feedback-indicator,
+.fishiesC.wrong .feedback-indicator {
+    color: #d32f2f;
+}
+
+.fishiesA.locked,
+.fishiesB.locked,
+.fishiesC.locked {
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+
+.fishiesA.selected,
+.fishiesB.selected,
+.fishiesC.selected {
+    filter: brightness(1.2);
+}
+
+/* Show text content on fish buttons over background images */
+.fishiesA,
+.fishiesB,
+.fishiesC {
+    color: #fff !important;
+    font-size: 16px !important;
+    font-weight: 700 !important;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8), -1px -1px 2px rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 10px;
+    overflow: visible;
+    line-height: 1.2;
+}
+
+/* Show question text normally */
+.inner-white-box .quiz-question {
+    display: block !important;
+    font-size: 20px;
+    font-weight: 700;
+    color: #123;
+    margin-bottom: 6px;
+    white-space: pre-wrap;
+    margin-top: 0;
+}
+
+.inner-white-box .quiz-instructions {
+    display: block !important;
+    font-size: 14px;
+    color: #333;
+    margin-top: 6px;
+    white-space: pre-wrap;
+    margin-bottom: 0;
+}
+
 /* Ensure hover/focus don't introduce a background */
 .fishiesA button:hover,
 .fishiesB button:hover,
@@ -186,12 +283,21 @@
 }
 
 /* Use each fish's own artwork but keep the same base behavior as fishiesA */
-.fishiesA { background-image: url('images/fishA.png'); }
-.fishiesA { --swim-start-y: 30%; }
-.fishiesB { background-image: url('images/fishB.png'); }
-.fishiesB { --swim-start-y: 50%; }
-.fishiesC { background-image: url('images/fishC.png'); }
-.fishiesC { --swim-start-y: 70%; }
+.fishiesA {
+    background-image: url('images/fishA.png');
+    --swim-start-y: 30%;
+}
+
+.fishiesB {
+    background-image: url('images/fishB.png');
+    --swim-start-y: 50%;
+}
+
+.fishiesC {
+    background-image: url('images/fishC.png');
+    --swim-start-y: 70%;
+}
+
 /* first natural swim animation state */
 
 .fishiesA.playing1 {
@@ -215,6 +321,7 @@
     transition: transform 300ms ease;
     transform: translateX(var(--stop-x, 25vw)) translateY(var(--stop-y, 0)) scaleX(1);
 }
+
 /* Make fishiesB and fishiesC behave like fishiesA */
 
 .fishiesB.playing1 {
@@ -238,6 +345,7 @@
     transition: transform 300ms ease;
     transform: translateX(var(--stop-x, 25vw)) translateY(var(--stop-y, 0)) scaleX(1);
 }
+
 .fishiesC.playing1 {
     /* move to 1/4 of the viewport width in 5s and remain there */
     will-change: transform;
@@ -263,33 +371,72 @@
 
 /* LTR swim: translate from left off-screen to right off-screen, with subtle bobbing */
 @keyframes swim-to-quarter {
-    0%   { transform: translateX(0) translateY(0) scaleX(1); }
-    100% { transform: translateX(25vw) translateY(0) scaleX(1); }
+    0% {
+        transform: translateX(0) translateY(0) scaleX(1);
+    }
+
+    100% {
+        transform: translateX(25vw) translateY(0) scaleX(1);
+    }
 }
 
 @keyframes swim {
-    0%   { transform: translateX(25vw) translateY(0) scaleX(1); }
-    25%  { transform: translateX(60vw) translateY(calc(var(--swim-bob) * -0.6)) scaleX(1); }
-    50%  { transform: translateX(90vw) translateY(calc(var(--swim-bob))) scaleX(1); }
-    75%  { transform: translateX(120vw) translateY(calc(var(--swim-bob) * -0.4)) scaleX(1); }
-    100% { transform: translateX(165vw) translateY(0) scaleX(1); }
+    0% {
+        transform: translateX(25vw) translateY(0) scaleX(1);
+    }
+
+    25% {
+        transform: translateX(60vw) translateY(calc(var(--swim-bob) * -0.6)) scaleX(1);
+    }
+
+    50% {
+        transform: translateX(90vw) translateY(calc(var(--swim-bob))) scaleX(1);
+    }
+
+    75% {
+        transform: translateX(120vw) translateY(calc(var(--swim-bob) * -0.4)) scaleX(1);
+    }
+
+    100% {
+        transform: translateX(165vw) translateY(0) scaleX(1);
+    }
 }
+
 /* Render the fish graphic via a flipped pseudo-element so the element's children (e.g. a button)
     are not affected by the horizontal flip. Also override the RTL animation to remove the
     scaleX flip on the container (we only flip the ::before image). */
 
 /* RTL swim: same motion but flipped horizontally */
 @keyframes swim-to-quarter-rtl {
-    0%   { transform: translateX(0) translateY(0); }
-    100% { transform: translateX(-25vw) translateY(0); }
+    0% {
+        transform: translateX(0) translateY(0);
+    }
+
+    100% {
+        transform: translateX(-25vw) translateY(0);
+    }
 }
 
 @keyframes swim-rtl {
-    0%   { transform: translateX(-25) translateY(0); }
-    25%  { transform: translateX(calc(-60vw - 10vw)) translateY(calc(var(--swim-bob) * -0.6)); }
-    50%  { transform: translateX(calc(-90vw - 15vw)) translateY(calc(var(--swim-bob))); }
-    75%  { transform: translateX(calc(-120vw - 20vw)) translateY(calc(var(--swim-bob) * -0.4)); }
-    100% { transform: translateX(calc(-165vw - 30vw)) translateY(0); }
+    0% {
+        transform: translateX(-25) translateY(0);
+    }
+
+    25% {
+        transform: translateX(calc(-60vw - 10vw)) translateY(calc(var(--swim-bob) * -0.6));
+    }
+
+    50% {
+        transform: translateX(calc(-90vw - 15vw)) translateY(calc(var(--swim-bob)));
+    }
+
+    75% {
+        transform: translateX(calc(-120vw - 20vw)) translateY(calc(var(--swim-bob) * -0.4));
+    }
+
+    100% {
+        transform: translateX(calc(-165vw - 30vw)) translateY(0);
+    }
 }
 
 .quiz-midbar {
