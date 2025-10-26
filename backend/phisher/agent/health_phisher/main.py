@@ -1,104 +1,222 @@
+"""
+Health Phisher Agent - Hosted on Agentverse
+Generates healthcare phishing templates for cybersecurity training.
+"""
+
+from uagents import Agent, Context, Protocol
+from uagents_core.contrib.protocols.chat import ChatMessage, TextContent, StartSessionContent, EndSessionContent
 from datetime import datetime
 from uuid import uuid4
+import json
 
-from openai import OpenAI
-from uagents import Context, Protocol, Agent
-from uagents_core.contrib.protocols.chat import (
-    ChatAcknowledgement,
-    ChatMessage,
-    EndSessionContent,
-    StartSessionContent,
-    TextContent,
-    chat_protocol_spec,
-)
+# Initialize agent
+agent = Agent(name="health_phisher")
+protocol = Protocol()
 
-##
-### Health Phisher Agent
-##
-## This agent specializes in generating healthcare phishing email templates for cybersecurity training.
-## It focuses on medical, insurance, pharmaceutical, and healthcare service phishing scenarios.
-##
-
-def create_text_chat(text: str, end_session: bool = False) -> ChatMessage:
-    content = [TextContent(type="text", text=text)]
-    if end_session:
-        content.append(EndSessionContent(type="end-session"))
-    return ChatMessage(timestamp=datetime.utcnow(), msg_id=uuid4(), content=content)
-
-# the subject that this assistant is an expert in
-subject_matter = "healthcare phishing template generation and medical security training"
-
-client = OpenAI(
-    # By default, we are using the ASI-1 LLM endpoint and model
-    base_url='https://api.asi1.ai/v1',
-    # You can get an ASI-1 api key by creating an account at https://asi1.ai/dashboard/api-keys
-    api_key='insert API KEYS',
-)
-
-agent = Agent()
-
-# We create a new protocol which is compatible with the chat protocol spec. This ensures
-# compatibility between agents
-protocol = Protocol(spec=chat_protocol_spec)
-
-# We define the handler for the chat messages that are sent to your agent
-@protocol.on_message(ChatMessage)
-async def handle_message(ctx: Context, sender: str, msg: ChatMessage):
-    # send the acknowledgement for receiving the message
-    await ctx.send(
-        sender,
-        ChatAcknowledgement(timestamp=datetime.now(), acknowledged_msg_id=msg.msg_id),
+def txt(s: str) -> ChatMessage:
+    """Helper to create text message"""
+    return ChatMessage(
+        timestamp=datetime.utcnow(),
+        msg_id=str(uuid4()),
+        content=[TextContent(type="text", text=s)]
     )
 
-    # 2) greet if a session starts
-    if any(isinstance(item, StartSessionContent) for item in msg.content):
-        await ctx.send(
-            sender,
-            create_text_chat(f"Hi! I'm the health_phisher agent specializing in healthcare phishing templates for cybersecurity training. I can generate medical, insurance, and pharmaceutical phishing scenarios. How can I help?", end_session=False),
-        )
+def generate_health_email(scenario: str = "medical") -> dict:
+    """Generate healthcare phishing email templates"""
+    
+    templates = {
+        "medical": {
+            "subject": "Important: Medical Records Update Required",
+            "preheader": "Verify your health information",
+            "html_body": """
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: #007bff; color: white; padding: 20px; text-align: center; }
+        .content { background: #f9f9f9; padding: 30px; border: 1px solid #ddd; }
+        .button { background: #28a745; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block; margin: 20px 0; }
+        .info { background: #d1ecf1; border-left: 4px solid #17a2b8; padding: 15px; margin: 20px 0; }
+        .footer { text-align: center; padding: 20px; color: #666; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>🏥 Patient Portal</h2>
+        </div>
+        <div class="content">
+            <h3>Medical Records Update Required</h3>
+            <p>Dear {{recipient_name}},</p>
+            <p>Your healthcare provider needs to update your medical records to ensure accuracy and continued access to your patient portal.</p>
+            
+            <div class="info">
+                <strong>📋 Action Required:</strong> Please review and confirm your medical information to maintain portal access.
+            </div>
+            
+            <p>Click below to access your patient portal:</p>
+            <p style="text-align: center;">
+                <a href="{{verification_link}}" class="button">Update Medical Records</a>
+            </p>
+            
+            <p>This update should take less than 5 minutes. Your information is protected under HIPAA regulations.</p>
+            <p>If you have questions, please contact our patient support line.</p>
+        </div>
+        <div class="footer">
+            <p>© 2024 Healthcare Provider. HIPAA Compliant.</p>
+            <p>Your health information is secure and confidential.</p>
+        </div>
+    </div>
+</body>
+</html>
+            """,
+            "plain_text_body": """
+Medical Records Update Required
 
-    text = msg.text()
-    if not text:
+Dear {{recipient_name}},
+
+Your healthcare provider needs to update your medical records to ensure accuracy and continued access to your patient portal.
+
+📋 ACTION REQUIRED: Please review and confirm your medical information to maintain portal access.
+
+Please visit this link to update your records:
+{{verification_link}}
+
+This update should take less than 5 minutes. Your information is protected under HIPAA regulations.
+
+If you have questions, please contact our patient support line.
+
+© 2024 Healthcare Provider. HIPAA Compliant.
+            """
+        },
+        "insurance": {
+            "subject": "Health Insurance Coverage Update - Verification Needed",
+            "preheader": "Your coverage requires verification",
+            "html_body": """
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: #28a745; color: white; padding: 20px; text-align: center; }
+        .content { background: #f9f9f9; padding: 30px; border: 1px solid #ddd; }
+        .button { background: #28a745; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block; margin: 20px 0; }
+        .alert { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 20px 0; }
+        .footer { text-align: center; padding: 20px; color: #666; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>🏥 Health Insurance</h2>
+        </div>
+        <div class="content">
+            <h3>Coverage Verification Required</h3>
+            <p>Dear {{recipient_name}},</p>
+            <p>We need to verify your health insurance coverage to ensure continued benefits.</p>
+            
+            <div class="alert">
+                <strong>⚠️ Important:</strong> Please verify your coverage details within 7 days to avoid any interruption in benefits.
+            </div>
+            
+            <p>Click below to verify your coverage:</p>
+            <p style="text-align: center;">
+                <a href="{{verification_link}}" class="button">Verify Coverage</a>
+            </p>
+            
+            <p>This verification helps us maintain accurate records and ensure you receive the benefits you're entitled to.</p>
+            <p>Thank you for your prompt attention.</p>
+        </div>
+        <div class="footer">
+            <p>© 2024 Health Insurance. Protecting your health.</p>
+            <p>Secure and confidential.</p>
+        </div>
+    </div>
+</body>
+</html>
+            """,
+            "plain_text_body": """
+Health Insurance Coverage Update
+
+Dear {{recipient_name}},
+
+We need to verify your health insurance coverage to ensure continued benefits.
+
+⚠️ IMPORTANT: Please verify your coverage details within 7 days to avoid any interruption in benefits.
+
+Please verify your coverage here:
+{{verification_link}}
+
+This verification helps us maintain accurate records and ensure you receive the benefits you're entitled to.
+
+Thank you for your prompt attention.
+
+© 2024 Health Insurance. Protecting your health.
+            """
+        }
+    }
+    
+    return templates.get(scenario, templates["medical"])
+
+@protocol.on_message(ChatMessage)
+async def on_chat(ctx: Context, sender: str, msg: ChatMessage):
+    """Handle incoming chat messages"""
+    
+    # Handle session start
+    if any(isinstance(c, StartSessionContent) for c in msg.content):
+        await ctx.send(sender, txt("Health Phisher ready. I generate healthcare phishing templates for cybersecurity training. How can I help?"))
         return
+    
+    # Handle session end
+    if any(isinstance(c, EndSessionContent) for c in msg.content):
+        ctx.logger.info("Session ended")
+        return
+    
+    # Extract user text
+    user_text = msg.text() or ""
+    ctx.logger.info(f"Received message: {user_text}")
+    
+    # Process the request and generate email
+    scenario = "medical"
+    if "insurance" in user_text.lower() or "coverage" in user_text.lower():
+        scenario = "insurance"
+    elif "appointment" in user_text.lower() or "prescription" in user_text.lower():
+        scenario = "medical"
+    
+    # Generate the email template
+    email = generate_health_email(scenario)
+    
+    # Create response with full email details
+    response = f"""
+🏥 GENERATED HEALTHCARE PHISHING EMAIL 🏥
 
-    try:
-        r = client.chat.completions.create(
-            model="asi1-mini",
-            messages=[
-                {"role": "system", "content": f"""You are the health_phisher agent for cybersecurity training. You specialize in generating healthcare phishing email templates.
+Subject: {email['subject']}
+Preheader: {email['preheader']}
 
-Your expertise includes:
-- Medical appointment and prescription notifications
-- Health insurance and coverage updates
-- Pharmaceutical and drug safety alerts
-- Hospital and clinic communications
-- Medical record and privacy notifications
-- COVID-19 and public health information
-- Mental health and wellness services
-- Medical device and equipment alerts
+📧 EMAIL CONTENT:
+{email['plain_text_body']}
 
-Generate structured JSON templates with fields: template_id, subject, preheader, html_body, plain_text_body, placeholders, urgency_score, safety_flags, recommended_redirect.
+📊 FULL EMAIL DATA:
+{json.dumps(email, indent=2)}
 
-Focus on realistic healthcare scenarios that are commonly used in phishing attacks for educational purposes. Always include safety flags and ethical guidelines.
+✅ Healthcare phishing template ready for cybersecurity training!
+"""
+    await ctx.send(sender, txt(response))
+    
+    # Handle end session request
+    if "end" in user_text.lower() or "quit" in user_text.lower():
+        await ctx.send(sender, ChatMessage(
+            timestamp=datetime.utcnow(),
+            msg_id=str(uuid4()),
+            content=[EndSessionContent(type="end-session")]
+        ))
 
-If asked about other topics, politely redirect to your expertise in healthcare phishing template generation."""},
-                {"role": "user", "content": text},
-            ],
-            max_tokens=2048,
-        )
-
-        response = str(r.choices[0].message.content)
-    except Exception as e:
-        ctx.logger.exception('Error querying model')
-        response = f"An error occurred while processing the request. Please try again later. {e}"
-
-    await ctx.send(sender, create_text_chat(response, end_session=True))
-
-@protocol.on_message(ChatAcknowledgement)
-async def handle_ack(ctx: Context, sender: str, msg: ChatAcknowledgement):
-    # we are not interested in the acknowledgements for this example, but they can be useful to
-    # implement read receipts, for example.
-    pass
-
-# attach the protocol to the agent
 agent.include(protocol, publish_manifest=True)
+
+if __name__ == "__main__":
+    agent.run()
