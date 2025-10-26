@@ -1,116 +1,238 @@
+"""
+Finance Phisher Agent - Hosted on Agentverse
+Generates financial phishing templates for cybersecurity training.
+"""
+
+from uagents import Agent, Context, Protocol
+from uagents_core.contrib.protocols.chat import ChatMessage, TextContent, StartSessionContent, EndSessionContent
 from datetime import datetime
 from uuid import uuid4
+import json
 
-from openai import OpenAI
-from uagents import Context, Protocol, Agent
-from uagents_core.contrib.protocols.chat import (
-    ChatAcknowledgement,
-    ChatMessage,
-    EndSessionContent,
-    StartSessionContent,
-    TextContent,
-    chat_protocol_spec,
-)
+# Initialize agent
+agent = Agent(name="finance_phisher")
+protocol = Protocol()
 
-##
-### Finance Phisher Agent
-##
-## This agent specializes in generating financial phishing email templates for cybersecurity training.
-## It focuses on banking, payment verification, invoices, and financial account phishing scenarios.
-##
-
-def create_text_chat(text: str, end_session: bool = False) -> ChatMessage:
-    content = [TextContent(type="text", text=text)]
-    if end_session:
-        content.append(EndSessionContent(type="end-session"))
-    return ChatMessage(timestamp=datetime.utcnow(), msg_id=uuid4(), content=content)
-
-# the subject that this assistant is an expert in
-subject_matter = "financial phishing"
-
-client = OpenAI(
-    # By default, we are using the ASI-1 LLM endpoint and model
-    base_url='https://api.asi1.ai/v1',
-
-    # You can get an ASI-1 api key by creating an account at https://asi1.ai/dashboard/api-keys
-    api_key='insert API KEY',
-)
-
-agent = Agent()
-
-# We create a new protocol which is compatible with the chat protocol spec. This ensures
-# compatibility between agents
-protocol = Protocol(spec=chat_protocol_spec)
-
-
-# We define the handler for the chat messages that are sent to your agent
-@protocol.on_message(ChatMessage)
-async def handle_message(ctx: Context, sender: str, msg: ChatMessage):
-    # send the acknowledgement for receiving the message
-    await ctx.send(
-        sender,
-        ChatAcknowledgement(timestamp=datetime.now(), acknowledged_msg_id=msg.msg_id),
+def txt(s: str) -> ChatMessage:
+    """Helper to create text message"""
+    return ChatMessage(
+        timestamp=datetime.utcnow(),
+        msg_id=str(uuid4()),
+        content=[TextContent(type="text", text=s)]
     )
 
-    # 2) greet if a session starts
-    if any(isinstance(item, StartSessionContent) for item in msg.content):
-        await ctx.send(
-            sender,
-            create_text_chat(f"Hi! I'm a {subject_matter} expert, how can I help?", end_session=False),
-        )
+def generate_finance_email(scenario: str = "banking") -> dict:
+    """Generate financial phishing email templates"""
+    
+    templates = {
+        "banking": {
+            "subject": "🔴 URGENT: Unauthorized Transaction Detected - Immediate Verification Required",
+            "preheader": "Security alert: Verify your account now",
+            "html_body": """
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: #dc3545; color: white; padding: 20px; text-align: center; }
+        .content { background: #f9f9f9; padding: 30px; border: 1px solid #ddd; }
+        .button { background: #dc3545; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block; margin: 20px 0; }
+        .alert { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 20px 0; }
+        .transaction { background: white; padding: 15px; border: 1px solid #ddd; margin: 15px 0; }
+        .footer { text-align: center; padding: 20px; color: #666; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>🏦 Security Alert</h2>
+        </div>
+        <div class="content">
+            <h3>Unauthorized Transaction Detected</h3>
+            <p>Dear {{recipient_name}},</p>
+            <p>We have detected a suspicious transaction on your account that requires immediate verification.</p>
+            
+            <div class="alert">
+                <strong>⚠️ Action Required:</strong> Please verify this transaction within 24 hours or your account will be temporarily suspended for security.
+            </div>
+            
+            <div class="transaction">
+                <p><strong>Transaction Details:</strong></p>
+                <p>Amount: ${{amount}}</p>
+                <p>Merchant: {{merchant_name}}</p>
+                <p>Date: {{transaction_date}}</p>
+                <p>Status: PENDING VERIFICATION</p>
+            </div>
+            
+            <p>If you recognize this transaction, please click below to verify:</p>
+            <p style="text-align: center;">
+                <a href="{{verification_link}}" class="button">Verify Transaction</a>
+            </p>
+            
+            <p>If you did not authorize this transaction, please contact our fraud department immediately.</p>
+            <p>Thank you for your prompt attention to this security matter.</p>
+        </div>
+        <div class="footer">
+            <p>© 2024 Trust Bank. Protecting your financial security.</p>
+            <p>This is an automated security notification.</p>
+        </div>
+    </div>
+</body>
+</html>
+            """,
+            "plain_text_body": """
+Unauthorized Transaction Detected - Action Required
 
-    text = msg.text()
-    if not text:
+Dear {{recipient_name}},
+
+We have detected a suspicious transaction on your account that requires immediate verification.
+
+⚠️ ACTION REQUIRED: Please verify this transaction within 24 hours or your account will be temporarily suspended for security.
+
+Transaction Details:
+Amount: ${{amount}}
+Merchant: {{merchant_name}}
+Date: {{transaction_date}}
+Status: PENDING VERIFICATION
+
+If you recognize this transaction, please verify here:
+{{verification_link}}
+
+If you did not authorize this transaction, please contact our fraud department immediately.
+
+Thank you for your prompt attention to this security matter.
+
+© 2024 Trust Bank. Protecting your financial security.
+            """
+        },
+        "payment": {
+            "subject": "Payment Verification Required - Account Update Needed",
+            "preheader": "Verify your payment information",
+            "html_body": """
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: #007bff; color: white; padding: 20px; text-align: center; }
+        .content { background: #f9f9f9; padding: 30px; border: 1px solid #ddd; }
+        .button { background: #007bff; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block; margin: 20px 0; }
+        .info { background: #d1ecf1; border-left: 4px solid #17a2b8; padding: 15px; margin: 20px 0; }
+        .footer { text-align: center; padding: 20px; color: #666; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>💳 Payment Services</h2>
+        </div>
+        <div class="content">
+            <h3>Payment Method Update Required</h3>
+            <p>Dear {{recipient_name}},</p>
+            <p>We need to verify your payment information to ensure continued service.</p>
+            
+            <div class="info">
+                <strong>📋 Update Required:</strong> Your payment method requires verification due to recent security updates.
+            </div>
+            
+            <p>Please click below to update your payment information:</p>
+            <p style="text-align: center;">
+                <a href="{{verification_link}}" class="button">Update Payment Info</a>
+            </p>
+            
+            <p>This update is required to maintain uninterrupted service. The process takes less than 3 minutes.</p>
+            <p>Thank you for being a valued customer.</p>
+        </div>
+        <div class="footer">
+            <p>© 2024 Payment Services. Secure & Verified.</p>
+            <p>Your payment security is our priority.</p>
+        </div>
+    </div>
+</body>
+</html>
+            """,
+            "plain_text_body": """
+Payment Method Update Required
+
+Dear {{recipient_name}},
+
+We need to verify your payment information to ensure continued service.
+
+📋 UPDATE REQUIRED: Your payment method requires verification due to recent security updates.
+
+Please update your payment information here:
+{{verification_link}}
+
+This update is required to maintain uninterrupted service. The process takes less than 3 minutes.
+
+Thank you for being a valued customer.
+
+© 2024 Payment Services. Secure & Verified.
+            """
+        }
+    }
+    
+    return templates.get(scenario, templates["banking"])
+
+@protocol.on_message(ChatMessage)
+async def on_chat(ctx: Context, sender: str, msg: ChatMessage):
+    """Handle incoming chat messages"""
+    
+    # Handle session start
+    if any(isinstance(c, StartSessionContent) for c in msg.content):
+        await ctx.send(sender, txt("Finance Phisher ready. I generate financial phishing templates for cybersecurity training. How can I help?"))
         return
+    
+    # Handle session end
+    if any(isinstance(c, EndSessionContent) for c in msg.content):
+        ctx.logger.info("Session ended")
+        return
+    
+    # Extract user text
+    user_text = msg.text() or ""
+    ctx.logger.info(f"Received message: {user_text}")
+    
+    # Process the request and generate email
+    scenario = "banking"
+    if "payment" in user_text.lower() or "paypal" in user_text.lower():
+        scenario = "payment"
+    elif "invoice" in user_text.lower() or "billing" in user_text.lower():
+        scenario = "banking"
+    elif "credit" in user_text.lower() or "card" in user_text.lower():
+        scenario = "payment"
+    
+    # Generate the email template
+    email = generate_finance_email(scenario)
+    
+    # Create response with full email details
+    response = f"""
+💳 GENERATED FINANCIAL PHISHING EMAIL 💳
 
-    try:
-        r = client.chat.completions.create(
-            model="asi1-mini",
-            messages=[
-                {"role": "system", "content": f"""You are a helpful assistant who only answers questions about {subject_matter}. If the user asks about any other topics, you should politely say that you do not know about them.
+Subject: {email['subject']}
+Preheader: {email['preheader']}
 
-You specialize in generating financial phishing email templates for cybersecurity training. Your expertise includes:
-- Banking account phishing (Chase, Bank of America, Wells Fargo, etc.)
-- Payment verification phishing
-- Invoice and billing phishing
-- Credit card phishing
-- PayPal and payment processor phishing
-- Cryptocurrency wallet phishing
-- Financial account suspension phishing
-- Tax-related phishing
-- Investment account phishing
-- Loan and mortgage phishing
+📧 EMAIL CONTENT:
+{email['plain_text_body']}
 
-When generating phishing templates, always include:
-- Realistic subject lines
-- Convincing sender information
-- Urgent but believable scenarios
-- Clear call-to-action buttons
-- Professional email formatting
-- Social engineering techniques
-- Financial information collection attempts
+📊 FULL EMAIL DATA:
+{json.dumps(email, indent=2)}
 
-Remember: These templates are for educational and training purposes only to help organizations improve their cybersecurity awareness."""},
-                {"role": "user", "content": text},
-            ],
-            max_tokens=2048,
-        )
+✅ Financial phishing template ready for cybersecurity training!
+"""
+    await ctx.send(sender, txt(response))
+    
+    # Handle end session request
+    if "end" in user_text.lower() or "quit" in user_text.lower():
+        await ctx.send(sender, ChatMessage(
+            timestamp=datetime.utcnow(),
+            msg_id=str(uuid4()),
+            content=[EndSessionContent(type="end-session")]
+        ))
 
-        response = str(r.choices[0].message.content)
-    except Exception as e:
-        ctx.logger.exception('Error querying model')
-        response = f"An error occurred while processing the request. Please try again later. {e}"
-
-    await ctx.send(sender, create_text_chat(response, end_session=True))
-
-
-@protocol.on_message(ChatAcknowledgement)
-async def handle_ack(ctx: Context, sender: str, msg: ChatAcknowledgement):
-    # we are not required to handle acknowledgements
-    pass
-
-
-# we include the protocol in the agent
 agent.include(protocol, publish_manifest=True)
 
 if __name__ == "__main__":
