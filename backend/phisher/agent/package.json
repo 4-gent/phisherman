@@ -1,0 +1,26 @@
+{
+    "name": "phisherman-agent-proxy",
+    "version": "1.0.0",
+    "description": "Proxy server for Agentverse hosted agents",
+    "main": "proxy_agent_server.js",
+    "scripts": {
+        "start": "node proxy_agent_server.js",
+        "dev": "nodemon proxy_agent_server.js"
+    },
+    "dependencies": {
+        "express": "^4.18.2",
+        "axios": "^1.6.0",
+        "dotenv": "^16.3.1",
+        "uuid": "^9.0.1"
+    },
+    "devDependencies": {
+        "nodemon": "^3.0.1"
+    },
+    "keywords": [
+        "agentverse",
+        "proxy",
+        "uagent"
+    ],
+    "author": "Phisherman Team",
+    "license": "MIT"
+}
