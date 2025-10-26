@@ -76,24 +76,46 @@
        --swim-start-y: vertical start position (use % for viewport-relative or px for absolute)
        --swim-bob: vertical bob amplitude (px)
     */
-    --swim-duration: 20s;
     --swim-delay: 0s;
-    --swim-start-y: 50%;
+    --swim-start-y: 30%;
     --swim-bob: 25px;
 
-    width: 100px;
-    height: 100px;
+    width: 420px;
+    height: 420px;
     object-fit: contain;
     transform-origin: center;
 
-    /* positioned off-screen to the left and animated across the viewport */
+    /* positioned off-screen to the left; animation is toggled via the .playing class */
     position: absolute;
-    left: -15vw;    
+    left: -15vw;
     top: var(--swim-start-y, 50%);
 
     will-change: transform;
-    animation: swim var(--swim-duration) linear var(--swim-delay) infinite;
 }
+
+/* first natural swim animation state */
+.fishiesA.playing1 {
+    /* move to 1/4 of the viewport width in 5s and remain there */
+    will-change: transform;
+    animation: swim-to-quarter 5s ease forwards;
+}
+
+/* second natural swim animation state starts where the first ended,
+   set to run over 5s (instead of using --swim-duration) */
+.fishiesA.playing2 {
+    will-change: transform;
+    animation: swim 5s linear var(--swim-delay) infinite;
+}
+
+/* stopped state — animation removed and transform pinned to custom stop coordinates
+   Set --stop-x and --stop-y on the element (either in CSS or via JS) to choose stop location,
+   accepts units (px, vw, %, etc). Transition makes stopping appear smooth. */
+.fishiesA.stopped {
+    animation: none !important;
+    transition: transform 300ms ease;
+    transform: translateX(var(--stop-x, 25vw)) translateY(var(--stop-y, 0)) scaleX(1);
+}
+
 
 /* Add this class to make a fish swim right-to-left and face the other way */
 .fishiesB {
@@ -141,16 +163,27 @@
     will-change: transform;
     animation: swim var(--swim-duration) linear var(--swim-delay) infinite;
 }
+
 /* LTR swim: translate from left off-screen to right off-screen, with subtle bobbing */
-@keyframes swim {
+@keyframes swim-to-quarter {
     0%   { transform: translateX(0) translateY(0) scaleX(1); }
-    25%  { transform: translateX(calc(25vw + 10vw)) translateY(calc(var(--swim-bob) * -0.6)) scaleX(1); }
-    50%  { transform: translateX(calc(50vw + 15vw)) translateY(calc(var(--swim-bob))) scaleX(1); }
-    75%  { transform: translateX(calc(75vw + 20vw)) translateY(calc(var(--swim-bob) * -0.4)) scaleX(1); }
-    100% { transform: translateX(calc(110vw + 30vw)) translateY(0) scaleX(1); }
+    100% { transform: translateX(25vw) translateY(0) scaleX(1); }
+}
+
+@keyframes swim {
+    0%   { transform: translateX(25vw) translateY(0) scaleX(1); }
+    25%  { transform: translateX(60vw) translateY(calc(var(--swim-bob) * -0.6)) scaleX(1); }
+    50%  { transform: translateX(90vw) translateY(calc(var(--swim-bob))) scaleX(1); }
+    75%  { transform: translateX(120vw) translateY(calc(var(--swim-bob) * -0.4)) scaleX(1); }
+    100% { transform: translateX(165vw) translateY(0) scaleX(1); }
 }
 
 /* RTL swim: same motion but flipped horizontally */
+@keyframes swim-to-quarter-rtl {
+    0%   { transform: translateX(0) translateY(0) scaleX(-1); }
+    100% { transform: translateX(-25vw) translateY(0) scaleX(-1); }
+}
+
 @keyframes swim-rtl {
     0%   { transform: translateX(0) translateY(0) scaleX(-1); }
     25%  { transform: translateX(calc(-25vw - 10vw)) translateY(calc(var(--swim-bob) * -0.6)) scaleX(-1); }

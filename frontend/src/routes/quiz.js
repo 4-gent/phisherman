@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import '../styles/quiz.css'
 import fisherman from '../styles/images/fishing.png'
-import fish from '../styles/images/fish1.png'
 import FishHook from '../styles/images/fishHook.png'
 import FishA from '../styles/images/fishA.png'
 import FishB from '../styles/images/fishB.png'
@@ -45,6 +44,84 @@ export default function Quiz() {
     const [correctCount, setCorrectCount] = useState(0);
     const [score, setScore] = useState(0);
 
+    const [selected, setSelected] = useState({});
+
+    const toggleSelect = (key) => {
+        setSelected(prev => ({ ...prev, [key]: !prev[key] }));
+    };
+
+    const handleKeySelect = (e, key) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            toggleSelect(key);
+        }
+    };
+
+    // fish A play/stop state and timers
+    const [fishAState, setFishAState] = useState('playing'); // 'playing' | 'stopped'
+    const initialStopTimer = useRef(null);
+    const resumeTimer = useRef(null);
+
+    const finishTimerRef = useRef(null);
+
+    useEffect(() => {
+        // start in playing1 immediately
+        setFishAState('playing1');
+
+        // after 5s switch to stopped, then auto-resume to playing2 after 25s
+        initialStopTimer.current = setTimeout(() => {
+            setFishAState('stopped');
+            initialStopTimer.current = null;
+
+            resumeTimer.current = setTimeout(() => {
+                resumeTimer.current = null;
+                setFishAState('playing2');
+
+                // when playing2 finishes after 5s, mark finished (or set any state you prefer)
+                finishTimerRef.current = setTimeout(() => {
+                    setFishAState('finished');
+                    finishTimerRef.current = null;
+                }, 5000);
+            }, 25000); // 25s stopped period
+        }, 5000); // 5s playing1 period
+
+        return () => {
+            if (initialStopTimer.current) {
+                clearTimeout(initialStopTimer.current);
+                initialStopTimer.current = null;
+            }
+            if (resumeTimer.current) {
+                clearTimeout(resumeTimer.current);
+                resumeTimer.current = null;
+            }
+            if (finishTimerRef.current) {
+                clearTimeout(finishTimerRef.current);
+                finishTimerRef.current = null;
+            }
+        };
+    }, []);
+
+    const handleSendClick = () => {
+        // If currently stopped, cancel auto-resume and start playing2 immediately
+        if (fishAState === 'stopped') {
+            if (resumeTimer.current) {
+                clearTimeout(resumeTimer.current);
+                resumeTimer.current = null;
+            }
+            setFishAState('playing2');
+
+            // start the playing2 finish timer (5s) if not already running
+            if (finishTimerRef.current) {
+                clearTimeout(finishTimerRef.current);
+                finishTimerRef.current = null;
+            }
+            finishTimerRef.current = setTimeout(() => {
+                setFishAState('finished');
+                finishTimerRef.current = null;
+            }, 5000);
+        }
+    };
+
     return(
 
         <div className='quiz-scene'>
@@ -74,10 +151,42 @@ export default function Quiz() {
                     onLoad={updateAnchorFromImage}
                 />
             </div>
-                <img src={FishA} alt="fish" className='fishiesA'/>
-                <img src={FishB} alt="fish" className='fishiesB'/>
-                <img src={FishC} alt="fish" className='fishiesC'/>
+               <button type="submit" className='send-button' onClick={handleSendClick}></button>
+
+                    <img
+                        src={FishA}
+                        alt="fish A"
+                        className={`fishiesA ${fishAState} selectable ${selected.fishA ? 'selected' : ''}`}
+                        onClick={() => toggleSelect('fishA')}
+                        tabIndex={0}
+                        role="button"
+                        aria-pressed={!!selected.fishA}
+                        onKeyDown={(e) => handleKeySelect(e, 'fishA')}
+                    />
+
+                    <img
+                        src={FishB}
+                        alt="fish B"
+                        className={`fishiesB selectable ${selected.fishB ? 'selected' : ''}`}
+                        onClick={() => toggleSelect('fishB')}
+                        tabIndex={0}
+                        role="button"
+                        aria-pressed={!!selected.fishB}
+                        onKeyDown={(e) => handleKeySelect(e, 'fishB')}
+                    />
+
+                    <img
+                        src={FishC}
+                        alt="fish C"
+                        className={`fishiesC selectable ${selected.fishC ? 'selected' : ''}`}
+                        onClick={() => toggleSelect('fishC')}
+                        tabIndex={0}
+                        role="button"
+                        aria-pressed={!!selected.fishC}
+                        onKeyDown={(e) => handleKeySelect(e, 'fishC')}
+                    />
             </div>
+            
             <CursorFollowImage anchor={anchor} />
         </div>
     )
