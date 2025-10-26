@@ -239,6 +239,32 @@ export default function Quiz() {
     });
     const [selectedFish, setSelectedFish] = useState(null);
 
+     // Missing variables referenced elsewhere in the file — provide them and keep in sync
+    // Individual fishA state used by legacy logic in file
+    const [fishAState, setFishAState] = useState(fishStates.fishA)
+    useEffect(() => {
+        // keep fishStates.fishA in sync when fishAState changes
+        setFishStates(prev => ({ ...prev, fishA: fishAState }))
+    }, [fishAState])
+    useEffect(() => {
+        // keep fishAState in sync if fishStates is updated elsewhere
+        if (fishStates.fishA !== fishAState) setFishAState(fishStates.fishA)
+    }, [fishStates.fishA])
+
+    // selection map (legacy API used in several places). Keep selected and selectedFish in sync.
+    const [selectedState, setSelectedState] = useState({})
+    const selected = selectedState
+    const setSelected = (val) => {
+        setSelectedState(val)
+        const keys = Object.keys(val || {}).filter(k => val[k])
+        setSelectedFish(keys.length ? keys[0] : null)
+    }
+
+    // timers used by animation/flow logic (refs so timers persist across renders)
+    const initialStopTimer = useRef(null)
+    const resumeTimer = useRef(null)
+    const finishTimerRef = useRef(null)
+
     // Handle fish selection (maps to quiz answer)
     const handleFishSelect = (fishKey, optionIndex) => {
         if (isAnswerLocked || completed || !currentQuestion) return;

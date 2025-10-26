@@ -202,7 +202,7 @@
     pointer-events: none;
     z-index: -1;                /* ensure the pseudo-image sits behind children (so text shows) */
     border-radius: inherit;
-
+}
 /* Feedback states for fish buttons */
 .fishiesA.correct,
 .fishiesB.correct,
