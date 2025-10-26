@@ -8,6 +8,7 @@ import Quiz from './routes/quiz';
 import Admin from './routes/admin';
 import Dashboard from './routes/dashboard';
 import Campaign from './routes/campaign';
+import Prompt from './routes/prompt';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
 			<Route path="/admin" element={<Admin />} />
 			<Route path="/dashboard" element={<Dashboard />} />
 			<Route path="/campaign" element={<Campaign />} />
+			<Route path="/prompt" element={<Prompt />} />
 		</Routes>
 	</Router>
   );

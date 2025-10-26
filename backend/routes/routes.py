@@ -112,12 +112,59 @@ def user_data():
             else:
                 return jsonify({'message': 'User not found'}), 404
 
-@app.route('/api/email', methods=['POST', 'OPTIONS'])
+@app.route('/api/prompt/send', methods=['POST', 'OPTIONS'])
 def email_send_route():
-    if request.method == 'POST' or request.method == 'OPTIONS':
-        print("Sending test email")
-        email_send()
-        return jsonify({'message': "something"}), 200
+    if request.method == 'OPTIONS':
+        return jsonify({'message': 'ok'}), 200
+
+    try:
+        data = request.get_json(silent=True) or {}
+        prompt = data.get('prompt') or data.get('message')
+
+        # try to coerce prompt from a JSON string into a dict
+        if isinstance(prompt, str):
+            try:
+                prompt_parsed = json.loads(prompt)
+                prompt = prompt_parsed
+            except Exception:
+                # not JSON — return a helpful error (or change this to accept plain text)
+                return jsonify({
+                    'success': False,
+                    'message': 'prompt must be a JSON object or a JSON-string containing the template fields',
+                    'received_type': 'string',
+                    'echo': prompt
+                }), 400
+
+        if not prompt or not isinstance(prompt, dict):
+            return jsonify({'success': False, 'message': 'prompt required and must be an object'}), 400
+
+        # optional: get company from session user
+        company = ''
+        try:
+            user_data = users.find_one({'_id': ObjectId(session.get('user_id'))}) if session.get('user_id') else None
+            if user_data:
+                company = user_data.get('company', '')
+                print(company)
+        except Exception as e:
+            print('warning: failed to lookup user/company:', e)
+
+        # validate required template fields
+        required = ['subject', 'preheader', 'html_body']
+        missing = [k for k in required if not prompt.get(k)]
+        if missing:
+            return jsonify({'success': False, 'message': f'missing template fields: {missing}'}), 400
+
+        subject = prompt.get('subject')
+        preheader = prompt.get('preheader')
+        html_body = prompt.get('html_body')
+
+        # send email (mailjet helper)
+        email_send(html_body, subject, preheader, company)
+        return jsonify({'success': True, 'message': 'campaign sent'}), 200
+
+    except Exception as e:
+        print('exception thrown at prompt_send: ', e)
+        return jsonify({'success': False, 'message': 'Server error', 'error': str(e)}), 500
     
 @app.route('/api/campaign', methods=['POST', 'OPTIONS'])
 def email_template_route():
@@ -130,19 +177,18 @@ def email_template_route():
         data = request.get_json(silent=True) or {}
         template = data.get('template') if isinstance(data, dict) else None
 
-        print('Template: ', template)
+        user_data = users.find_one({'_id': ObjectId(session['user_id'])})
+        company = ''
+        if user_data:
+            company = str(user_data['company'])
+            print("company", company)
 
         if not template:
             return jsonify({'success': False, 'message': 'template required'}), 400
 
         if template:
             email_template = orchestrate_flow(template)
-            email_result = json.dumps(email_template)
-            print("plain result: ", email_result)
-            print("data type: ", type(data))
-            print("parsed for html body: ", email_template['html_body'])
-            email_send()
-            
+            return jsonify({'template': email_template}), 200
 
         return jsonify({'success': True, 'message': 'input received', 'template': template}), 200
 
