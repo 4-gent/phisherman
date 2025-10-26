@@ -1,31 +1,67 @@
-.trainer-body{
+.trainer-body {
     background-color: #6AC5FE;
 }
-.trainer-container{
+
+.trainer-container {
     position: relative;
     background-color: #6AC5FE;
     height: 100%;
-    width: calc(100% - 15%);   
+    width: calc(100% - 15%);
     margin-left: 15%;
     z-index: 100;
 }
-.trainer-header{
+
+.trainer-header {
     position: absolute;
     top: 0;
     left: 0;
     color: white;
 }
-.trainer-header-text{
+
+.trainer-header-text {
     font-size: 5em;
 }
-.training-concept{
+
+.training-concept {
     text-align: left;
     margin-left: 5vw;
+    margin-top: 3vh;
+    margin-bottom: 3vh;
     color: white;
+    font-size: 1.2em;
+    width: 80%;
+    max-width: 900px;
+}
 
+.lesson-content {
+    font-family: inherit;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 8px;
+    border-left: 4px solid rgba(255, 255, 255, 0.5);
+    margin: 10px 0;
+    line-height: 1.6;
+}
+
+.lesson-content h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: white;
     font-size: 1.5em;
 }
-.trainer-button{
+
+.lesson-content ul {
+    margin: 0;
+    padding-left: 1.5rem;
+    color: white;
+}
+
+.lesson-content li {
+    margin-bottom: 0.5rem;
+    line-height: 1.4;
+}
+
+.trainer-button {
     position: relative;
     top: 50%;
     left: 50%;
@@ -43,7 +79,7 @@
     transition: 500ms;
 }
 
-.trainer-button:hover{
+.trainer-button:hover {
     transition: 500ms;
     background-color: rgba(2, 62, 138, 0.10);
     box-shadow: 0px 5px 15px 0px rgb(232, 231, 231, 1);
