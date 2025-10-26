@@ -1,0 +1,30 @@
+{
+    "template_id": "FINacbd1234",
+    "scenario_title": "Financial Account Verification Exercise",
+    "sanitized_description": "This template demonstrates common tactics used in financial phishing: urgent account verification requests, payment information requests, and security alerts. The template includes typical red flags like urgent action requirements and requests for sensitive information.",
+    "placeholders": {
+        "subject": "[FINANCIAL_INSTITUTION_NAME] Account Verification",
+        "preheader": "Action required to secure your account",
+        "body_notes": "Professional tone requesting verification. Mentions security concern or account issue. Contains call-to-action for verification process."
+    },
+    "red_flags": [
+        "Requests immediate action",
+        "Asks for account verification",
+        "Contains urgency language",
+        "May request sensitive information",
+        "Email sender may be spoofed"
+    ],
+    "training_objectives": [
+        "Identify urgency manipulation tactics",
+        "Recognize account verification scams",
+        "Understand social engineering in financial context",
+        "Practice detecting red flags"
+    ],
+    "urgency_score": 8,
+    "safety_notes": [
+        "This is an educational template only",
+        "Contains NO real links or actionable content",
+        "Intended for cybersecurity awareness training",
+        "Should NEVER be used for actual phishing"
+    ]
+}
