@@ -417,9 +417,9 @@ export default function Quiz() {
                 finishTimerRef.current = setTimeout(() => {
                     setFishAState('finished');
                     finishTimerRef.current = null;
-                }, 5000);
+                }, 2500);
             }, 25000);
-        }, 5000);
+        }, 2500);
     };
 
     useEffect(() => {

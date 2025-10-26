@@ -110,6 +110,8 @@
 .dashboard-card--leaderboard {
   display: flex;
   flex-direction: column;
+  overflow: scroll;
+  max-height: 55vh;
 }
 
 .dashboard-leaderboard-list {
@@ -117,6 +119,24 @@
   padding-left: 0;
   margin: 0.5rem 0 0;
   width: 100%;
+}
+
+/* Scrollbar polish (WebKit) */
+.dashboard-card--leaderboard::-webkit-scrollbar {
+  width: 10px;
+}
+.dashboard-card--leaderboard::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.35);
+  border-radius: 10px;
+}
+.dashboard-card--leaderboard::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+}
+
+/* Hide scrollbar for Chrome, Safari, and Opera */
+.dashboard-card--leaderboard::-webkit-scrollbar {
+  display: none;
 }
 
 .dashboard-leaderboard-item {
