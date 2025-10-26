@@ -214,7 +214,7 @@ export default function Quiz() {
         const el = fishermanRef.current;
         if (!el) return;
         const rect = el.getBoundingClientRect();
-        const pixelAnchor = { x: 790, y: -2610 }; // Anchor point in pixels relative to image
+        const pixelAnchor = { x: 790, y: -2466 }; // Anchor point in pixels relative to image
         const naturalW = el.naturalWidth || rect.width;
         const naturalH = el.naturalHeight || rect.height;
         const anchorX = rect.left + (pixelAnchor.x / naturalW) * rect.width;
@@ -667,6 +667,13 @@ function CursorFollowImage({ anchor }) {
         };
     }, []);
 
+    const followerStyle = {
+        position: 'fixed',
+        top: mousePosition.y,
+        left: mousePosition.x,
+        zIndex: 3
+    }
+
     const svgStyle = {
         position: 'fixed',
         top: 0,
@@ -679,6 +686,12 @@ function CursorFollowImage({ anchor }) {
 
     return (
         <div className="quiz-container">
+
+            <img style={followerStyle}
+                src={FishHook}
+                alt="Fish Hook"
+                className="cursor-follower"
+            />
             <svg style={svgStyle}>
                 <line
                     x1={mousePosition.x}

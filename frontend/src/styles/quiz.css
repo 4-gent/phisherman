@@ -449,6 +449,51 @@
     100% { transform: translateX(-165vw) translateY(0) scaleX(1); }
 }
 
+@keyframes backgroundswim {
+    0% {
+        transform: translateX(0) translateY(0) scaleX(1);
+    }
+    25% {
+        transform: translateX(40vw) translateY(calc(var(--swim-bob) * -0.6)) scaleX(1);
+    }
+    50% {
+        transform: translateX(80vw) translateY(calc(var(--swim-bob))) scaleX(1);
+    }
+    75% {
+        transform: translateX(120vw) translateY(calc(var(--swim-bob) * -0.4)) scaleX(1);
+    }
+    100% {
+        transform: translateX(165vw) translateY(0) scaleX(1);
+    }
+}
+
+@keyframes backgroundswim-rtl {
+    0% {
+        transform: translateX(0) translateY(0) scaleX(1);
+    }
+    25% {
+        transform: translateX(-40vw) translateY(calc(var(--swim-bob) * -0.6)) scaleX(1);
+    }
+    50% {
+        transform: translateX(-80vw) translateY(calc(var(--swim-bob))) scaleX(1);
+    }
+    75% {
+        transform: translateX(-120vw) translateY(calc(var(--swim-bob) * -0.4)) scaleX(1);
+    }
+    100% {
+        transform: translateX(-165vw) translateY(0) scaleX(1);
+    }
+}
+
+.cursor-follower {
+    position: fixed;
+    width: 40px;
+    height: 40px;
+    transform: translate(-24px, -5px);
+    user-select: none;
+    pointer-events: none;
+}
+
 .quiz-midbar {
     top: 161.6px;
     left: 300px;
@@ -459,61 +504,162 @@
 }
 
 .crab-image {
-  position: absolute;
-  width: var(--crab-width, 100px);
-  height: var(--crab-height, 60px);
-  top: var(--crab-top, 0);
-  left: var(--crab-left, 0);
+    --swim-delay: 0s;
+    --swim-bob: 20px;
+
+    /* size and vertical position (small, near the bottom) */
+    --crab-width: 90px;
+    --crab-height: 56px;
+    position: absolute;
+    width: var(--crab-width, 100px);
+    height: var(--crab-height, 60px);
+    left: -15vw;
+    right: auto;
+    top: 40%;
+    pointer-events: none;
+    user-select: none;
+    will-change: transform;
+    animation: backgroundswim 20s linear infinite;
+    z-index: 0;
 }
 
 .dolphi-image {
-  position: absolute;
-  width: var(--dolphi-width, 100px);
-  height: var(--dolphi-height, 60px);
-  top: var(--dolphi-top, 0);
-  left: var(--dolphi-left, 0);
+    --swim-delay: 0s;
+    --swim-bob: 20px;
+
+    /* medium size, mid-high */
+    --dolphi-width: 160px;
+    --dolphi-height: 90px;
+    position: absolute;
+    width: var(--dolphi-width, 100px);
+    height: var(--dolphi-height, 60px);
+    left: -10vw;
+    right: auto;
+    top: 42%;
+    pointer-events: none;
+    user-select: none;
+    will-change: transform;
+    animation: backgroundswim 10s linear infinite;
+    z-index: 0;
 }
 
 .octo-image {
-  position: absolute;
-  width: var(--octo-width, 100px);
-  height: var(--octo-height, 60px);
-  top: var(--octo-top, 0);
-  left: var(--octo-left, 0);
+    --swim-delay: 0s;
+    --swim-bob: 20px;
+
+    /* compact but a bit tall */
+    --octo-width: 120px;
+    --octo-height: 110px;
+    position: absolute;
+    width: var(--octo-width, 100px);
+    height: var(--octo-height, 60px);
+    left: -18vw;
+    right: auto;
+    top: 37%;
+    pointer-events: none;
+    user-select: none;
+    will-change: transform;
+    animation: backgroundswim 11s linear infinite;
+    z-index: 0;
 }
 
 .seahorse-image {
-  position: absolute;
-  width: var(--seahorse-width, 100px);
-  height: var(--seahorse-height, 60px);
-  top: var(--seahorse-top, 0);
-  left: var(--seahorse-left, 0);
+    --swim-delay: 0s;
+    --swim-bob: 20px;
+
+    /* narrow and tall, higher on screen */
+    --seahorse-width: 64px;
+    --seahorse-height: 140px;
+    position: absolute;
+    width: var(--seahorse-width, 100px);
+    height: var(--seahorse-height, 60px);
+    left: auto;
+    right: -12vw;
+    top: 30%;
+    pointer-events: none;
+    user-select: none;
+    will-change: transform;
+    animation: backgroundswim-rtl 12s linear infinite;
+    z-index: 9;
 }
+
 .squid-image {
-  position: absolute;
-  width: var(--squid-width, 100px);
-  height: var(--squid-height, 60px);
-  top: var(--squid-top, 0);
-  left: var(--squid-left, 0);
+    --swim-delay: 0s;
+    --swim-bob: 20px;
+
+    /* medium-tall, a bit further back */
+    --squid-width: 110px;
+    --squid-height: 130px;
+    position: absolute;
+    width: var(--squid-width, 100px);
+    height: var(--squid-height, 60px);
+    left: -12vw;
+    right: auto;
+    top: 56%;
+    pointer-events: none;
+    user-select: none;
+    will-change: transform;
+    animation: backgroundswim 18s linear infinite;
+    z-index: 5;
 }
+
 .star-image {
-  position: absolute;
-  width: var(--star-width, 100px);
-  height: var(--star-height, 60px);
-  top: var(--star-top, 0);
-  left: var(--star-left, 0);
+    --swim-delay: 0s;
+    --swim-bob: 20px;
+
+    /* tiny, higher and farther back */
+    --star-width: 70px;
+    --star-height: 70px;
+    position: absolute;
+    width: var(--star-width, 100px);
+    height: var(--star-height, 60px);
+    left: auto;
+    right: -16vw;
+    top: 47%;
+    pointer-events: none;
+    user-select: none;
+    will-change: transform;
+    animation: backgroundswim-rtl 30s linear infinite;
+    z-index: 4;
 }
+
 .turtle-image {
-  position: absolute;
-  width: var(--turtle-width, 100px);
-  height: var(--turtle-height, 60px);
-  top: var(--turtle-top, 0);
-  left: var(--turtle-left, 0);
+    --swim-delay: 0s;
+    --swim-bob: 20px;
+
+    /* medium-large, near bottom */
+    --turtle-width: 190px;
+    --turtle-height: 120px;
+    position: absolute;
+    width: var(--turtle-width, 100px);
+    height: var(--turtle-height, 60px);
+    left: auto;
+    right: -10vw;
+    top: 72%;
+    pointer-events: none;
+    user-select: none;
+    will-change: transform;
+    animation: backgroundswim-rtl 30s linear infinite;
+    z-index: 0;
 }
+
 .whale-image {
-  position: absolute;
-  width: var(--whale-width, 100px);
-  height: var(--whale-height, 60px);
-  top: var(--whale-top, 0);
-  left: var(--whale-left, 0);
+    --swim-delay: 0s;
+    --swim-bob: 20px;
+
+    /* largest, mid-left */
+    --whale-width: 380px;
+    --whale-height: 200px;
+    position: absolute;
+    width: var(--whale-width, 100px);
+    height: var(--whale-height, 60px);
+    left: auto;
+    right: -8vw;
+    top: 78%;
+    pointer-events: none;
+    user-select: none;
+    will-change: transform;
+    animation: backgroundswim-rtl 25s linear infinite;
 }
+
+
