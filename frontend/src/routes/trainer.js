@@ -1,44 +1,40 @@
-import React, {useState, useEffect, use} from 'react'
+import React, { useState, useEffect } from 'react'
 import '../styles/trainer.css'
 import '../styles/loading.css'
 import { io } from "socket.io-client";
-import {FaSpinner} from "react-icons/fa"
+import { FaSpinner } from "react-icons/fa"
 import axios from 'axios';
 
 import wave2 from '../styles/images/support_images/wave2.svg'
 import UserNav from '../components/usernavbar';
 
-export default function Trainer(){
-    const [oneLoading, setOneLoading] = useState(true)
-    const [twoLoading, setTwoLoading] = useState(true)
-    const [threeLoading, setThreeLoading] = useState(true)
-
-    const [oneText, setOneText] = useState('')
-    const [twoText, setTwoText] = useState('')
-    const [threeText, setThreeText] = useState('')
+export default function Trainer() {
+    // State following the contract structure
+    const [concepts, setConcepts] = useState({
+        1: { loading: true, title: '', points: [] },
+        2: { loading: true, title: '', points: [] },
+        3: { loading: true, title: '', points: [] }
+    })
 
     useEffect(() => {
-        const socket = io('http://localhost:8080', {withCredentials: true})
+        const socket = io('http://localhost:8080', { withCredentials: true })
 
-        socket.on('connect', () => console.log('socket connected', socket.id))
-
-        socket.emit('join_training', {room: 'personal'})
+        socket.on('connect', () => {
+            socket.emit('join_training', { room: 'personal' })
+        })
 
         socket.on('concept_update', (msg) => {
-            console.log('concept_update', msg)
-            const {concept, status, text } = msg || {}
+            const { concept, title, points } = msg || {}
 
-            if(concept === 1){
-                if (text) setOneText(text)
-                if (status === 'done') setOneLoading(false)
-            }
-            if(concept === 2){
-                if (text) setTwoText(text)
-                if (status === 'done') setTwoLoading(false)
-            }
-            if(concept === 3){
-                if (text) setThreeText(text)
-                if (status === 'done') setThreeLoading(false)
+            if (concept && (concept === 1 || concept === 2 || concept === 3)) {
+                setConcepts(prev => ({
+                    ...prev,
+                    [concept]: {
+                        loading: false,
+                        title: title || '',
+                        points: points || []
+                    }
+                }))
             }
         })
 
@@ -47,18 +43,18 @@ export default function Trainer(){
         }
     }, [])
 
-    const handleTraining = async(training) => {
-        try{
-            const response = await axios.post('http://localhost:8080/api/completion', {training}, {withCredentials: true})
-            if(response.status === 200)
-                console.log("training completed")
+    const handleTraining = async (training) => {
+        try {
+            const response = await axios.post('http://localhost:8080/api/completion', { training }, { withCredentials: true })
+            if (response.status === 200) {
                 window.location.href = '/quiz'
+            }
         } catch (err) {
-            console.log(err)
+            console.error(err)
         }
     }
 
-    return(
+    return (
         <div className='trainer-body'>
             <nav>
                 <UserNav />
@@ -68,31 +64,52 @@ export default function Trainer(){
                 <div className="trainer-header">
                     <h1 className="trainer-header-text">Let's learn!</h1>
                 </div>
-                {oneLoading ? (
+                {concepts[1].loading ? (
                     <div className='loading-container'>
                         <FaSpinner className="loading-icon" />
                     </div>
                 ) : (
-                    <div className='training-concept'>
-                        <pre>{oneText}</pre>
+                    <div className='training-concept' style={{ marginTop: '15vh' }}>
+                        <div className="lesson-content">
+                            <h3>{concepts[1].title}</h3>
+                            <ul>
+                                {concepts[1].points.map((point, idx) => (
+                                    <li key={idx}>{point}</li>
+                                ))}
+                            </ul>
+                        </div>
                     </div>
                 )}
-                {twoLoading ? (
+                {concepts[2].loading ? (
                     <div className='loading-container'>
                         <FaSpinner className="loading-icon" />
                     </div>
                 ) : (
                     <div className='training-concept'>
-                        <pre>{twoText}</pre>
+                        <div className="lesson-content">
+                            <h3>{concepts[2].title}</h3>
+                            <ul>
+                                {concepts[2].points.map((point, idx) => (
+                                    <li key={idx}>{point}</li>
+                                ))}
+                            </ul>
+                        </div>
                     </div>
                 )}
-                {threeLoading ? (
+                {concepts[3].loading ? (
                     <div className='loading-container'>
                         <FaSpinner className="loading-icon" />
                     </div>
                 ) : (
                     <div className='training-concept'>
-                        <pre>{threeText}</pre>
+                        <div className="lesson-content">
+                            <h3>{concepts[3].title}</h3>
+                            <ul>
+                                {concepts[3].points.map((point, idx) => (
+                                    <li key={idx}>{point}</li>
+                                ))}
+                            </ul>
+                        </div>
                     </div>
                 )}
                 <button className='trainer-button' onClick={() => handleTraining(true)}>Complete</button>

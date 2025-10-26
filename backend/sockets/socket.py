@@ -3,6 +3,16 @@ from flask import request
 from flask_socketio import SocketIO, emit, join_room
 from routes.routes import app
 from phisher.agent.phisherman_cli import refine_template, orchestrate_flow
+import time
+
+# Import teacher module for lessons
+try:
+    from trainer.teacher import LESSONS
+except ImportError:
+    try:
+        from backend.trainer.teacher import LESSONS
+    except ImportError:
+        LESSONS = {}
 
 socketio = SocketIO(
     app, 
@@ -15,7 +25,6 @@ socketio = SocketIO(
 
 @socketio.on('connect')
 def handle_connect():
-    print('website connected to backend socket: ', request.sid)
     emit('connected', {'sid': request.sid})
 
 @socketio.on('join_training')
@@ -23,6 +32,41 @@ def on_join_training(data):
     room = (data or {}).get('room', 'global')
     join_room(room)
     emit('joined', {'room': room}, room=request.sid)
+    
+    # Send lesson data for the three topics
+    sid = request.sid
+    lesson_topics = list(LESSONS.keys())[:3]  # Get first 3 lessons
+    
+    if not LESSONS:
+        return
+    
+    def send_lessons():
+        """Send lessons sequentially with proper event contract"""
+        try:
+            for idx, topic in enumerate(lesson_topics, 1):
+                if topic not in LESSONS:
+                    continue
+                    
+                lesson = LESSONS[topic]
+                
+                # Emit according to event contract
+                socketio.emit('concept_update', {
+                    'concept': idx,
+                    'topic': topic,
+                    'title': lesson['title'],
+                    'points': lesson['bullets'],
+                    'status': 'done'
+                }, to=sid)
+                
+                # Small delay between lessons for better UX
+                if idx < len(lesson_topics):
+                    time.sleep(0.3)
+                    
+        except Exception as e:
+            print(f'Error sending lessons: {e}')
+    
+    # Start background task to send lessons
+    socketio.start_background_task(send_lessons)
 
 # helper worker used by multiple handlers
 def _refine_worker(tpl, instruction, client_sid, event_type='prompt_response'):

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import '../styles/quiz.css'
+import axios from 'axios'
 import fisherman from '../styles/images/fishing1.png'
 import FishHook from '../styles/images/fishHook.png'
 import FishA from '../styles/images/fishA.png'
@@ -40,6 +41,17 @@ export default function Quiz() {
     const [score, setScore] = useState(0);
     const [completed, setCompleted] = useState(false);
     const [results, setResults] = useState(null);
+
+    //handle score update in the backend
+    const handleScoreUpload = async(score) => {
+        try{
+            const response = await axios.post('http://localhost:8080/api/score_update', {score}, {withCredentials: true})
+            if(response.status === 200)
+                window.location.href = '/dashboard'
+        } catch(e) {
+            console.log("error at handle score upload", e)
+        }
+    }
 
     // Get userId from session/localStorage if available
     useEffect(() => {
@@ -449,6 +461,7 @@ export default function Quiz() {
                             Score: {results.total} | Correct: {results.correctCount} | Wrong: {results.wrongCount}
                         </p>
                     </div>
+                    <button className="done-button" onClick={() => handleScoreUpload(results.total)}>Done</button>
                 </div>
                 <div className='top-right-panel'>
                     <div className='tracker-box score-box'>

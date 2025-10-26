@@ -13,7 +13,6 @@ export default function DashNav(){
                 <Nav className="flex-column w-100" style={{flex: 1}}>
                     <Nav.Link className="dash-nav-link" href="/admin">Dashboard</Nav.Link>
                     <Nav.Link className="dash-nav-link" href="/campaign">Campaigns</Nav.Link>
-                    <Nav.Link className="dash-nav-link" href="/organization">Your Organization</Nav.Link>
                     <div style={{flex: 1}}></div>
                     <Nav.Link className="dash-nav-link mt-auto" href="/">Logout</Nav.Link>
                 </Nav>
