@@ -4,7 +4,14 @@ from flask_socketio import SocketIO, emit, join_room
 from routes.routes import app
 from phisher.agent.phisherman_cli import refine_template, orchestrate_flow
 
-socketio = SocketIO(app, cors_allowed_origins='http://localhost:3000', manage_session=False)
+socketio = SocketIO(
+    app, 
+    cors_allowed_origins='http://localhost:3000', 
+    manage_session=False,
+    async_mode='threading',
+    logger=True,
+    engineio_logger=True
+)
 
 @socketio.on('connect')
 def handle_connect():
@@ -79,3 +86,21 @@ def handle_chat_message(data):
 
     # use the same refiner worker but emit as 'chat_response'
     socketio.start_background_task(_refine_worker, template, message, sid, 'chat_response')
+    
+
+socketio.emit('concept_update', test_payload, room=room)
+
+# Register quiz socket namespace handlers
+try:
+    from trainer.quiz_socket import register_quiz_socketio_handlers
+    register_quiz_socketio_handlers(socketio)
+    print('Quiz socket namespace handlers registered')
+except ImportError:
+    try:
+        from backend.trainer.quiz_socket import register_quiz_socketio_handlers
+        register_quiz_socketio_handlers(socketio)
+        print('Quiz socket namespace handlers registered')
+    except Exception as e:
+        print(f'Warning: Could not register quiz socket handlers: {e}')
+        import traceback
+        traceback.print_exc()
