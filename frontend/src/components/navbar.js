@@ -9,7 +9,7 @@ export default function Navigation() {
         <div className="navigation">
             <Navbar collapseOnSelect expand='lg' className='nav-background'>
                 <Container fluid>
-                    <Navbar.Brand href='/' className='nav-logo'>Phisherman Temp Placement</Navbar.Brand>
+                    <Navbar.Brand href='/' className='nav-logo'>Phisherman</Navbar.Brand>
                     <Navbar.Toggle className='toggler' aria-controls='responsive-navbar-nav'></Navbar.Toggle>
                     <Navbar.Collapse id='responsive-navbar-nav'>
                         <Nav className='ms-auto'>

@@ -226,7 +226,7 @@ export default function Quiz() {
         const el = fishermanRef.current;
         if (!el) return;
         const rect = el.getBoundingClientRect();
-        const pixelAnchor = { x: 790, y: -2466 }; // Anchor point in pixels relative to image
+        const pixelAnchor = { x: 790, y: -2416 }; // Anchor point in pixels relative to image
         const naturalW = el.naturalWidth || rect.width;
         const naturalH = el.naturalHeight || rect.height;
         const anchorX = rect.left + (pixelAnchor.x / naturalW) * rect.width;
@@ -452,26 +452,46 @@ export default function Quiz() {
 
     // Show completion screen
     if (completed && results) {
-        return (
-            <div className='quiz-scene'>
-                <div className='white-box'>
-                    <div className='inner-white-box'>
-                        <h2 className='quiz-question'>Quiz Complete!</h2>
-                        <p className='quiz-instructions'>
-                            Score: {results.total} | Correct: {results.correctCount} | Wrong: {results.wrongCount}
-                        </p>
-                    </div>
-                    <button className="done-button" onClick={() => handleScoreUpload(results.total)}>Done</button>
-                </div>
-                <div className='top-right-panel'>
-                    <div className='tracker-box score-box'>
-                        <div className='tracker-label'>Final Score</div>
-                        <div className='tracker-value'>{results.total}</div>
-                    </div>
-                </div>
+    return (
+        <div className="quiz-scene result-scene">
+        <div className="result-container">
+            <h1 className="result-title">🎣 Quiz Complete!</h1>
+            <p className="result-subtitle">
+            Great job, sailor — you’ve navigated the waters of phishing awareness!
+            </p>
+
+            <div className="result-card">
+            <div className="result-stat">
+                <span className="result-label">Final Score</span>
+                <span className="result-value">{results.total}</span>
             </div>
-        );
+            <div className="result-stat">
+                <span className="result-label">Correct</span>
+                <span className="result-value">{results.correctCount}</span>
+            </div>
+            <div className="result-stat">
+                <span className="result-label">Wrong</span>
+                <span className="result-value">{results.wrongCount}</span>
+            </div>
+            </div>
+
+            <button
+            className="result-btn"
+            onClick={() => handleScoreUpload(results.total)}
+            >
+            Return to Dashboard
+            </button>
+        </div>
+
+        <div className="result-waves">
+            <div className="wave wave1"></div>
+            <div className="wave wave2"></div>
+            <div className="wave wave3"></div>
+        </div>
+        </div>
+    );
     }
+
 
     return (
         <div className='quiz-scene'>

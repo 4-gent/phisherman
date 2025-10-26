@@ -123,34 +123,33 @@ def user_data():
 
         try:
             user_id = session.get('user_id')
-            # fetch user document
-            user_doc = None
+
+            # Fetch the user document (supports both ObjectId and string)
             try:
                 user_doc = users.find_one({'_id': ObjectId(user_id)})
             except Exception:
-                # fallback if stored id isn't a valid ObjectId
                 user_doc = users.find_one({'_id': user_id})
 
             if not user_doc:
                 return jsonify({'message': 'User not found'}), 404
 
-            # try to find player stats: support both ObjectId and string foreign keys
-            stats_doc = None
-            try:
-                stats_doc = player_stats.find_one({'stats_fk': str(user_id)})
-            except Exception:
-                stats_doc = player_stats.find_one({'stats_fk': user_id})
+            # Find all scores for this user, sort by newest first
+            stats_docs = list(
+                player_stats.find({'stats_fk': str(user_id)}).sort('_id', -1).limit(1)
+            )
 
-            previous_score = stats_doc.get('score') if stats_doc else None
-            print("previous score: ", previous_score)
-            company = user_doc.get('company') or (stats_doc.get('company') if stats_doc else None)
+            # Get the most recent score if exists
+            recent_score = stats_docs[0]['score'] if stats_docs else None
+            company = user_doc.get('company')
 
-            results = {
+            result = {
                 'username': user_doc.get('username'),
-                'previous_score': previous_score,
+                'previous_score': recent_score,
                 'company': company
             }
-            return jsonify(results), 200
+
+            print(f"Most recent score for {user_doc.get('username')}: {recent_score}")
+            return jsonify(result), 200
 
         except Exception as e:
             print('exception thrown at /api/user:', e)
