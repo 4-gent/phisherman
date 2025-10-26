@@ -1,3 +1,13 @@
+/* Crab image utility class for flexible size and position */
+.crab-image {
+    position: absolute;
+    width: var(--crab-width, 100px);
+    height: var(--crab-height, 60px);
+    top: var(--crab-top, 0);
+    left: var(--crab-left, 0);
+    pointer-events: none;
+    user-select: none;
+}
 .quiz-scene {
     width: 100%;
     height: 100vh;
@@ -436,4 +446,64 @@
     height: 3.5px;
     background-color: black;
     position: sticky;
+}
+
+.crab-image {
+  position: absolute;
+  width: var(--crab-width, 100px);
+  height: var(--crab-height, 60px);
+  top: var(--crab-top, 0);
+  left: var(--crab-left, 0);
+}
+
+.dolphi-image {
+  position: absolute;
+  width: var(--dolphi-width, 100px);
+  height: var(--dolphi-height, 60px);
+  top: var(--dolphi-top, 0);
+  left: var(--dolphi-left, 0);
+}
+
+.octo-image {
+  position: absolute;
+  width: var(--octo-width, 100px);
+  height: var(--octo-height, 60px);
+  top: var(--octo-top, 0);
+  left: var(--octo-left, 0);
+}
+
+.seahorse-image {
+  position: absolute;
+  width: var(--seahorse-width, 100px);
+  height: var(--seahorse-height, 60px);
+  top: var(--seahorse-top, 0);
+  left: var(--seahorse-left, 0);
+}
+.squid-image {
+  position: absolute;
+  width: var(--squid-width, 100px);
+  height: var(--squid-height, 60px);
+  top: var(--squid-top, 0);
+  left: var(--squid-left, 0);
+}
+.star-image {
+  position: absolute;
+  width: var(--star-width, 100px);
+  height: var(--star-height, 60px);
+  top: var(--star-top, 0);
+  left: var(--star-left, 0);
+}
+.turtle-image {
+  position: absolute;
+  width: var(--turtle-width, 100px);
+  height: var(--turtle-height, 60px);
+  top: var(--turtle-top, 0);
+  left: var(--turtle-left, 0);
+}
+.whale-image {
+  position: absolute;
+  width: var(--whale-width, 100px);
+  height: var(--whale-height, 60px);
+  top: var(--whale-top, 0);
+  left: var(--whale-left, 0);
 }
