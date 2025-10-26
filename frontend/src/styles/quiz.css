@@ -53,12 +53,6 @@
 .correct-box { border: 1px solid rgba(58, 150, 80, 0.12); }
 .score-box { border: 1px solid rgba(54, 123, 232, 0.12); }
 
-.cursor-follower { /*the fish hook image that follows the cursor */
-    transform: translate(-60%, -8%);    
-    width: 40px;
-    height: 40px;
-}
-
 .fisherman-image {
     width: 300px;  /* You can adjust this value */
     height: 300px; /* You can adjust this value */
@@ -69,7 +63,7 @@
     z-index: 0;  /* Added z-index to be above white box */
 }
 
-.fishiesA {
+.fishiesA, .fishiesB, .fishiesC {
     /* Controls (change these on each fish instance as inline styles or via a class):
        --swim-duration: how long one crossing takes (lower = faster)
        --swim-delay: delay before starting
@@ -77,12 +71,12 @@
        --swim-bob: vertical bob amplitude (px)
     */
     --swim-delay: 0s;
-    --swim-start-y: 30%;
     --swim-bob: 25px;
 
-    width: 420px;
-    height: 420px;
-    object-fit: contain;
+    /* use FishA as a background image -- update the URL to your actual asset path */
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
     transform-origin: center;
 
     /* positioned off-screen to the left; animation is toggled via the .playing class */
@@ -93,7 +87,15 @@
     will-change: transform;
 }
 
+/* Use each fish's own artwork but keep the same base behavior as fishiesA */
+.fishiesA { background-image: url('images/fishA.png'); }
+.fishiesA { --swim-start-y: 30%; }
+.fishiesB { background-image: url('images/fishB.png'); }
+.fishiesB { --swim-start-y: 50%; }
+.fishiesC { background-image: url('images/fishC.png'); }
+.fishiesC { --swim-start-y: 70%; }
 /* first natural swim animation state */
+
 .fishiesA.playing1 {
     /* move to 1/4 of the viewport width in 5s and remain there */
     will-change: transform;
@@ -115,54 +117,11 @@
     transition: transform 300ms ease;
     transform: translateX(var(--stop-x, 25vw)) translateY(var(--stop-y, 0)) scaleX(1);
 }
+/* Make fishiesB and fishiesC behave like fishiesA */
 
 
-/* Add this class to make a fish swim right-to-left and face the other way */
-.fishiesB {
-    --swim-duration: 20s;
-    --swim-delay: 0s;
-    --swim-start-y: 80%;
-    --swim-bob: 25px;
 
-    width: 100px;
-    height: 100px;
-    object-fit: contain;
-    transform-origin: center;
 
-    /* positioned off-screen to the left and animated across the viewport */
-    position: absolute;
-    right: -15vw;
-    top: var(--swim-start-y);
-
-    will-change: transform;
-    animation: swim-rtl var(--swim-duration) linear var(--swim-delay) infinite;
-}
-
-.fishiesC {
-    /* Controls (change these on each fish instance as inline styles or via a class):
-       --swim-duration: how long one crossing takes (lower = faster)
-       --swim-delay: delay before starting
-       --swim-start-y: vertical start position (use % for viewport-relative or px for absolute)
-       --swim-bob: vertical bob amplitude (px)
-    */
-    --swim-duration: 20s;
-    --swim-delay: 0s;
-    --swim-start-y: 65%;
-    --swim-bob: 25px;
-
-    width: 400px;
-    height: 400px;
-    object-fit: contain;
-    transform-origin: center;
-
-    /* positioned off-screen to the left and animated across the viewport */
-    position: absolute;
-    left: -15vw;    
-    top: var(--swim-start-y, 50%);
-
-    will-change: transform;
-    animation: swim var(--swim-duration) linear var(--swim-delay) infinite;
-}
 
 /* LTR swim: translate from left off-screen to right off-screen, with subtle bobbing */
 @keyframes swim-to-quarter {
@@ -177,19 +136,25 @@
     75%  { transform: translateX(120vw) translateY(calc(var(--swim-bob) * -0.4)) scaleX(1); }
     100% { transform: translateX(165vw) translateY(0) scaleX(1); }
 }
+/* Render the fish graphic via a flipped pseudo-element so the element's children (e.g. a button)
+    are not affected by the horizontal flip. Also override the RTL animation to remove the
+    scaleX flip on the container (we only flip the ::before image). */
+
+
+
 
 /* RTL swim: same motion but flipped horizontally */
 @keyframes swim-to-quarter-rtl {
-    0%   { transform: translateX(0) translateY(0) scaleX(-1); }
-    100% { transform: translateX(-25vw) translateY(0) scaleX(-1); }
+    0%   { transform: translateX(0) translateY(0); }
+    100% { transform: translateX(-25vw) translateY(0); }
 }
 
 @keyframes swim-rtl {
-    0%   { transform: translateX(0) translateY(0) scaleX(-1); }
-    25%  { transform: translateX(calc(-25vw - 10vw)) translateY(calc(var(--swim-bob) * -0.6)) scaleX(-1); }
-    50%  { transform: translateX(calc(-50vw - 15vw)) translateY(calc(var(--swim-bob))) scaleX(-1); }
-    75%  { transform: translateX(calc(-75vw - 20vw)) translateY(calc(var(--swim-bob) * -0.4)) scaleX(-1); }
-    100% { transform: translateX(calc(-110vw - 30vw)) translateY(0) scaleX(-1); }
+    0%   { transform: translateX(-25) translateY(0); }
+    25%  { transform: translateX(calc(-60vw - 10vw)) translateY(calc(var(--swim-bob) * -0.6)); }
+    50%  { transform: translateX(calc(-90vw - 15vw)) translateY(calc(var(--swim-bob))); }
+    75%  { transform: translateX(calc(-120vw - 20vw)) translateY(calc(var(--swim-bob) * -0.4)); }
+    100% { transform: translateX(calc(-165vw - 30vw)) translateY(0); }
 }
 
 .quiz-midbar {

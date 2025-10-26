@@ -151,40 +151,35 @@ export default function Quiz() {
                     onLoad={updateAnchorFromImage}
                 />
             </div>
-               <button type="submit" className='send-button' onClick={handleSendClick}></button>
-
-                    <img
-                        src={FishA}
-                        alt="fish A"
+                    <button
+                        type="button"
                         className={`fishiesA ${fishAState} selectable ${selected.fishA ? 'selected' : ''}`}
                         onClick={() => toggleSelect('fishA')}
-                        tabIndex={0}
-                        role="button"
                         aria-pressed={!!selected.fishA}
                         onKeyDown={(e) => handleKeySelect(e, 'fishA')}
-                    />
+                    >
+                        {selected.fishA ? 'Fish A (selected)' : 'Fish A'} {/* this is where you put the text */}
+                    </button>
 
-                    <img
-                        src={FishB}
-                        alt="fish B"
+                    <button
+                        type="button"
                         className={`fishiesB selectable ${selected.fishB ? 'selected' : ''}`}
                         onClick={() => toggleSelect('fishB')}
-                        tabIndex={0}
-                        role="button"
                         aria-pressed={!!selected.fishB}
                         onKeyDown={(e) => handleKeySelect(e, 'fishB')}
-                    />
+                    >
+                        {selected.fishB ? 'Fish B (selected)' : 'Fish B'} {/* this is where you put the text */}
+                    </button>
 
-                    <img
-                        src={FishC}
-                        alt="fish C"
+                    <button
+                        type="button"
                         className={`fishiesC selectable ${selected.fishC ? 'selected' : ''}`}
                         onClick={() => toggleSelect('fishC')}
-                        tabIndex={0}
-                        role="button"
                         aria-pressed={!!selected.fishC}
                         onKeyDown={(e) => handleKeySelect(e, 'fishC')}
-                    />
+                    >
+                        {selected.fishC ? 'Fish C (selected)' : 'Fish C'} {/* this is where you put the text */}
+                    </button>
             </div>
             
             <CursorFollowImage anchor={anchor} />
@@ -206,13 +201,6 @@ function CursorFollowImage({ anchor }) {
         };
     }, []);
 
-    const followerStyle = {
-        position: 'fixed',
-        top: mousePosition.y,
-        left: mousePosition.x,
-    }
-
-
     const svgStyle = {
         position: 'fixed',
         top: 0,
@@ -225,12 +213,6 @@ function CursorFollowImage({ anchor }) {
 
     return (
         <div className="quiz-container">
-            <img
-                src={FishHook}
-                alt="fish hook"
-                style={followerStyle}
-                className="cursor-follower"
-            />
             <svg style={svgStyle}>
                 <line
                     x1={mousePosition.x}
