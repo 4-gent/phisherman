@@ -9,10 +9,16 @@ NO real phishing emails, links, or sendable content are produced.
 
 import json
 import os
+import sys
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, Any, Optional
 import uuid
+
+# Add backend directory to path for trainer import
+backend_path = os.path.join(os.path.dirname(__file__), '..', '..')
+if backend_path not in sys.path:
+    sys.path.insert(0, backend_path)
 
 # Create necessary directories
 os.makedirs("diagnostics/templates", exist_ok=True)
@@ -48,6 +54,11 @@ AGENTS = {
         "name": "phish_refiner",
         "display": "✨ Phish Refiner",
         "description": "Refines and improves phishing templates"
+    },
+    "6": {
+        "name": "teacher",
+        "display": "🎓 Teacher (Phishing Awareness)",
+        "description": "Educational lessons on phishing detection and prevention"
     }
 }
 
@@ -441,7 +452,7 @@ def main():
     while True:
         print_agents()
         
-        choice = input("\nSelect an agent (1-5), 'help', or 'quit': ").strip().lower()
+        choice = input("\nSelect an agent (1-6), 'help', or 'quit': ").strip().lower()
         
         if choice in ['q', 'quit', 'exit']:
             print("\n👋 Thanks for using Phisherman Terminal CLI!")
@@ -596,4 +607,17 @@ def refiner_chat():
 
 # if __name__ == "__main__":
 #     main()
+
+def teacher_session():
+    """Launch teacher session"""
+    try:
+        from backend.trainer.cli import run_teacher_session
+        run_teacher_session()
+    except ImportError as e:
+        print(f"\n❌ Error importing teacher module: {e}")
+        print("   Teacher functionality may not be available.")
+        print("   Type 'back' to return to main menu.")
+    except Exception as e:
+        print(f"\n❌ Error starting teacher session: {e}")
+        print("   Type 'back' to return to main menu.")
 
