@@ -14,6 +14,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, Any, Optional
 import uuid
+import re
 
 # Add backend directory to path for trainer import
 backend_path = os.path.join(os.path.dirname(__file__), '..', '..')
@@ -394,46 +395,188 @@ def display_template(template: Dict[str, Any]):
     print("="*70)
 
 def refine_template(template: Dict[str, Any], instruction: str) -> Dict[str, Any]:
-    """Apply refinement to template"""
+    """Apply refinement to template using natural-language instructions.
+
+    This function understands simple NL commands like:
+      - "make it more urgent" / "increase urgency"
+      - "make it less urgent" / "decrease urgency"
+      - "make tone:formal" / "make tone:casual" / "make tone:urgent"
+      - "shorten" / "make concise"
+      - "lengthen" / "expand"
+      - "highlight red flags" / "focus on red flags"
+      - "add bullet points"
+      - "simplify language"
+      - free-form instructions are applied with safe, heuristic edits to html_body and plain_text_body
+
+    Always returns a new dict (does not mutate the input).
+    """
     refined = template.copy()
-    instruction_lower = instruction.lower()
-    
-    if instruction_lower.startswith("improve_tone:"):
-        tone = instruction.split(":")[1].strip()
-        refined["sanitized_description"] += f" Tone has been adjusted to {tone}."
-        # Update actual email content based on tone
-        if tone == "urgent":
-            refined["subject"] = "URGENT: " + refined.get("subject", "")
-            refined["html_body"] = refined["html_body"].replace("<p>Dear", "<p><strong style='color: #dc3545;'>ACTION REQUIRED</strong></p><p>Dear")
-            refined["plain_text_body"] = "ACTION REQUIRED\n\n" + refined["plain_text_body"]
-        elif tone == "formal":
-            refined["html_body"] = refined["html_body"].replace("<p>Dear", "<p>Dear Valued Customer,<br><br>")
-            refined["plain_text_body"] = refined["plain_text_body"].replace("Dear", "Dear Valued Customer,")
-        return refined
-    
-    if "increase_urgency" in instruction_lower:
-        refined["urgency_score"] = min(10, refined["urgency_score"] + 1)
-        refined["subject"] = "URGENT: " + refined.get("subject", "")
-        refined["html_body"] = refined["html_body"].replace("<p>Dear", "<p><strong style='color: #dc3545;'>⚠️ URGENT ACTION REQUIRED</strong></p><p>Dear")
-        refined["plain_text_body"] = "⚠️ URGENT ACTION REQUIRED\n\n" + refined["plain_text_body"]
-        refined["sanitized_description"] += " Urgency has been increased."
-        return refined
-    
-    if "decrease_urgency" in instruction_lower:
-        refined["urgency_score"] = max(0, refined["urgency_score"] - 1)
-        refined["subject"] = refined["subject"].replace("URGENT: ", "")
-        refined["html_body"] = refined["html_body"].replace("<p><strong style='color: #dc3545;'>⚠️ URGENT ACTION REQUIRED</strong></p><p>", "<p>")
+    # make shallow copies of mutable fields to avoid accidental shared-state
+    refined["html_body"] = str(refined.get("html_body", ""))
+    refined["plain_text_body"] = str(refined.get("plain_text_body", ""))
+    refined["sanitized_description"] = str(refined.get("sanitized_description", ""))
+    refined["red_flags"] = list(refined.get("red_flags", []))
+    refined["training_objectives"] = list(refined.get("training_objectives", []))
+    urgency = int(refined.get("urgency_score", 0))
+
+    instr = (instruction or "").strip()
+    instr_low = instr.lower()
+
+    def add_urgent_banner():
+        nonlocal refined
+        if "⚠️ URGENT ACTION REQUIRED" not in refined["html_body"]:
+            refined["html_body"] = refined["html_body"].replace(
+                "<div style=\"max-width: 600px; margin: 0 auto;\">",
+                "<div style=\"max-width: 600px; margin: 0 auto;\"><p style='color:#a71d2a;font-weight:700;'>⚠️ URGENT ACTION REQUIRED</p>"
+            )
+        if "⚠️ URGENT ACTION REQUIRED" not in refined["plain_text_body"]:
+            refined["plain_text_body"] = "⚠️ URGENT ACTION REQUIRED\n\n" + refined["plain_text_body"]
+
+    def remove_urgent_banner():
+        nonlocal refined
+        refined["html_body"] = refined["html_body"].replace("⚠️ URGENT ACTION REQUIRED", "")
         refined["plain_text_body"] = refined["plain_text_body"].replace("⚠️ URGENT ACTION REQUIRED\n\n", "")
-        refined["sanitized_description"] += " Urgency has been decreased."
-        return refined
-    
-    if "focus_on_red_flags" in instruction_lower:
-        refined["red_flags"].append("Enhanced red flag visibility for training")
-        refined["html_body"] = refined["html_body"].replace("</div>", "<p style='background: #fff3cd; padding: 10px; border-left: 3px solid #ffc107;'>⚠️ Important: Please verify the sender's authenticity before clicking any links.</p></div>")
-        refined["plain_text_body"] += "\n\n⚠️ Important: Please verify the sender's authenticity before clicking any links."
-        refined["sanitized_description"] += " Red flags have been highlighted."
-        return refined
-    
+
+    def shorten_text(text: str, max_sentences: int = 2) -> str:
+        # naive sentence splitter
+        sentences = re.split(r'(?<=[.!?])\s+', text.strip())
+        short = " ".join(sentences[:max_sentences])
+        return short if short else text
+
+    def simplify_text(text: str) -> str:
+        # dumb simplifications for common phrases
+        replacements = {
+            "please verify your identity": "please confirm your identity",
+            "we have detected unusual activity on your account": "we noticed activity on your account",
+            "we need to verify": "we need to check",
+            "immediately": "as soon as possible",
+            "to protect your account": "to keep your account safe"
+        }
+        out = text
+        for k, v in replacements.items():
+            out = re.sub(re.escape(k), v, out, flags=re.IGNORECASE)
+        return out
+
+    changed = False
+
+    # Tone commands
+    if "improve_tone:" in instr_low or instr_low.startswith("make tone") or "tone:" in instr_low:
+        # parse tone
+        tone_match = re.search(r"(?:improve_tone:|tone:|make tone[:\s])\s*([a-zA-Z]+)", instr_low)
+        tone = (tone_match.group(1).strip()) if tone_match else None
+        if tone:
+            if tone in ("urgent", "increase_urgency", "urgent_tone"):
+                urgency = min(10, urgency + 2)
+                refined["subject"] = "URGENT: " + refined.get("subject", "")
+                add_urgent_banner()
+                refined["sanitized_description"] += f" Tone set to {tone}."
+            elif tone in ("formal", "formal_tone"):
+                refined["html_body"] = refined["html_body"].replace("<p>Dear", "<p>Dear Valued Customer,<br><br>")
+                refined["plain_text_body"] = refined["plain_text_body"].replace("Dear", "Dear Valued Customer,")
+                refined["sanitized_description"] += " Tone adjusted to formal."
+            elif tone in ("casual", "friendly", "informal"):
+                refined["html_body"] = refined["html_body"].replace("<p>Dear", "<p>Hi there,")
+                refined["plain_text_body"] = refined["plain_text_body"].replace("Dear [Name],", "Hi there,")
+                refined["sanitized_description"] += " Tone adjusted to casual/friendly."
+            changed = True
+
+    # Increase / decrease urgency
+    if "increase_urgency" in instr_low or "more urgent" in instr_low or "make it more urgent" in instr_low:
+        urgency = min(10, urgency + 1)
+        refined["subject"] = "URGENT: " + refined.get("subject", "")
+        add_urgent_banner()
+        refined["sanitized_description"] += " Urgency increased."
+        changed = True
+
+    if "decrease_urgency" in instr_low or "less urgent" in instr_low or "make it less urgent" in instr_low:
+        urgency = max(0, urgency - 1)
+        refined["subject"] = refined.get("subject", "").replace("URGENT: ", "")
+        remove_urgent_banner()
+        refined["sanitized_description"] += " Urgency decreased."
+        changed = True
+
+    # Shorten / lengthen
+    if "shorten" in instr_low or "concise" in instr_low or "make it shorter" in instr_low:
+        refined["html_body"] = shorten_text(refined["html_body"], max_sentences=2)
+        refined["plain_text_body"] = shorten_text(refined["plain_text_body"], max_sentences=2)
+        refined["sanitized_description"] += " Content shortened for brevity."
+        changed = True
+
+    if "lengthen" in instr_low or "expand" in instr_low or "make it longer" in instr_low:
+        # duplicate key sentences as a naive expansion
+        refined["html_body"] = refined["html_body"] + "<p>We emphasize this point to aid training and clarity.</p>"
+        refined["plain_text_body"] = refined["plain_text_body"] + "\n\nWe emphasize this point to aid training and clarity."
+        refined["sanitized_description"] += " Content expanded."
+        changed = True
+
+    # Simplify language
+    if "simplify" in instr_low or "plain language" in instr_low:
+        refined["html_body"] = simplify_text(refined["html_body"])
+        refined["plain_text_body"] = simplify_text(refined["plain_text_body"])
+        refined["sanitized_description"] += " Language simplified."
+        changed = True
+
+    # Highlight red flags
+    if "focus_on_red_flags" in instr_low or "highlight red flags" in instr_low or "show red flags" in instr_low:
+        if "Enhanced red flag visibility for training" not in refined["red_flags"]:
+            refined["red_flags"].append("Enhanced red flag visibility for training")
+        # insert a visible note in the html body
+        if "Important: Please verify the sender's authenticity" not in refined["html_body"]:
+            refined["html_body"] = refined["html_body"].replace(
+                "</div>",
+                "<p style='background:#fff3cd;padding:10px;border-left:3px solid #ffc107;'>⚠️ Important: Please verify the sender's authenticity before acting on this message.</p></div>"
+            )
+        refined["plain_text_body"] += "\n\n⚠️ Important: Please verify the sender's authenticity before acting on this message."
+        refined["sanitized_description"] += " Red flags highlighted."
+        changed = True
+
+    # Add bullet points helper
+    if "add bullet" in instr_low or "bullet points" in instr_low or "make a list" in instr_low:
+        # try to find a paragraph to convert into bullets (naive)
+        first_para = ""
+        match = re.search(r"<p>(.*?)</p>", refined["html_body"], flags=re.DOTALL)
+        if match:
+            first_para = match.group(1)
+            bullets = "".join(f"<li>{line.strip()}</li>" for line in re.split(r'[.;]\s*', re.sub(r'<.*?>', '', first_para)) if line.strip())
+            if bullets:
+                list_html = f"<ul style='margin-left:20px'>{bullets}</ul>"
+                refined["html_body"] = refined["html_body"].replace(f"<p>{first_para}</p>", list_html)
+                refined["sanitized_description"] += " Converted a paragraph to bullet points."
+                changed = True
+
+    # Free-form adjustments: look for keywords and apply safe edits
+    if "add signature" in instr_low or "include signature" in instr_low:
+        if "Best regards" not in refined["html_body"]:
+            refined["html_body"] = refined["html_body"].replace("</div>\n</body>", "<p>Best regards,<br/>Security Team</p></div>\n</body>")
+            refined["plain_text_body"] += "\n\nBest regards,\nSecurity Team"
+            refined["sanitized_description"] += " Signature added."
+            changed = True
+
+    # If instruction is a short natural sentence that doesn't match rules, attempt a best-effort substitution:
+    if not changed and instr_low:
+        # heuristics: increase/decrease urgency words
+        if any(w in instr_low for w in ["urgent", "asap", "immediately", "now"]):
+            urgency = min(10, urgency + 1)
+            add_urgent_banner()
+            refined["subject"] = "URGENT: " + refined.get("subject", "")
+            refined["sanitized_description"] += " Applied urgency heuristics based on instruction."
+            changed = True
+        elif any(w in instr_low for w in ["friendly", "casual", "warm", "nice"]):
+            refined["html_body"] = refined["html_body"].replace("<p>Dear", "<p>Hi there,")
+            refined["sanitized_description"] += " Applied friendly tone heuristics."
+            changed = True
+        elif any(w in instr_low for w in ["simplify", "easy to read", "plain english"]):
+            refined["html_body"] = simplify_text(refined["html_body"])
+            refined["plain_text_body"] = simplify_text(refined["plain_text_body"])
+            refined["sanitized_description"] += " Applied plain-language heuristics."
+            changed = True
+
+    # clamp urgency and set back
+    refined["urgency_score"] = max(0, min(10, urgency))
+
+    # ensure subject formatting cleanup (no repeated URGENT: prefixes)
+    refined["subject"] = re.sub(r"(URGENT:\s*){2,}", "URGENT: ", refined.get("subject", ""))
+
     return refined
 
 def main():
@@ -604,6 +747,15 @@ def refiner_chat():
             print(f"   Changes made to: email content and metadata")
         else:
             print("\n⚠️  Command not recognized. Type 'done' for help.")
+
+def refine_prompt(template_input, user_input):
+    try:
+        refined = refine_template(template_input, user_input)
+        if refined != current_template:
+            current_template = refined
+            return current_template
+    except Exception as e:
+        print("Exception at refine_prompt in phisherman_cli", e)
 
 # if __name__ == "__main__":
 #     main()

@@ -9,14 +9,13 @@ api_secret = os.environ['MAILJET_SECRET_KEY']
 
 mailjet = Client(auth=(api_key, api_secret), version='v3.1')
 
-def email_send():
-    print('made it to email send')
+def email_send(email_html_body, email_subject_line, email_preheader, company):
     data = {
         'Messages': [
             {
                 "From": {
                     "Email": "marlonrburog@gmail.com",
-                    "Name": "Mailjet API"
+                    "Name": company
                 },
                 "To": [
                     {
@@ -24,12 +23,11 @@ def email_send():
                         "Name": "Marlon Burog"
                     }
                 ],
-                "Subject": "First email send - mailjet",
-                "TextPart": "Test",
-                "HTMLPart":"<h3>Testing, including link <a>https://google.com</a></h3>"
+                "Subject": email_subject_line,
+                "TextPart": email_preheader,
+                "HTMLPart": email_html_body
             }
         ]
     }
     result = mailjet.send.create(data=data)
-    print(result.status_code)
-    print("Email result: ", result.json())
+    print (result.status_code)
