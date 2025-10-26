@@ -129,10 +129,7 @@ export default function Quiz() {
             <div className='white-box'>
                 <div className='inner-white-box'>
                     <h2 className='quiz-question'>Which of these fish is a Phishing attempt?</h2>
-                    <p className='quiz-instructions'>BONERRR ALERT!!!!!!!</p>
-
-                    {/* BONERRR ALERT!!!!!!! */}
-
+                    <p className='quiz-instructions'>Click on a fish to select your answer.</p>
                 </div>
 
             </div>

@@ -22,7 +22,7 @@
 .inner-white-box {
     /* content is exposed as CSS variables so it can be changed without JS */
     --quiz-question: "Which of these fish is a Phishing attempt?";
-    --quiz-instruction: "Select one or more fish and click \"Send\" to submit your answer.";
+    --quiz-instruction: "Click on a fish to select your answer.";
     --quiz-question-font-size: 20px;
     --quiz-instruction-font-size: 14px;
 
