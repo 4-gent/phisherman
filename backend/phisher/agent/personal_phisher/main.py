@@ -1,114 +1,230 @@
+"""
+Personal Phisher Agent - Hosted on Agentverse
+Generates personal information phishing templates for cybersecurity training.
+"""
+
+from uagents import Agent, Context, Protocol
+from uagents_core.contrib.protocols.chat import ChatMessage, TextContent, StartSessionContent, EndSessionContent
 from datetime import datetime
 from uuid import uuid4
+import json
 
-from openai import OpenAI
-from uagents import Context, Protocol, Agent
-from uagents_core.contrib.protocols.chat import (
-    ChatAcknowledgement,
-    ChatMessage,
-    EndSessionContent,
-    StartSessionContent,
-    TextContent,
-    chat_protocol_spec,
-)
+# Initialize agent
+agent = Agent(name="personal_phisher")
+protocol = Protocol()
 
-##
-### Personal Phisher Agent
-##
-## This agent specializes in generating personal information phishing email templates for cybersecurity training.
-## It focuses on social media, personal accounts, identity theft, and personal data phishing scenarios.
-##
-
-def create_text_chat(text: str, end_session: bool = False) -> ChatMessage:
-    content = [TextContent(type="text", text=text)]
-    if end_session:
-        content.append(EndSessionContent(type="end-session"))
-    return ChatMessage(timestamp=datetime.utcnow(), msg_id=uuid4(), content=content)
-
-# the subject that this assistant is an expert in
-subject_matter = "personal information phishing"
-
-client = OpenAI(
-    # By default, we are using the ASI-1 LLM endpoint and model
-    base_url='https://api.asi1.ai/v1',
-
-    # You can get an ASI-1 api key by creating an account at https://asi1.ai/dashboard/api-keys
-    api_key='insert API KEY',
-)
-
-agent = Agent()
-
-# We create a new protocol which is compatible with the chat protocol spec. This ensures
-# compatibility between agents
-protocol = Protocol(spec=chat_protocol_spec)
-
-
-# We define the handler for the chat messages that are sent to your agent
-@protocol.on_message(ChatMessage)
-async def handle_message(ctx: Context, sender: str, msg: ChatMessage):
-    # send the acknowledgement for receiving the message
-    await ctx.send(
-        sender,
-        ChatAcknowledgement(timestamp=datetime.now(), acknowledged_msg_id=msg.msg_id),
+def txt(s: str) -> ChatMessage:
+    """Helper to create text message"""
+    return ChatMessage(
+        timestamp=datetime.utcnow(),
+        msg_id=str(uuid4()),
+        content=[TextContent(type="text", text=s)]
     )
 
-    # 2) greet if a session starts
-    if any(isinstance(item, StartSessionContent) for item in msg.content):
-        await ctx.send(
-            sender,
-            create_text_chat(f"Hi! I'm a {subject_matter} expert, how can I help?", end_session=False),
-        )
+def generate_personal_email(scenario: str = "security") -> dict:
+    """Generate personal information phishing email templates"""
+    
+    templates = {
+        "security": {
+            "subject": "Security Alert: Unusual Login Activity Detected",
+            "preheader": "Secure your account immediately",
+            "html_body": """
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: #ff6600; color: white; padding: 20px; text-align: center; }
+        .content { background: #f9f9f9; padding: 30px; border: 1px solid #ddd; }
+        .button { background: #dc3545; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block; margin: 20px 0; }
+        .alert { background: #f8d7da; border-left: 4px solid #dc3545; padding: 15px; margin: 20px 0; }
+        .footer { text-align: center; padding: 20px; color: #666; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>🔒 Account Security Center</h2>
+        </div>
+        <div class="content">
+            <h3>⚠️ Unusual Activity Detected</h3>
+            <p>Dear {{recipient_name}},</p>
+            <p>We noticed a login attempt from an unrecognized device in your account. If this was you, no action is needed.</p>
+            
+            <div class="alert">
+                <strong>🔒 Security Alert:</strong> A new device signed in to your account from an unfamiliar location.
+            </div>
+            
+            <p><strong>Login Details:</strong></p>
+            <ul>
+                <li>Location: Unknown</li>
+                <li>Device: Unknown Device</li>
+                <li>Time: Recent</li>
+            </ul>
+            
+            <p>If this wasn't you, please secure your account immediately:</p>
+            <p style="text-align: center;">
+                <a href="{{verification_link}}" class="button">Secure Account Now</a>
+            </p>
+            
+            <p>We recommend changing your password immediately if you did not authorize this login.</p>
+        </div>
+        <div class="footer">
+            <p>© 2024 Account Security Center. Protecting your privacy.</p>
+            <p>This is an automated security notification.</p>
+        </div>
+    </div>
+</body>
+</html>
+            """,
+            "plain_text_body": """
+Unusual Activity Detected - Security Alert
 
-    text = msg.text()
-    if not text:
+Dear {{recipient_name}},
+
+We noticed a login attempt from an unrecognized device in your account. If this was you, no action is needed.
+
+🔒 SECURITY ALERT: A new device signed in to your account from an unfamiliar location.
+
+Login Details:
+- Location: Unknown
+- Device: Unknown Device
+- Time: Recent
+
+If this wasn't you, please secure your account immediately:
+{{verification_link}}
+
+We recommend changing your password immediately if you did not authorize this login.
+
+© 2024 Account Security Center. Protecting your privacy.
+            """
+        },
+        "social": {
+            "subject": "Password Reset Request - Account Verification",
+            "preheader": "Reset your password",
+            "html_body": """
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: #4267B2; color: white; padding: 20px; text-align: center; }
+        .content { background: #f9f9f9; padding: 30px; border: 1px solid #ddd; }
+        .button { background: #4267B2; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block; margin: 20px 0; }
+        .info { background: #d1ecf1; border-left: 4px solid #17a2b8; padding: 15px; margin: 20px 0; }
+        .footer { text-align: center; padding: 20px; color: #666; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>Social Media Platform</h2>
+        </div>
+        <div class="content">
+            <h3>Password Reset Request</h3>
+            <p>Hello {{recipient_name}},</p>
+            <p>We received a request to reset your password. If you made this request, please click the button below.</p>
+            
+            <div class="info">
+                <strong>ℹ️ Note:</strong> This link will expire in 24 hours for security purposes.
+            </div>
+            
+            <p>Click below to reset your password:</p>
+            <p style="text-align: center;">
+                <a href="{{verification_link}}" class="button">Reset Password</a>
+            </p>
+            
+            <p>If you did not request a password reset, please ignore this email and your password will remain unchanged.</p>
+            <p>Thank you for helping us keep your account secure.</p>
+        </div>
+        <div class="footer">
+            <p>© 2024 Social Media Platform. Your privacy matters.</p>
+            <p>This is an automated message.</p>
+        </div>
+    </div>
+</body>
+</html>
+            """,
+            "plain_text_body": """
+Password Reset Request
+
+Hello {{recipient_name}},
+
+We received a request to reset your password. If you made this request, please click the link below.
+
+ℹ️ NOTE: This link will expire in 24 hours for security purposes.
+
+Reset your password here:
+{{verification_link}}
+
+If you did not request a password reset, please ignore this email and your password will remain unchanged.
+
+Thank you for helping us keep your account secure.
+
+© 2024 Social Media Platform. Your privacy matters.
+            """
+        }
+    }
+    
+    return templates.get(scenario, templates["security"])
+
+@protocol.on_message(ChatMessage)
+async def on_chat(ctx: Context, sender: str, msg: ChatMessage):
+    """Handle incoming chat messages"""
+    
+    # Handle session start
+    if any(isinstance(c, StartSessionContent) for c in msg.content):
+        await ctx.send(sender, txt("Personal Phisher ready. I generate personal information phishing templates for cybersecurity training. How can I help?"))
         return
+    
+    # Handle session end
+    if any(isinstance(c, EndSessionContent) for c in msg.content):
+        ctx.logger.info("Session ended")
+        return
+    
+    # Extract user text
+    user_text = msg.text() or ""
+    ctx.logger.info(f"Received message: {user_text}")
+    
+    # Process the request and generate email
+    scenario = "security"
+    if "social" in user_text.lower() or "facebook" in user_text.lower() or "instagram" in user_text.lower():
+        scenario = "social"
+    elif "password" in user_text.lower() or "reset" in user_text.lower():
+        scenario = "social"
+    
+    # Generate the email template
+    email = generate_personal_email(scenario)
+    
+    # Create response with full email details
+    response = f"""
+🔒 GENERATED PERSONAL PHISHING EMAIL 🔒
 
-    try:
-        r = client.chat.completions.create(
-            model="asi1-mini",
-            messages=[
-                {"role": "system", "content": f"""You are a helpful assistant who only answers questions about {subject_matter}. If the user asks about any other topics, you should politely say that you do not know about them.
+Subject: {email['subject']}
+Preheader: {email['preheader']}
 
-You specialize in generating personal information phishing email templates for cybersecurity training. Your expertise includes:
-- Social media account phishing (Facebook, Instagram, Twitter, LinkedIn)
-- Personal email account phishing (Gmail, Yahoo, Outlook)
-- Identity theft scenarios
-- Personal data collection phishing
-- Social engineering attacks targeting personal information
-- Password reset phishing
-- Account verification phishing
-- Personal financial information phishing
+📧 EMAIL CONTENT:
+{email['plain_text_body']}
 
-When generating phishing templates, always include:
-- Realistic subject lines
-- Convincing sender information
-- Urgent but believable scenarios
-- Clear call-to-action buttons
-- Professional email formatting
-- Social engineering techniques
-- Personal information collection attempts
+📊 FULL EMAIL DATA:
+{json.dumps(email, indent=2)}
 
-Remember: These templates are for educational and training purposes only to help organizations improve their cybersecurity awareness."""},
-                {"role": "user", "content": text},
-            ],
-            max_tokens=2048,
-        )
+✅ Personal phishing template ready for cybersecurity training!
+"""
+    await ctx.send(sender, txt(response))
+    
+    # Handle end session request
+    if "end" in user_text.lower() or "quit" in user_text.lower():
+        await ctx.send(sender, ChatMessage(
+            timestamp=datetime.utcnow(),
+            msg_id=str(uuid4()),
+            content=[EndSessionContent(type="end-session")]
+        ))
 
-        response = str(r.choices[0].message.content)
-    except Exception as e:
-        ctx.logger.exception('Error querying model')
-        response = f"An error occurred while processing the request. Please try again later. {e}"
-
-    await ctx.send(sender, create_text_chat(response, end_session=True))
-
-
-@protocol.on_message(ChatAcknowledgement)
-async def handle_ack(ctx: Context, sender: str, msg: ChatAcknowledgement):
-    # we are not required to handle acknowledgements
-    pass
-
-
-# we include the protocol in the agent
 agent.include(protocol, publish_manifest=True)
 
 if __name__ == "__main__":
