@@ -303,18 +303,12 @@ def paraphrase_with_llm(text: str) -> Optional[str]:
 def format_lesson_for_terminal(lesson: Dict[str, Any], use_llm: bool = False) -> str:
     """Format lesson data for terminal display"""
     output = []
-    output.append("\n" + "="*70)
-    output.append(f"📚 LESSON: {lesson['title']}")
-    output.append("="*70)
+    output.append(f"\nLESSON: {lesson['title']}")
     
     # Bullet points
-    output.append("\n💡 Key Points:")
-    output.append("-"*70)
+    output.append("\nKey Points:")
     for bullet in lesson['bullets']:
-        output.append(f"   • {bullet}")
-    output.append("-"*70)
-    
-    output.append("="*70)
+        output.append(f"  - {bullet}")
     
     return "\n".join(output)
 
