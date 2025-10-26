@@ -5,6 +5,15 @@ import FishHook from '../styles/images/fishHook.png'
 import FishA from '../styles/images/fishA.png'
 import FishB from '../styles/images/fishB.png'
 import FishC from '../styles/images/fishC.png'
+//Decoration Images
+import crab from '../styles/images/assets/crab.png'
+import dolphi from '../styles/images/assets/dolphi .png'
+import octo from '../styles/images/assets/octo.png'
+import seahorse from '../styles/images/assets/seahorse.png'
+import squid from '../styles/images/assets/squid.png'
+import star from '../styles/images/assets/star.png'
+import turtle from '../styles/images/assets/turtle.png'
+import whale from '../styles/images/assets/whale.png'
 
 export default function Quiz() {
     const fishermanRef = useRef(null);
@@ -157,6 +166,95 @@ export default function Quiz() {
                     onLoad={updateAnchorFromImage}
                     draggable={false}
                     onDragStart={(e) => e.preventDefault()}
+                />
+
+                <img
+                    src={crab}
+                    alt="crab"
+                    className="crab-image"
+                    style={{
+                        '--crab-width': '120px',
+                        '--crab-height': '80px',
+                        '--crab-top': '350px',
+                        '--crab-left': '600px'
+                    }}
+                />
+                <img
+                    src={dolphi}
+                    alt="dolphi"
+                    className="dolphi-image"
+                    style={{
+                        '--dolphi-width': '120px',
+                        '--dolphi-height': '80px',
+                        '--dolphi-top': '360px',
+                        '--dolphi-left': '300px'
+                    }}
+                />
+                <img
+                    src={octo}
+                    alt="octo"
+                    className="octo-image"
+                    style={{
+                        '--octo-width': '120px',
+                        '--octo-height': '80px',
+                        '--octo-top': '400px',
+                        '--octo-left': '500px'
+                    }}
+                />
+                <img
+                    src={seahorse}
+                    alt="seahorse"
+                    className="seahorse-image"
+                    style={{
+                        '--seahorse-width': '120px',
+                        '--seahorse-height': '80px',
+                        '--seahorse-top': '200px',
+                        '--seahorse-left': '500px'
+                    }}
+                />
+                <img
+                    src={squid}
+                    alt="squid"
+                    className="squid-image"
+                    style={{
+                        '--squid-width': '120px',
+                        '--squid-height': '80px',
+                        '--squid-top': '300px',
+                        '--squid-left': '500px'
+                    }}
+                />
+                <img
+                    src={star}
+                    alt="star"
+                    className="star-image"
+                    style={{
+                        '--star-width': '120px',
+                        '--star-height': '80px',
+                        '--star-top': '300px',
+                        '--star-left': '500px'
+                    }}
+                />
+                <img
+                    src={turtle}
+                    alt="turtle"
+                    className="turtle-image"
+                    style={{
+                        '--turtle-width': '120px',
+                        '--turtle-height': '80px',
+                        '--turtle-top': '300px',
+                        '--turtle-left': '500px'
+                    }}
+                />
+                <img
+                    src={whale}
+                    alt="whale"
+                    className="whale-image"
+                    style={{
+                        '--whale-width': '120px',
+                        '--whale-height': '80px',
+                        '--whale-top': '300px',
+                        '--whale-left': '500px'
+                    }}
                 />
             </div>
                     <button
