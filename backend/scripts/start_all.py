@@ -16,11 +16,11 @@ logs_dir.mkdir(exist_ok=True)
 
 # Agent configuration
 AGENTS = [
-    {"name": "phish_master", "port": 8001, "script": "backend/phisher/agent/phish_master/main.py"},
-    {"name": "finance_phisher", "port": 8002, "script": "backend/phisher/agent/finance_phisher/main.py"},
-    {"name": "health_phisher", "port": 8003, "script": "backend/phisher/agent/health_phisher/main.py"},
-    {"name": "personal_phisher", "port": 8004, "script": "backend/phisher/agent/personal_phisher/main.py"},
-    {"name": "phish_refiner", "port": 8005, "script": "backend/phisher/agent/phish_refiner/main.py"},
+    {"name": "phish_master", "port": 8001, "script": "phisher/agent/phish_master/main.py"},
+    {"name": "finance_phisher", "port": 8002, "script": "phisher/agent/finance_phisher/main.py"},
+    {"name": "health_phisher", "port": 8003, "script": "phisher/agent/health_phisher/main.py"},
+    {"name": "personal_phisher", "port": 8004, "script": "phisher/agent/personal_phisher/main.py"},
+    {"name": "phish_refiner", "port": 8005, "script": "phisher/agent/phish_refiner/main.py"},
 ]
 
 def check_port(port):
