@@ -11,4 +11,14 @@ def handle_connect():
 
 @socketio.on('join_training')
 def on_join_training(data):
-    data = 'test'
+    room = (data or {}).get('room', 'global')
+    join_room(room)
+    emit('joined', {'room': room}, room=request.sid)
+
+    test_payload = {
+        'concept': 1,
+        'status': 'done',
+        'text': 'Test block of text for concept 1 - replace with real output when ready'
+    }
+
+    socketio.emit('concept_update', test_payload, room=room)

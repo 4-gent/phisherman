@@ -1,9 +1,7 @@
-.admin-body{
+.dashboard-body{
     background-color: #6AC5FE;
-    width: 100%;
-    height: 100vh;
 }
-.admin-container{
+.dashboard-container{
     position: relative;
     background-color: #6AC5FE;
     height: 100vh;
@@ -11,16 +9,16 @@
     margin-left: 15%;
     z-index: 100;
 }
-.admin-header{
+.dashboard-header{
     position: absolute;
     top: 0;
     left: 0;
     color: white;
 }
-.admin-header-text{
+.dashboard-header-text{
     font-size: 5em;
 }
-.admin-wave{
+.dashboard-wave{
     position: relative;
     top: 0;
     left: 0;
