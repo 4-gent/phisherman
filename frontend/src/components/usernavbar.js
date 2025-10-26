@@ -12,7 +12,7 @@ export default function UserNav(){
                 <br />
                 <Nav className="flex-column w-100" style={{flex: 1}}>
                     <Nav.Link className="dash-nav-link" href="/dashboard">Dashboard</Nav.Link>
-                    <Nav.Link className="dash-nav-link" href="/organization">Your Organization</Nav.Link>
+                    <Nav.Link className="dash-nav-link" href="/trainer">Training</Nav.Link>
                     <div style={{flex: 1}}></div>
                     <Nav.Link className="dash-nav-link mt-auto" href="/">Logout</Nav.Link>
                 </Nav>
