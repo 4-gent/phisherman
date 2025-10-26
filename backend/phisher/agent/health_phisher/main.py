@@ -1,81 +1,104 @@
-#!/usr/bin/env python3
-"""
-Health Phisher Agent - Generates health-related phishing templates for training.
-Chat Protocol v0.3.0 implementation with Mailbox support.
-"""
-
 from datetime import datetime
 from uuid import uuid4
-from uagents import Agent, Context, Protocol
+
+from openai import OpenAI
+from uagents import Context, Protocol, Agent
 from uagents_core.contrib.protocols.chat import (
-    ChatMessage, TextContent, StartSessionContent, EndSessionContent, chat_protocol_spec
+    ChatAcknowledgement,
+    ChatMessage,
+    EndSessionContent,
+    StartSessionContent,
+    TextContent,
+    chat_protocol_spec,
 )
 
-AGENT_NAME = "health_phisher"
-SEED = "health_phisher"
-PORT = 8003
+##
+### Health Phisher Agent
+##
+## This agent specializes in generating healthcare phishing email templates for cybersecurity training.
+## It focuses on medical, insurance, pharmaceutical, and healthcare service phishing scenarios.
+##
 
-# Initialize agent with mailbox support
-agent = Agent(name=AGENT_NAME, seed=SEED, port=PORT, mailbox=True)
-protocol = Protocol()
+def create_text_chat(text: str, end_session: bool = False) -> ChatMessage:
+    content = [TextContent(type="text", text=text)]
+    if end_session:
+        content.append(EndSessionContent(type="end-session"))
+    return ChatMessage(timestamp=datetime.utcnow(), msg_id=uuid4(), content=content)
 
-def txt(s: str) -> ChatMessage:
-    """Helper to create text message"""
-    return ChatMessage(
-        timestamp=datetime.utcnow(),
-        msg_id=str(uuid4()),
-        content=[TextContent(type="text", text=s)]
+# the subject that this assistant is an expert in
+subject_matter = "healthcare phishing template generation and medical security training"
+
+client = OpenAI(
+    # By default, we are using the ASI-1 LLM endpoint and model
+    base_url='https://api.asi1.ai/v1',
+    # You can get an ASI-1 api key by creating an account at https://asi1.ai/dashboard/api-keys
+    api_key='insert API KEYS',
+)
+
+agent = Agent()
+
+# We create a new protocol which is compatible with the chat protocol spec. This ensures
+# compatibility between agents
+protocol = Protocol(spec=chat_protocol_spec)
+
+# We define the handler for the chat messages that are sent to your agent
+@protocol.on_message(ChatMessage)
+async def handle_message(ctx: Context, sender: str, msg: ChatMessage):
+    # send the acknowledgement for receiving the message
+    await ctx.send(
+        sender,
+        ChatAcknowledgement(timestamp=datetime.now(), acknowledged_msg_id=msg.msg_id),
     )
 
-@protocol.on_message(ChatMessage)
-async def on_chat(ctx: Context, sender: str, msg: ChatMessage):
-    """Handle incoming chat messages using Chat Protocol v0.3.0"""
-    
-    # Handle session start
-    if any(isinstance(c, StartSessionContent) for c in msg.content):
-        await ctx.send(sender, txt(f"Health Phisher ready. I generate healthcare phishing templates for cybersecurity training. Examples: appointments, medical records, insurance verification."))
-        return
-    
-    # Handle session end
-    if any(isinstance(c, EndSessionContent) for c in msg.content):
-        ctx.logger.info("Session ended")
-        return
-    
-    # Extract user text
-    user_text = msg.text() or ""
-    ctx.logger.info(f"Received message: {user_text}")
-    
-    # Process the request
-    if "generate" in user_text.lower() or "create" in user_text.lower():
-        response = """I'll generate a healthcare phishing template with:
-- Subject: Medical Records Update Required
-- Scenario: Healthcare or medical information verification
-- Safety flags: Educational training use only
-- Template for phishing awareness training"""
-    elif "template" in user_text.lower():
-        response = "Healthcare phishing scenarios include: appointment reminders, medical records updates, insurance verification, test results."
-    else:
-        response = f"[Health Phisher] I specialize in healthcare phishing templates. Say 'generate template' for a healthcare phishing example."
-    
-    await ctx.send(sender, txt(response))
-    
-    # Handle end session request
-    if "end" in user_text.lower() or "quit" in user_text.lower():
-        await ctx.send(sender, ChatMessage(
-            timestamp=datetime.utcnow(),
-            msg_id=str(uuid4()),
-            content=[EndSessionContent(type="end-session")]
-        ))
+    # 2) greet if a session starts
+    if any(isinstance(item, StartSessionContent) for item in msg.content):
+        await ctx.send(
+            sender,
+            create_text_chat(f"Hi! I'm the health_phisher agent specializing in healthcare phishing templates for cybersecurity training. I can generate medical, insurance, and pharmaceutical phishing scenarios. How can I help?", end_session=False),
+        )
 
+    text = msg.text()
+    if not text:
+        return
+
+    try:
+        r = client.chat.completions.create(
+            model="asi1-mini",
+            messages=[
+                {"role": "system", "content": f"""You are the health_phisher agent for cybersecurity training. You specialize in generating healthcare phishing email templates.
+
+Your expertise includes:
+- Medical appointment and prescription notifications
+- Health insurance and coverage updates
+- Pharmaceutical and drug safety alerts
+- Hospital and clinic communications
+- Medical record and privacy notifications
+- COVID-19 and public health information
+- Mental health and wellness services
+- Medical device and equipment alerts
+
+Generate structured JSON templates with fields: template_id, subject, preheader, html_body, plain_text_body, placeholders, urgency_score, safety_flags, recommended_redirect.
+
+Focus on realistic healthcare scenarios that are commonly used in phishing attacks for educational purposes. Always include safety flags and ethical guidelines.
+
+If asked about other topics, politely redirect to your expertise in healthcare phishing template generation."""},
+                {"role": "user", "content": text},
+            ],
+            max_tokens=2048,
+        )
+
+        response = str(r.choices[0].message.content)
+    except Exception as e:
+        ctx.logger.exception('Error querying model')
+        response = f"An error occurred while processing the request. Please try again later. {e}"
+
+    await ctx.send(sender, create_text_chat(response, end_session=True))
+
+@protocol.on_message(ChatAcknowledgement)
+async def handle_ack(ctx: Context, sender: str, msg: ChatAcknowledgement):
+    # we are not interested in the acknowledgements for this example, but they can be useful to
+    # implement read receipts, for example.
+    pass
+
+# attach the protocol to the agent
 agent.include(protocol, publish_manifest=True)
-
-if __name__ == "__main__":
-    print("Health Phisher Agent - Healthcare Phishing Template Generator")
-    print("=" * 60)
-    print(f"Name: {AGENT_NAME}")
-    print(f"Address: {agent.address}")
-    print(f"Port: {PORT}")
-    print(f"Mailbox: Enabled")
-    print(f"Protocol: Chat Protocol v0.3.0")
-    print("=" * 60)
-    agent.run()

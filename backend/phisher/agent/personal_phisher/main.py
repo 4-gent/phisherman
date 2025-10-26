@@ -1,81 +1,115 @@
-#!/usr/bin/env python3
-"""
-Personal Phisher Agent - Generates personal-info phishing templates for training.
-Chat Protocol v0.3.0 implementation with Mailbox support.
-"""
-
 from datetime import datetime
 from uuid import uuid4
-from uagents import Agent, Context, Protocol
+
+from openai import OpenAI
+from uagents import Context, Protocol, Agent
 from uagents_core.contrib.protocols.chat import (
-    ChatMessage, TextContent, StartSessionContent, EndSessionContent, chat_protocol_spec
+    ChatAcknowledgement,
+    ChatMessage,
+    EndSessionContent,
+    StartSessionContent,
+    TextContent,
+    chat_protocol_spec,
 )
 
-AGENT_NAME = "personal_phisher"
-SEED = "personal_phisher"
-PORT = 8004
+##
+### Personal Phisher Agent
+##
+## This agent specializes in generating personal information phishing email templates for cybersecurity training.
+## It focuses on social media, personal accounts, identity theft, and personal data phishing scenarios.
+##
 
-# Initialize agent with mailbox support
-agent = Agent(name=AGENT_NAME, seed=SEED, port=PORT, mailbox=True)
-protocol = Protocol()
+def create_text_chat(text: str, end_session: bool = False) -> ChatMessage:
+    content = [TextContent(type="text", text=text)]
+    if end_session:
+        content.append(EndSessionContent(type="end-session"))
+    return ChatMessage(timestamp=datetime.utcnow(), msg_id=uuid4(), content=content)
 
-def txt(s: str) -> ChatMessage:
-    """Helper to create text message"""
-    return ChatMessage(
-        timestamp=datetime.utcnow(),
-        msg_id=str(uuid4()),
-        content=[TextContent(type="text", text=s)]
+# the subject that this assistant is an expert in
+subject_matter = "personal information phishing"
+
+client = OpenAI(
+    # By default, we are using the ASI-1 LLM endpoint and model
+    base_url='https://api.asi1.ai/v1',
+
+    # You can get an ASI-1 api key by creating an account at https://asi1.ai/dashboard/api-keys
+    api_key='insert API KEY',
+)
+
+agent = Agent()
+
+# We create a new protocol which is compatible with the chat protocol spec. This ensures
+# compatibility between agents
+protocol = Protocol(spec=chat_protocol_spec)
+
+
+# We define the handler for the chat messages that are sent to your agent
+@protocol.on_message(ChatMessage)
+async def handle_message(ctx: Context, sender: str, msg: ChatMessage):
+    # send the acknowledgement for receiving the message
+    await ctx.send(
+        sender,
+        ChatAcknowledgement(timestamp=datetime.now(), acknowledged_msg_id=msg.msg_id),
     )
 
-@protocol.on_message(ChatMessage)
-async def on_chat(ctx: Context, sender: str, msg: ChatMessage):
-    """Handle incoming chat messages using Chat Protocol v0.3.0"""
-    
-    # Handle session start
-    if any(isinstance(c, StartSessionContent) for c in msg.content):
-        await ctx.send(sender, txt(f"Personal Phisher ready. I generate personal information phishing templates for cybersecurity training. Examples: account verification, security alerts, subscriptions."))
-        return
-    
-    # Handle session end
-    if any(isinstance(c, EndSessionContent) for c in msg.content):
-        ctx.logger.info("Session ended")
-        return
-    
-    # Extract user text
-    user_text = msg.text() or ""
-    ctx.logger.info(f"Received message: {user_text}")
-    
-    # Process the request
-    if "generate" in user_text.lower() or "create" in user_text.lower():
-        response = """I'll generate a personal information phishing template with:
-- Subject: Account Security Verification Required
-- Scenario: Personal account or identity verification
-- Safety flags: Educational training use only
-- Template for phishing awareness training"""
-    elif "template" in user_text.lower():
-        response = "Personal phishing scenarios include: account verification, profile updates, security alerts, subscription renewals."
-    else:
-        response = f"[Personal Phisher] I specialize in personal information phishing templates. Say 'generate template' for a personal phishing example."
-    
-    await ctx.send(sender, txt(response))
-    
-    # Handle end session request
-    if "end" in user_text.lower() or "quit" in user_text.lower():
-        await ctx.send(sender, ChatMessage(
-            timestamp=datetime.utcnow(),
-            msg_id=str(uuid4()),
-            content=[EndSessionContent(type="end-session")]
-        ))
+    # 2) greet if a session starts
+    if any(isinstance(item, StartSessionContent) for item in msg.content):
+        await ctx.send(
+            sender,
+            create_text_chat(f"Hi! I'm a {subject_matter} expert, how can I help?", end_session=False),
+        )
 
+    text = msg.text()
+    if not text:
+        return
+
+    try:
+        r = client.chat.completions.create(
+            model="asi1-mini",
+            messages=[
+                {"role": "system", "content": f"""You are a helpful assistant who only answers questions about {subject_matter}. If the user asks about any other topics, you should politely say that you do not know about them.
+
+You specialize in generating personal information phishing email templates for cybersecurity training. Your expertise includes:
+- Social media account phishing (Facebook, Instagram, Twitter, LinkedIn)
+- Personal email account phishing (Gmail, Yahoo, Outlook)
+- Identity theft scenarios
+- Personal data collection phishing
+- Social engineering attacks targeting personal information
+- Password reset phishing
+- Account verification phishing
+- Personal financial information phishing
+
+When generating phishing templates, always include:
+- Realistic subject lines
+- Convincing sender information
+- Urgent but believable scenarios
+- Clear call-to-action buttons
+- Professional email formatting
+- Social engineering techniques
+- Personal information collection attempts
+
+Remember: These templates are for educational and training purposes only to help organizations improve their cybersecurity awareness."""},
+                {"role": "user", "content": text},
+            ],
+            max_tokens=2048,
+        )
+
+        response = str(r.choices[0].message.content)
+    except Exception as e:
+        ctx.logger.exception('Error querying model')
+        response = f"An error occurred while processing the request. Please try again later. {e}"
+
+    await ctx.send(sender, create_text_chat(response, end_session=True))
+
+
+@protocol.on_message(ChatAcknowledgement)
+async def handle_ack(ctx: Context, sender: str, msg: ChatAcknowledgement):
+    # we are not required to handle acknowledgements
+    pass
+
+
+# we include the protocol in the agent
 agent.include(protocol, publish_manifest=True)
 
 if __name__ == "__main__":
-    print("Personal Phisher Agent - Personal Information Phishing Template Generator")
-    print("=" * 60)
-    print(f"Name: {AGENT_NAME}")
-    print(f"Address: {agent.address}")
-    print(f"Port: {PORT}")
-    print(f"Mailbox: Enabled")
-    print(f"Protocol: Chat Protocol v0.3.0")
-    print("=" * 60)
     agent.run()
