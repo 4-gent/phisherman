@@ -125,11 +125,23 @@
     --swim-delay: 0s;
     --swim-bob: 25px;
 
-    /* use FishA as a background image -- update the URL to your actual asset path */
+    /* use FishX as a background image and makes sure the button is invisible*/
+    background-color: transparent !important;
+    border: none !important;
+    padding: 0;
+    margin: 0;
+    color: inherit;
+    box-shadow: none !important;
+    outline: none !important;
+    cursor: pointer;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
     transform-origin: center;
+
+    /* change the size of the fish here */
+    width: 300px;
+    height: 300px;
 
     /* positioned off-screen to the left; animation is toggled via the .playing class */
     position: absolute;
@@ -137,6 +149,17 @@
     top: var(--swim-start-y, 50%);
 
     will-change: transform;
+}
+
+/* Ensure hover/focus don't introduce a background */
+.fishiesA button:hover,
+.fishiesB button:hover,
+.fishiesC button:hover,
+.fishiesA button:focus,
+.fishiesB button:focus,
+.fishiesC button:focus {
+    background: transparent !important;
+    box-shadow: none !important;
 }
 
 /* Use each fish's own artwork but keep the same base behavior as fishiesA */
@@ -171,8 +194,48 @@
 }
 /* Make fishiesB and fishiesC behave like fishiesA */
 
+.fishiesB.playing1 {
+    /* move to 1/4 of the viewport width in 5s and remain there */
+    will-change: transform;
+    animation: swim-to-quarter 5s ease forwards;
+}
 
+/* second natural swim animation state starts where the first ended,
+   set to run over 5s (instead of using --swim-duration) */
+.fishiesB.playing2 {
+    will-change: transform;
+    animation: swim 5s linear var(--swim-delay) infinite;
+}
 
+/* stopped state — animation removed and transform pinned to custom stop coordinates
+   Set --stop-x and --stop-y on the element (either in CSS or via JS) to choose stop location,
+   accepts units (px, vw, %, etc). Transition makes stopping appear smooth. */
+.fishiesB.stopped {
+    animation: none !important;
+    transition: transform 300ms ease;
+    transform: translateX(var(--stop-x, 25vw)) translateY(var(--stop-y, 0)) scaleX(1);
+}
+.fishiesC.playing1 {
+    /* move to 1/4 of the viewport width in 5s and remain there */
+    will-change: transform;
+    animation: swim-to-quarter 5s ease forwards;
+}
+
+/* second natural swim animation state starts where the first ended,
+   set to run over 5s (instead of using --swim-duration) */
+.fishiesC.playing2 {
+    will-change: transform;
+    animation: swim 5s linear var(--swim-delay) infinite;
+}
+
+/* stopped state — animation removed and transform pinned to custom stop coordinates
+   Set --stop-x and --stop-y on the element (either in CSS or via JS) to choose stop location,
+   accepts units (px, vw, %, etc). Transition makes stopping appear smooth. */
+.fishiesC.stopped {
+    animation: none !important;
+    transition: transform 300ms ease;
+    transform: translateX(var(--stop-x, 25vw)) translateY(var(--stop-y, 0)) scaleX(1);
+}
 
 
 /* LTR swim: translate from left off-screen to right off-screen, with subtle bobbing */
@@ -191,9 +254,6 @@
 /* Render the fish graphic via a flipped pseudo-element so the element's children (e.g. a button)
     are not affected by the horizontal flip. Also override the RTL animation to remove the
     scaleX flip on the container (we only flip the ::before image). */
-
-
-
 
 /* RTL swim: same motion but flipped horizontally */
 @keyframes swim-to-quarter-rtl {
