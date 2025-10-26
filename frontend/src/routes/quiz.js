@@ -129,8 +129,7 @@ export default function Quiz() {
             <div className='white-box'>
                 <div className='inner-white-box'>
                     <h2 className='quiz-question'>Which of these fish is a Phishing attempt?</h2>
-                    <p className='quiz-instructions'>Select one or more fish and click "Send" to submit your answer.</p>
-                    <button className='send-button' onClick={handleSendClick}>Send</button>
+                    <p className='quiz-instructions'>BONERRR ALERT!!!!!!!</p>
 
                     {/* BONERRR ALERT!!!!!!! */}
 
@@ -140,7 +139,7 @@ export default function Quiz() {
             {/* top-right trackers: correct answers and score */}
             <div className='top-right-panel'>
                 <div className='tracker-box correct-box'>
-                    <div className='tracker-label'>Correct</div>
+                    <div className='tracker-label'>Questions</div>
                     <div className='tracker-value'>{correctCount} / {totalQuestions}</div>
                 </div>
                 <div className='tracker-box score-box'>
