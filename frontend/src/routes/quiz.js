@@ -4,6 +4,9 @@ import fisherman from '../styles/images/fishing.png'
 import wave from '../styles/images/support_images/wave.svg'
 import fish from '../styles/images/fish1.png'
 import FishHook from '../styles/images/fishHook.png'
+import FishA from '../styles/images/fishA.png'
+import FishB from '../styles/images/fishB.png'
+import FishC from '../styles/images/fishC.png'
 
 export default function Quiz() {
     const fishermanRef = useRef(null);
@@ -37,12 +40,11 @@ export default function Quiz() {
         return () => window.removeEventListener('resize', updateAnchorFromImage)
 
     }, [])
-
     // quiz counters
     const totalQuestions = 10;
     const [correctCount, setCorrectCount] = useState(0);
     const [score, setScore] = useState(0);
-
+  
     return(
         <div className='quiz-container'>
             {/* corporate wave background */}
@@ -73,12 +75,13 @@ export default function Quiz() {
                     onLoad={updateAnchorFromImage}
                 />
             </div>
-            <img src={fish} alt="fish" className='fisherman-image'/>
-            {/* backgrund image */}
-            {/* fish images */}
+            <img src={FishA} alt="fish" className='fishiesA'/>
+            <img src={FishB} alt="fish" className='fishiesB'/>
+            <img src={FishC} alt="fish" className='fishiesC'/>
+            </div>
+
             {/* score box */}
             <CursorFollowImage anchor={anchor} />
-        </div>
         </div>
         </div>
     )
