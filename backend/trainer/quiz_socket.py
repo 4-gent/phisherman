@@ -49,6 +49,16 @@ QUIZ_SESSIONS_LOG = os.path.join(DIAGNOSTICS_DIR, "quiz_sessions.log")
 def log_session_event(session_id: str, event: str, data: Dict[str, Any]):
     """Log quiz session events to diagnostics/quiz_sessions.log"""
     try:
+        # Check file size and rotate if > 10MB
+        if os.path.exists(QUIZ_SESSIONS_LOG):
+            file_size = os.path.getsize(QUIZ_SESSIONS_LOG)
+            if file_size > 10 * 1024 * 1024:  # 10MB
+                # Rotate: move current to .old and start fresh
+                old_log = QUIZ_SESSIONS_LOG + '.old'
+                if os.path.exists(old_log):
+                    os.remove(old_log)
+                os.rename(QUIZ_SESSIONS_LOG, old_log)
+        
         log_entry = {
             'timestamp': datetime.utcnow().isoformat(),
             'session_id': session_id,
