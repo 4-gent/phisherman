@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import './styles/main.css'
 import Navigation from './components/navbar'
+import Logo from './styles/images/Logo.png'
 
 export default function Main() {
 	return (
