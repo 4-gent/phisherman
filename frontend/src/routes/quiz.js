@@ -173,7 +173,7 @@ export default function Quiz() {
 
                     <button
                         type="button"
-                        className={`fishiesB selectable ${selected.fishB ? 'selected' : ''}`}
+                        className={`fishiesB ${fishAState} selectable ${selected.fishB ? 'selected' : ''}`}
                         onClick={() => toggleSelect('fishB')}
                         aria-pressed={!!selected.fishB}
                         onKeyDown={(e) => handleKeySelect(e, 'fishB')}
@@ -183,7 +183,7 @@ export default function Quiz() {
 
                     <button
                         type="button"
-                        className={`fishiesC selectable ${selected.fishC ? 'selected' : ''}`}
+                        className={`fishiesC ${fishAState} selectable ${selected.fishC ? 'selected' : ''}`}
                         onClick={() => toggleSelect('fishC')}
                         aria-pressed={!!selected.fishC}
                         onKeyDown={(e) => handleKeySelect(e, 'fishC')}
